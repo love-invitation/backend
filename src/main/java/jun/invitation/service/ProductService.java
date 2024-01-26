@@ -1,9 +1,7 @@
 package jun.invitation.service;
 
 import jun.invitation.domain.product.Product;
-import jun.invitation.domain.product.ProductCategory;
 import jun.invitation.repository.ProductRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

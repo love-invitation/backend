@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @NoArgsConstructor
-public class ProductCategory {
+public class ProductInfo {
 
     @Id @GeneratedValue
     @Column(name = "productCategory_id")
@@ -18,9 +18,8 @@ public class ProductCategory {
     private String name;
     private BigDecimal price;
 
-    public ProductCategory(String name, BigDecimal price) {
+    public ProductInfo(String name, BigDecimal price) {
         this.name = name;
-        this.price = price
-        ;
+        this.price = price;
     }
 }

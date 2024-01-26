@@ -3,9 +3,6 @@ package jun.invitation.domain.product;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Entity
@@ -20,7 +17,7 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productCategory_id")
-    private ProductCategory productCategory;
+    private ProductInfo productInfo;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "orders_id")
@@ -29,8 +26,8 @@ public class Product {
     // TODO review mapping 해야함 ...
 //    private List<Review> reviews;
 
-    public void setProductCategory(ProductCategory productCategory) {
-        this.productCategory = productCategory;
+    public void setProductInfo(ProductInfo productInfo) {
+        this.productInfo = productInfo;
     }
 
 }
