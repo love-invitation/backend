@@ -52,20 +52,25 @@ public class UserController {
         // redis에 저장
         tokenService.saveRefreshToken(refreshToken);
 
-        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", refreshToken.getRefreshToken())
-                .httpOnly(true)
-                .maxAge(Duration.ofDays(7))
-                .path("/")
-                .build();
+        ResponseCookie responseCookie = createCookie("refreshToken", refreshToken.getRefreshToken(), 7);
+
+        ResponseCookie accessCookie = createCookie("Authorization", accessToken, 1);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString(),JwtProperties.TOKEN_PREFIX+accessCookie.toString() )
                 .body(
                         ResponseDto.builder()
                                 .status(HttpServletResponse.SC_OK)
                                 .message("토큰 발급 성공")
-                                .result(JwtProperties.TOKEN_PREFIX+accessToken)
                                 .build()
                 );
+    }
+
+    private static ResponseCookie createCookie(String name, String value, int days) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .maxAge(Duration.ofDays(days))
+                .secure(true)
+                .build();
     }
 }
