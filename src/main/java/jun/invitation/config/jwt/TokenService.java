@@ -30,7 +30,7 @@ public class TokenService {
         return refreshTokenRepository.findById(refreshTkn);
     }
 
-    public void save(RefreshToken refreshToken) {
+    public void saveRefreshToken(RefreshToken refreshToken) {
         refreshTokenRepository.save(refreshToken);
     }
 }
