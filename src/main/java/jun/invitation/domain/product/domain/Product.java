@@ -20,13 +20,6 @@ public class Product {
     @JoinColumn(name = "productCategory_id")
     private ProductInfo productInfo;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "orders_id")
-//    private Orders orders;
-
-    // TODO review mapping 해야함 ...
-//    private List<Review> reviews;
-
     public void setProductInfo(ProductInfo productInfo) {
         this.productInfo = productInfo;
     }

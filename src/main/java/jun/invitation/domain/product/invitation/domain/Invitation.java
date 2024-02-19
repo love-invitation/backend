@@ -2,38 +2,50 @@ package jun.invitation.domain.product.invitation.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.product.domain.Product;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("Invitation")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED) @ToString
 public class Invitation extends Product {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "invitation_id")
     private Long id;
 
-    /*
-    private 이미지 main_picture, gallery_picture
-     */
-
+    private String mainImageUrl;
     private String title;
     private String contents;
-    private LocalDateTime wedding_date;
-    private String wedding_info;
-    private String parents_info;
-    private String account_info;
 
-    public Invitation(String title, String contents, LocalDateTime wedding_date,
-                      String wedding_info, String parents_info, String account_info) {
+    @Embedded
+    private Wedding wedding;
 
+    @OneToMany(mappedBy = "invitation")
+    private List<Gallery> gallery;
+
+    @OneToMany(mappedBy = "invitation")
+    private List<Transport> transport;
+
+    @Embedded
+    private Theme theme;
+
+    @Embedded
+    private MrsFamily mrsFamily;
+
+    @Embedded
+    private MrFamily mrFamily;
+
+    @Builder
+    public Invitation(String mainImageUrl, String title, String contents, Wedding wedding
+            , Theme theme, MrsFamily mrsFamily, MrFamily mrFamily) {
+        this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
-        this.wedding_date = wedding_date;
-        this.wedding_info = wedding_info;
-        this.parents_info = parents_info;
-        this.account_info = account_info;
+        this.wedding = wedding;
+        this.theme = theme;
+        this.mrsFamily = mrsFamily;
+        this.mrFamily = mrFamily;
     }
 }
