@@ -2,11 +2,13 @@ package jun.invitation.domain.product.invitation.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.product.domain.Product;
+import jun.invitation.domain.product.invitation.domain.Gallery.Gallery;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity @Getter
 @DiscriminatorValue("Invitation")
 @NoArgsConstructor(access = AccessLevel.PROTECTED) @ToString
 public class Invitation extends Product {
@@ -22,11 +24,11 @@ public class Invitation extends Product {
     @Embedded
     private Wedding wedding;
 
-    @OneToMany(mappedBy = "invitation")
-    private List<Gallery> gallery;
+    @OneToMany(mappedBy = "invitation" ,cascade = CascadeType.PERSIST)
+    private List<Gallery> gallery = new ArrayList<>();
 
-    @OneToMany(mappedBy = "invitation")
-    private List<Transport> transport;
+    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
+    private List<Transport> transport = new ArrayList<>();
 
     @Embedded
     private Theme theme;
@@ -36,6 +38,10 @@ public class Invitation extends Product {
 
     @Embedded
     private MrFamily mrFamily;
+
+    public void registerMainImage(String mainImageUrl) {
+        this.mainImageUrl = mainImageUrl;
+    }
 
     @Builder
     public Invitation(String mainImageUrl, String title, String contents, Wedding wedding
@@ -48,4 +54,5 @@ public class Invitation extends Product {
         this.mrsFamily = mrsFamily;
         this.mrFamily = mrFamily;
     }
+
 }
