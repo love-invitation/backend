@@ -44,8 +44,8 @@ public class Invitation extends Product {
     }
 
     @Builder
-    public Invitation(String mainImageUrl, String title, String contents, Wedding wedding
-            , Theme theme, MrsFamily mrsFamily, MrFamily mrFamily) {
+    public Invitation(String mainImageUrl, String title, String contents, Wedding wedding,
+                      Theme theme, MrsFamily mrsFamily, MrFamily mrFamily) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
@@ -53,6 +53,8 @@ public class Invitation extends Product {
         this.theme = theme;
         this.mrsFamily = mrsFamily;
         this.mrFamily = mrFamily;
+
+
     }
 
 }
