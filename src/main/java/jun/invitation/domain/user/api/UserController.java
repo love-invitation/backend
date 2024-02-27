@@ -9,6 +9,7 @@ import jun.invitation.dto.LoginRequestDto;
 import jun.invitation.dto.ResponseDto;
 import jun.invitation.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.UUID;
 
 @RestController
-@RequiredArgsConstructor
+@RequiredArgsConstructor @Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -54,10 +57,11 @@ public class UserController {
 
         ResponseCookie responseCookie = createCookie("refreshToken", refreshToken.getRefreshToken(), 7);
 
-        ResponseCookie accessCookie = createCookie("Authorization", accessToken, 1);
+        log.info("jwtToken ={}",JwtProperties.TOKEN_PREFIX+accessToken);
+        ResponseCookie accessCookie = createCookie("Authorization", URLEncoder.encode(JwtProperties.TOKEN_PREFIX + accessToken, StandardCharsets.UTF_8).replaceAll("\\+", "%20"), 1);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString(),JwtProperties.TOKEN_PREFIX+accessCookie.toString() )
+                .header(HttpHeaders.SET_COOKIE, responseCookie.toString(),accessCookie.toString() )
                 .body(
                         ResponseDto.builder()
                                 .status(HttpServletResponse.SC_OK)

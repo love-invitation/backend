@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 @Data @Slf4j @NoArgsConstructor
 public class InvitationDto {
 
+    /* 상품 정보 id*/
+    private Long productInfoId;
+
     private String title;
     private String contents;
 

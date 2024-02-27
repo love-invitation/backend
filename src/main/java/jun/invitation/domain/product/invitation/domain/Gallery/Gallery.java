@@ -14,13 +14,19 @@ public class Gallery {
     private Long id;
 
     private Long priority;
+
+    private String originFileName;
+    private String storeFileName;
+
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "invitation_id")
     private Invitation invitation;
 
-    public Gallery(Long priority, String imageUrl) {
+    public Gallery(String originFileName , String storeFileName, Long priority, String imageUrl) {
+        this.originFileName = originFileName;
+        this.storeFileName = storeFileName;
         this.priority = priority;
         this.imageUrl = imageUrl;
     }

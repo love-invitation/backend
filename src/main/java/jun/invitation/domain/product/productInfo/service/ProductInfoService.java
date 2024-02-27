@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,5 +26,9 @@ public class ProductInfoService {
     public ProductInfo findOne(String name) {
 
         return productInfoRepository.findByName(name);
+    }
+
+    public Optional<ProductInfo> findById(Long id) {
+        return productInfoRepository.findById(id);
     }
 }

@@ -2,6 +2,8 @@ package jun.invitation.domain.product.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.product.productInfo.domain.ProductInfo;
+import jun.invitation.domain.user.domain.User;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,11 +19,23 @@ public class Product {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productCategory_id")
+    @JoinColumn(name = "productInfo_id")
     private ProductInfo productInfo;
 
-    public void setProductInfo(ProductInfo productInfo) {
+    private boolean isPaid;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public void registerUserProductInfo(User user, ProductInfo productInfo) {
+        this.user = user;
         this.productInfo = productInfo;
     }
 
+    public Product(ProductInfo productInfo, User user) {
+        this.productInfo = productInfo;
+        this.user = user;
+        this.isPaid = false;
+    }
 }
