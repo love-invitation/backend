@@ -3,6 +3,7 @@ package jun.invitation.domain.product.invitation.domain;
 import jakarta.persistence.*;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.product.invitation.domain.Gallery.Gallery;
+import jun.invitation.domain.product.invitation.dto.InvitationDto;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -61,4 +62,20 @@ public class Invitation extends Product {
         this.mrFamily = mrFamily;
     }
 
+    public void update(InvitationDto invitationDto) {
+
+        this.mainImageUrl = null;
+        this.mainImageOriginName = null;
+        this.mainImageStoreFileName = null;
+
+        this.title = invitationDto.getTitle();
+        this.contents = invitationDto.getContents();
+        this.wedding = invitationDto.getWedding();
+        this.theme = invitationDto.getTheme();
+        this.mrsFamily = invitationDto.getMrsFamily();
+        this.mrFamily = invitationDto.getMrFamily();
+
+        this.gallery.clear();
+        this.transport.clear();
+    }
 }

@@ -15,4 +15,7 @@ public class GalleryService {
         galleryRepository.save(gallery);
     }
 
+    public void delete(Gallery g) {
+        galleryRepository.delete(g);
+    }
 }
