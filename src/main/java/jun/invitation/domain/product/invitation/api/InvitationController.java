@@ -34,12 +34,13 @@ public class InvitationController {
 
     }
 
-    @GetMapping("/test")
-    public void testToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        log.info(principalDetails.getUsername());
+    @DeleteMapping("/product/invitation/delete/{invitationId}")
+    public void deleteInvitation(@PathVariable(name = "invitationId") Long invitationId) throws IOException {
+        invitationService.deleteInvitation(invitationId);
 
     }
+
+
+
 
 }

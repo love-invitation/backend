@@ -7,6 +7,7 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity @Getter
 @DiscriminatorValue("Invitation")
@@ -18,16 +19,19 @@ public class Invitation extends Product {
     private Long id;
 
     private String mainImageUrl;
+    private String mainImageOriginName;
+    private String mainImageStoreFileName;
+
     private String title;
     private String contents;
 
     @Embedded
     private Wedding wedding;
 
-    @OneToMany(mappedBy = "invitation" ,cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "invitation" ,cascade = CascadeType.ALL)
     private List<Gallery> gallery = new ArrayList<>();
 
-    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "invitation", cascade = CascadeType.ALL)
     private List<Transport> transport = new ArrayList<>();
 
     @Embedded
@@ -39,8 +43,10 @@ public class Invitation extends Product {
     @Embedded
     private MrFamily mrFamily;
 
-    public void registerMainImage(String mainImageUrl) {
-        this.mainImageUrl = mainImageUrl;
+    public void registerMainImage(Map<String, String> savedFileMap) {
+        this.mainImageOriginName = savedFileMap.get("originFileName");
+        this.mainImageStoreFileName = savedFileMap.get("storeFileName");
+        this.mainImageUrl = savedFileMap.get("imageUrl");
     }
 
     @Builder
@@ -53,8 +59,6 @@ public class Invitation extends Product {
         this.theme = theme;
         this.mrsFamily = mrsFamily;
         this.mrFamily = mrFamily;
-
-
     }
 
 }
