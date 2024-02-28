@@ -7,6 +7,7 @@ import jun.invitation.domain.product.invitation.domain.Gallery.Gallery;
 import jun.invitation.domain.product.invitation.domain.Gallery.Service.GalleryService;
 import jun.invitation.domain.product.invitation.domain.Invitation;
 import jun.invitation.domain.product.invitation.dto.InvitationDto;
+import jun.invitation.domain.product.invitation.dto.ResponseInvitationDto;
 import jun.invitation.domain.product.productInfo.domain.ProductInfo;
 import jun.invitation.domain.product.productInfo.service.ProductInfoService;
 import jun.invitation.domain.user.domain.User;
@@ -37,7 +38,7 @@ public class InvitationService {
         Invitation invitation = invitationdto.toInvitation();
 
         invitation.registerUserProductInfo(findUser(),
-                productInfoService.findById(invitationdto.getProductInfoId()).orElseGet(()-> new ProductInfo()));
+                productInfoService.findById(invitationdto.getProductInfoId()).orElseGet(ProductInfo::new));
 
         saveGallery(gallery, invitation);
 
@@ -46,33 +47,6 @@ public class InvitationService {
 
         return invitation;
 
-    }
-
-    private void saveGallery(List<MultipartFile> gallery, Invitation invitation) throws IOException {
-
-        Long sequence = 1L;
-
-        for (MultipartFile file : gallery) {
-            Map<String, String> savedFileMap = s3UploadService.saveFile(file);
-
-            if (savedFileMap != null) {
-                String originFileName = savedFileMap.get("originFileName");
-                String storeFileName = savedFileMap.get("storeFileName");
-                String savedUrlPath = savedFileMap.get("imageUrl");
-
-                Gallery newGallery = new Gallery(originFileName,storeFileName,sequence++,savedUrlPath);
-                newGallery.setInvitation(invitation);
-                galleryService.saveGallery(newGallery);
-            }
-
-        }
-    }
-
-    public User findUser() {
-        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-
-        return principalDetails.getUser();
     }
 
     public Long saveInvitation(Invitation invitation) {
@@ -119,5 +93,42 @@ public class InvitationService {
 
         // main Image 저장
         invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+    }
+
+    public ResponseInvitationDto readInvitation(Long invitationId) {
+        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(NoSuchElementException::new);
+
+        ResponseInvitationDto responseInvitationDto = new ResponseInvitationDto(invitation);
+
+        return responseInvitationDto;
+    }
+
+
+
+    private void saveGallery(List<MultipartFile> gallery, Invitation invitation) throws IOException {
+
+        Long sequence = 1L;
+
+        for (MultipartFile file : gallery) {
+            Map<String, String> savedFileMap = s3UploadService.saveFile(file);
+
+            if (savedFileMap != null) {
+                String originFileName = savedFileMap.get("originFileName");
+                String storeFileName = savedFileMap.get("storeFileName");
+                String savedUrlPath = savedFileMap.get("imageUrl");
+
+                Gallery newGallery = new Gallery(originFileName,storeFileName,sequence++,savedUrlPath);
+                newGallery.setInvitation(invitation);
+                galleryService.saveGallery(newGallery);
+            }
+
+        }
+    }
+
+    public User findUser() {
+        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+
+        return principalDetails.getUser();
     }
 }

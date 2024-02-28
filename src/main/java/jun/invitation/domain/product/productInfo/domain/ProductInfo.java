@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class ProductInfo {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "productCategory_id")
+    @Column(name = "productInfo_id")
     private Long id;
 
     private String name;

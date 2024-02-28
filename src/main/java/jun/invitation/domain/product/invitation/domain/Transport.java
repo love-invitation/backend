@@ -1,9 +1,10 @@
 package jun.invitation.domain.product.invitation.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity @Getter
 @NoArgsConstructor
 public class Transport {
 
