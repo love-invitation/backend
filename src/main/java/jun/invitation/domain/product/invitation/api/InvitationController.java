@@ -1,21 +1,41 @@
 package jun.invitation.domain.product.invitation.api;
 
+import jun.invitation.domain.jwt.JwtProperties;
 import jun.invitation.domain.product.invitation.domain.Invitation;
 import jun.invitation.domain.product.invitation.dto.InvitationDto;
+import jun.invitation.domain.product.invitation.dto.ResponseInvitationDto;
 import jun.invitation.domain.product.invitation.service.InvitationService;
+import jun.invitation.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+
 @RestController
 @RequiredArgsConstructor @Slf4j
 public class InvitationController {
 
     private final InvitationService invitationService;
+
+    @GetMapping("/product/invitation/read/{invitationId}")
+    public ResponseDto readInvitation(@PathVariable(name = "invitationId") Long invitationId) {
+
+        ResponseInvitationDto responseInvitationDto = invitationService.readInvitation(invitationId);
+
+
+        return ResponseDto.builder()
+                        .status(SC_OK)
+                        .message("success")
+                        .result(responseInvitationDto)
+                        .build();
+
+    }
 
     @PostMapping("/product/invitation/create")
     public void createInvitation(
@@ -32,7 +52,9 @@ public class InvitationController {
 
     @DeleteMapping("/product/invitation/delete/{invitationId}")
     public void deleteInvitation(@PathVariable(name = "invitationId") Long invitationId) throws IOException {
+
         invitationService.deleteInvitation(invitationId);
+
     }
 
     @PutMapping("/product/invitation/update/{invitationId}")
@@ -42,7 +64,9 @@ public class InvitationController {
             @RequestPart(name = "gallery") List<MultipartFile> gallery,
             @RequestPart(name = "mainImage") MultipartFile mainImage
     ) throws IOException {
+
         invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage);
+
     }
 
 }
