@@ -50,6 +50,13 @@ dependencies {
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
 
 
+	//Querydsl
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+
 }
 
 tasks.named('test') {
@@ -60,4 +67,8 @@ tasks.named('test') {
 tasks.named('asciidoctor') {
 	inputs.dir snippetsDir
 	dependsOn test
+}
+
+clean {
+	delete file('src/main/generated')
 }
