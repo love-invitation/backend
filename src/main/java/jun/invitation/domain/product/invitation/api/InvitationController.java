@@ -29,8 +29,8 @@ public class InvitationController {
 
     @GetMapping("/product/invitation/read/{invitationId}")
     public ResponseEntity<ResponseDto> readInvitation(@PathVariable(name = "invitationId") Long invitationId) {
-
-        if (!invitationService.isYours(getCurrentUser().getId(), invitationId)) {
+        Long userId = getCurrentUser().getId();
+        if (!invitationService.isYours(userId, invitationId)) {
             return ResponseEntity.status(SC_FORBIDDEN).body(
                     ResponseDto.builder()
                             .status(SC_FORBIDDEN)
