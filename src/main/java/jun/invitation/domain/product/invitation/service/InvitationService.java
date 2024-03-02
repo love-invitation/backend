@@ -2,6 +2,7 @@ package jun.invitation.domain.product.invitation.service;
 
 import jun.invitation.domain.auth.PrincipalDetails;
 import jun.invitation.domain.aws.s3.service.S3UploadService;
+import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.product.invitation.dao.InvitationRepository;
 import jun.invitation.domain.product.invitation.domain.Gallery.Gallery;
 import jun.invitation.domain.product.invitation.domain.Gallery.Service.GalleryService;
@@ -10,7 +11,9 @@ import jun.invitation.domain.product.invitation.dto.InvitationDto;
 import jun.invitation.domain.product.invitation.dto.ResponseInvitationDto;
 import jun.invitation.domain.product.productInfo.domain.ProductInfo;
 import jun.invitation.domain.product.productInfo.service.ProductInfoService;
+import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.user.domain.User;
+import jun.invitation.global.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +27,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static jun.invitation.global.SecurityUtils.*;
+
 @Service @Slf4j
 @RequiredArgsConstructor
 public class InvitationService {
@@ -32,12 +37,13 @@ public class InvitationService {
     private final InvitationRepository invitationRepository;
     private final GalleryService galleryService;
     private final ProductInfoService productInfoService;
+    private final ProductService productService;
 
     public Invitation createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
 
         Invitation invitation = invitationdto.toInvitation();
 
-        invitation.registerUserProductInfo(findUser(),
+        invitation.registerUserProductInfo(getCurrentUser(),
                 productInfoService.findById(invitationdto.getProductInfoId()).orElseGet(ProductInfo::new));
 
         saveGallery(gallery, invitation);
@@ -125,10 +131,13 @@ public class InvitationService {
         }
     }
 
-    public User findUser() {
-        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
+    public boolean isYours (Long userId, Long productId) {
+        Product product = productService.findOne(productId);
 
-        return principalDetails.getUser();
+        if (product != null && product.getUser().getId() == userId)
+            return true;
+        else
+            return false;
     }
+
 }

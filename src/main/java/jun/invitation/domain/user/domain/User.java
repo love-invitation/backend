@@ -42,4 +42,8 @@ public class User {
         this.createDate = createDate;
     }
 
+    public void setUserIdForTest() {
+        this.id = 2L;
+    }
+
 }
