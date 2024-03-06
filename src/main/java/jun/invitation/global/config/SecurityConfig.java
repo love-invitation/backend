@@ -1,6 +1,8 @@
 package jun.invitation.global.config;
 
 import jun.invitation.domain.jwt.util.JwtAuthorizationFilter;
+import jun.invitation.domain.oauth.OAuthSuccessHandler;
+import jun.invitation.domain.oauth.PrincipalOauth2UserService;
 import jun.invitation.domain.user.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,9 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final PrincipalOauth2UserService principalOauth2UserService;
     private final UserRepository userRepository;
+    private final OAuthSuccessHandler oAuthSuccessHandler;
 
     @Autowired
     private final CorsFilter corsFilter;
@@ -38,6 +42,13 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .addFilterBefore(new JwtAuthorizationFilter(userRepository), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2Login -> oauth2Login
+                        .loginPage("/login")
+                        .successHandler(oAuthSuccessHandler)
+                        .userInfoEndpoint(userInfoEndpointConfig ->
+                                userInfoEndpointConfig.userService(principalOauth2UserService)
+                        )
+                )
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers("/user/**").hasAnyRole("USER")
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
