@@ -9,9 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class InvitationApplication {
 
 	public static void main(String[] args) {
-		log.info("==0223==");
 		SpringApplication.run(InvitationApplication.class, args);
-
 	}
 
 }

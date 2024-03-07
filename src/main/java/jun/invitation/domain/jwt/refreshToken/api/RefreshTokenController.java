@@ -1,4 +1,4 @@
-package jun.invitation.domain.jwt.api;
+package jun.invitation.domain.jwt.refreshToken.api;
 
 import jun.invitation.domain.jwt.JwtProperties;
 import jun.invitation.domain.jwt.refreshToken.domain.RefreshToken;
@@ -20,7 +20,7 @@ import static jakarta.servlet.http.HttpServletResponse.*;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class TokenController {
+public class RefreshTokenController {
 
     private final TokenService tokenService;
     private final UserService userService;

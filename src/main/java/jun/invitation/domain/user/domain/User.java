@@ -1,19 +1,15 @@
 package jun.invitation.domain.user.domain;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Entity
-@Getter
-@Setter
+@Entity @Setter
+@Getter @ToString
 @NoArgsConstructor
 public class User {
 
