@@ -1,9 +1,9 @@
 package jun.invitation.domain.user.api;
 
 import jakarta.servlet.http.HttpServletResponse;
-import jun.invitation.domain.jwt.JwtProperties;
-import jun.invitation.domain.jwt.refreshToken.domain.RefreshToken;
-import jun.invitation.domain.jwt.service.TokenService;
+import jun.invitation.auth.jwt.JwtProperties;
+import jun.invitation.auth.jwt.refreshToken.domain.RefreshToken;
+import jun.invitation.auth.jwt.service.TokenService;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.dto.LoginRequestDto;
 import jun.invitation.dto.ResponseDto;

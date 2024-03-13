@@ -1,9 +1,8 @@
 package jun.invitation.domain.product.domain;
 
 import jakarta.persistence.*;
-import jun.invitation.domain.product.productInfo.domain.ProductInfo;
+import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.user.domain.User;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
