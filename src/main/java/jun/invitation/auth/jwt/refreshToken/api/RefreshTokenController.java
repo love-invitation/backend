@@ -4,6 +4,7 @@ import jun.invitation.auth.jwt.JwtProperties;
 import jun.invitation.auth.jwt.refreshToken.domain.RefreshToken;
 import jun.invitation.auth.jwt.service.TokenService;
 import jun.invitation.domain.user.domain.User;
+import jun.invitation.domain.user.exception.UserNotFoundException;
 import jun.invitation.dto.ResponseDto;
 import jun.invitation.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,7 @@ public class RefreshTokenController {
 
 
         if (refreshToken.isPresent()) {
-            User user = userService.findUser(refreshToken.get().getUserId()).orElseGet(User::new);
+            User user = userService.findUser(refreshToken.get().getUserId()).orElseThrow(UserNotFoundException::new);
             String newAccessToken = tokenService.generateAccessToken(user);
             log.info("new token = {}", newAccessToken);
 

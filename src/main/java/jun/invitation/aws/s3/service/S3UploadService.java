@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +26,7 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Transactional
     public Map<String,String> saveFile(MultipartFile multipartFile) throws IOException {
         // TODO 원본 이미지 이름 -> UUID로 변경하고 S3에는 랜덤 값 저장, Gallery 에는 원본 이미지도 저장해야함
 
@@ -44,7 +46,7 @@ public class S3UploadService {
 
         return map;
     }
-
+    @Transactional
     public void delete(String fileName) {
         try {
             amazonS3.deleteObject(bucket, fileName);

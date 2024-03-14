@@ -38,13 +38,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             throws IOException, ServletException {
 
         String cookie = extractToken(request);
-
+        log.info("Cookie = {}" , cookie);
         if (cookie == null || !cookie.startsWith(JwtProperties.TOKEN_PREFIX)) {
             chain.doFilter(request, response);
             return;
         }
 
         String token = cookie.replace(JwtProperties.TOKEN_PREFIX, "");
+
 
         String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
                 .getClaim("username").asString();
@@ -66,7 +67,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     public String extractToken(HttpServletRequest request) throws UnsupportedEncodingException {
         Cookie[] cookies = request.getCookies();
-
+        log.info("extractToken = {}", cookies);
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (JwtProperties.HEADER_STRING.equals(cookie.getName())) {

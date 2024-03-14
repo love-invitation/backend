@@ -5,6 +5,8 @@ import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.invitation.dto.ResponseInvitationDto;
+import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
+import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.invitation.domain.Invitation;
@@ -34,32 +36,37 @@ public class InvitationService {
     private final ProductInfoService productInfoService;
     private final ProductService productService;
 
-    public Invitation createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
+    @Transactional
+    public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
 
         Invitation invitation = invitationdto.toInvitation();
 
         invitation.registerUserProductInfo(getCurrentUser(),
                 productInfoService.findById(invitationdto.getProductInfoId()).orElseGet(ProductInfo::new));
 
-        saveGallery(gallery, invitation);
 
-        /* main picture save */
-        invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+        if (gallery != null)
+            saveGallery(gallery, invitation);
 
-        return invitation;
+        if (mainImage != null)
+            invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+
+
+        return saveInvitation(invitation);
 
     }
 
-    public Long saveInvitation(Invitation invitation) {
+    private Long saveInvitation(Invitation invitation) {
         return invitationRepository.save(invitation).getId();
     }
 
+    @Transactional
     public void deleteInvitation(Long invitationId) throws Exception {
 
-        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(NoSuchElementException::new);
+        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
 
         if (!isYours(getCurrentUser().getId(), invitation.getId())) {
-            throw new Exception("you're not owner.");
+            throw new InvitationAccessDeniedException();
         }
 
 
@@ -80,7 +87,11 @@ public class InvitationService {
     public void updateInvitation(Long invitationId, InvitationDto invitationDto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
 
         Invitation invitation = invitationRepository.findById(invitationId)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(InvitationNotFoundException::new);
+
+        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
+            throw new InvitationAccessDeniedException();
+        }
 
         /* 청첩장의 기존 이미지 s3에서 지우고 DB에도 삭제 */
         List<Gallery> galleryList = invitation.getGallery();
@@ -101,9 +112,10 @@ public class InvitationService {
         invitation.registerMainImage(s3UploadService.saveFile(mainImage));
     }
 
+    @Transactional(readOnly = true)
     public ResponseInvitationDto readInvitation(Long invitationId) {
-        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(NoSuchElementException::new);
 
+        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
         ResponseInvitationDto responseInvitationDto = new ResponseInvitationDto(invitation);
 
         return responseInvitationDto;
@@ -127,7 +139,6 @@ public class InvitationService {
                 newGallery.setInvitation(invitation);
                 galleryService.saveGallery(newGallery);
             }
-
         }
     }
 
