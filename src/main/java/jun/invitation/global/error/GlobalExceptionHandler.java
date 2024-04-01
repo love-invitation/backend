@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     /* USER ERROR */
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerUserNotFoundException(InvitationAccessDeniedException e) {
+    public ResponseEntity<ErrorResponse> handlerUserNotFoundException(UserNotFoundException e) {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.USER_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }

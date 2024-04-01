@@ -1,6 +1,7 @@
 package jun.invitation.domain.user.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.global.entity.BaseEntity;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Entity @Setter
 @Getter @ToString
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -24,18 +25,14 @@ public class User {
     private String provider;
     private String providerId;
 
-    @CreatedDate
-    private LocalDateTime createDate;
-
     @Builder
-    public User(String username, String password, String email, String role, String provider, String providerId, LocalDateTime createDate) {
+    public User(String username, String password, String email, String role, String provider, String providerId) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
         this.provider = provider;
         this.providerId = providerId;
-        this.createDate = createDate;
     }
 
     public void setUserIdForTest() {

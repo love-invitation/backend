@@ -5,7 +5,7 @@ import jun.invitation.auth.jwt.refreshToken.domain.RefreshToken;
 import jun.invitation.auth.jwt.service.TokenService;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.domain.user.exception.UserNotFoundException;
-import jun.invitation.dto.ResponseDto;
+import jun.invitation.global.dto.ResponseDto;
 import jun.invitation.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

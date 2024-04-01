@@ -1,4 +1,4 @@
-package jun.invitation.global;
+package jun.invitation.global.utils;
 
 import jun.invitation.auth.PrincipalDetails;
 import jun.invitation.domain.user.domain.User;

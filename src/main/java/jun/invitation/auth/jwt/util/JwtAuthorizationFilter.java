@@ -67,7 +67,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     public String extractToken(HttpServletRequest request) throws UnsupportedEncodingException {
         Cookie[] cookies = request.getCookies();
-        log.info("extractToken = {}", cookies);
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (JwtProperties.HEADER_STRING.equals(cookie.getName())) {

@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.invitation.dto.ResponseInvitationDto;
 import jun.invitation.domain.invitation.service.InvitationService;
-import jun.invitation.dto.ResponseDto;
+import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -20,6 +20,7 @@ configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
+	asciidoctorExt
 }
 
 repositories {
@@ -27,7 +28,7 @@ repositories {
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+	snippetsDir = file('build/generated-snippets') // (5)
 }
 
 dependencies {
@@ -43,6 +44,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
+	asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor' // (3)
+
 
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
@@ -65,13 +68,33 @@ dependencies {
 }
 
 tasks.named('test') {
-	outputs.dir snippetsDir
 	useJUnitPlatform()
+	outputs.dir snippetsDir
 }
 
-tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	dependsOn test
+asciidoctor {
+	forkOptions {
+		jvmArgs('--add-opens', 'java.base/sun.nio.ch=ALL-UNNAMED',
+				'--add-opens', 'java.base/java.io=ALL-UNNAMED')
+	}
+	configurations 'asciidoctorExt' // (7)
+	baseDirFollowsSourceFile() // (8)
+	inputs.dir snippetsDir // (9)
+	println("${asciidoctor.outputDir}")
+	dependsOn test // (10)
+}
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')  // (11)
+}
+
+task copyDocument(type: Copy) { // (12)
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
 }
 
 clean {

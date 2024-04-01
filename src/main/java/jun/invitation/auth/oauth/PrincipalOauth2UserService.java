@@ -22,10 +22,6 @@ import java.util.Optional;
 @Service @RequiredArgsConstructor
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
-
-    /**
-     * 구글로부터 받은 userRequest 데이터에 대한 후처리하는 함수
-     */
     private final UserRepository userRepository;
 
     @Override
@@ -36,20 +32,8 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
-        // Attribute를 파싱해서 공통 객체로 묶는다. 관리가 편함.
-        OAuth2UserInfo oAuth2UserInfo = null;
 
-        if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
-            log.info(" == Google Login Requst ==");
-            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
-            log.info(" == Naver Login Requst ==");
-            log.info("response = {}", (Map) oAuth2User.getAttributes().get("response"));
-            oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
-            log.info(" == Kakao Login Requst ==");
-            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
-        }
+        OAuth2UserInfo oAuth2UserInfo = getOAuth2UserInfo(userRequest, oAuth2User);
 
         Optional<User> userOptional =
                 userRepository.findByProviderAndProviderId(oAuth2UserInfo.getProvider(), oAuth2UserInfo.getProviderId());
@@ -75,5 +59,18 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         return new PrincipalDetails(user, oAuth2User.getAttributes());
 
+    }
+
+    private static OAuth2UserInfo getOAuth2UserInfo(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        OAuth2UserInfo oAuth2UserInfo = null;
+
+        if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
+            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
+        } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
+        } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
+            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
+        }
+        return oAuth2UserInfo;
     }
 }

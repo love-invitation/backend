@@ -1,4 +1,4 @@
-package jun.invitation.dto;
+package jun.invitation.global.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
