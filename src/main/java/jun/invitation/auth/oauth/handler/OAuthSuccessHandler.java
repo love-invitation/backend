@@ -9,7 +9,7 @@ import jun.invitation.auth.jwt.JwtProperties;
 import jun.invitation.auth.jwt.service.TokenService;
 import jun.invitation.auth.jwt.refreshToken.domain.RefreshToken;
 import jun.invitation.domain.user.domain.User;
-import jun.invitation.global.SecurityUtils;
+import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -60,7 +60,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
         // TODO: FRONT 개발자에게 Redirect 해줄 경로 알아내기
-        response.sendRedirect("http://localhost:8080/home");
+        response.sendRedirect("http://localhost:3000");
     }
 
     // TODO: HTTPS 설정하고 secure(true) 주석 풀어주기
