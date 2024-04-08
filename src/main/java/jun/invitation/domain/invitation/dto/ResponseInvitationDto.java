@@ -27,8 +27,6 @@ public class ResponseInvitationDto {
 
     private List<TransportDto> transport = new ArrayList<>();
 
-    private Theme theme;
-
     private MrsFamily mrsFamily;
 
     private MrFamily mrFamily;
@@ -50,7 +48,6 @@ public class ResponseInvitationDto {
             transport.add(new TransportDto(t));
         }
 
-        this.theme = invitation.getTheme();
         this.mrsFamily = invitation.getMrsFamily();
         this.mrFamily = invitation.getMrFamily();
     }

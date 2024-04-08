@@ -36,9 +36,6 @@ public class Invitation extends Product {
     private List<Transport> transport = new ArrayList<>();
 
     @Embedded
-    private Theme theme;
-
-    @Embedded
     private MrsFamily mrsFamily;
 
     @Embedded
@@ -52,12 +49,11 @@ public class Invitation extends Product {
 
     @Builder
     public Invitation(String mainImageUrl, String title, String contents, Wedding wedding,
-                      Theme theme, MrsFamily mrsFamily, MrFamily mrFamily) {
+                      MrsFamily mrsFamily, MrFamily mrFamily) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
         this.wedding = wedding;
-        this.theme = theme;
         this.mrsFamily = mrsFamily;
         this.mrFamily = mrFamily;
     }
@@ -71,7 +67,6 @@ public class Invitation extends Product {
         this.title = invitationDto.getTitle();
         this.contents = invitationDto.getContents();
         this.wedding = invitationDto.getWedding();
-        this.theme = invitationDto.getTheme();
         this.mrsFamily = invitationDto.getMrsFamily();
         this.mrFamily = invitationDto.getMrFamily();
 

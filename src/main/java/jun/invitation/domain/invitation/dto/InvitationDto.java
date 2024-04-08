@@ -24,20 +24,15 @@ public class InvitationDto {
     /* Wedding */
     private Wedding wedding;
 
-    /* theme */
-    private Theme theme;
-
-
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents,
-                         MrFamily mrFamily, MrsFamily mrsFamily, Wedding wedding, Theme theme) {
+                         MrFamily mrFamily, MrsFamily mrsFamily, Wedding wedding) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
         this.mrFamily = mrFamily;
         this.mrsFamily = mrsFamily;
         this.wedding = wedding;
-        this.theme = theme;
     }
 
     public Invitation toInvitation(){
@@ -47,7 +42,6 @@ public class InvitationDto {
                 .wedding(wedding)
                 .mrFamily(mrFamily)
                 .mrsFamily(mrsFamily)
-                .theme(theme)
                 .build();
     }
 }
