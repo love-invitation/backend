@@ -1,6 +1,8 @@
 package jun.invitation.domain.invitation.dto;
 
 import jun.invitation.domain.invitation.domain.*;
+import jun.invitation.domain.priority.domain.Priority;
+import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,15 +26,19 @@ public class InvitationDto {
     /* Wedding */
     private Wedding wedding;
 
+    /* 우선 순위 */
+    private PriorityDto priorityDto;
+
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents,
-                         MrFamily mrFamily, MrsFamily mrsFamily, Wedding wedding) {
+                         PriorityDto priorityDto, MrFamily mrFamily, MrsFamily mrsFamily, Wedding wedding) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
         this.mrFamily = mrFamily;
         this.mrsFamily = mrsFamily;
         this.wedding = wedding;
+        this.priorityDto = priorityDto;
     }
 
     public Invitation toInvitation(){

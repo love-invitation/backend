@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.*;
+
 @RestController
 @RequiredArgsConstructor @Slf4j
 public class InvitationController {
@@ -27,13 +29,13 @@ public class InvitationController {
         ResponseInvitationDto responseInvitationDto = invitationService.readInvitation(invitationId);
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
-                .status(HttpStatus.OK.value())
+                .status(OK.value())
                 .message("read success")
                 .result(responseInvitationDto)
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(OK)
                 .body(responseDto);
 
     }
@@ -44,15 +46,15 @@ public class InvitationController {
             @RequestPart(name = "gallery") List<MultipartFile> gallery,
             @RequestPart(name = "mainImage") MultipartFile mainImage, HttpServletRequest request) throws IOException {
 
-        invitationService.createInvitation(invitationDto, gallery, mainImage);
-
+        Long invitationId = invitationService.createInvitation(invitationDto, gallery, mainImage);
+        log.info("CREATE INVITATION = {}",invitationService.findInvitation(invitationId).toString());
         ResponseDto responseDto = ResponseDto.builder()
-                .status(HttpStatus.CREATED.value())
+                .status(CREATED.value())
                 .message("create success")
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(CREATED)
                 .body(responseDto);
     }
 
@@ -62,12 +64,12 @@ public class InvitationController {
         invitationService.deleteInvitation(invitationId);
 
         ResponseDto responseDto = ResponseDto.builder()
-                .status(HttpStatus.OK.value())
+                .status(OK.value())
                 .message("Invitation[ID : "+ invitationId+"] successfully deleted.")
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(OK)
                 .body(responseDto);
     }
 
@@ -82,12 +84,12 @@ public class InvitationController {
         invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage);
 
         ResponseDto responseDto = ResponseDto.builder()
-                .status(HttpStatus.OK.value())
+                .status(OK.value())
                 .message("Invitation[ID : "+ invitationId+"] successfully updated.")
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(OK)
                 .body(responseDto);
 
     }

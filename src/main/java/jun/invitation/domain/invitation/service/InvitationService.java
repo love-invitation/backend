@@ -7,6 +7,7 @@ import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.invitation.dto.ResponseInvitationDto;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
+import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.invitation.domain.Invitation;
@@ -34,15 +35,19 @@ public class InvitationService {
     private final GalleryService galleryService;
     private final ProductInfoService productInfoService;
     private final ProductService productService;
+    private final PriorityService priorityService;
 
     @Transactional
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
+
+        priorityService.savePriority(invitationdto.getPriorityDto());
 
         Invitation invitation = invitationdto.toInvitation();
 
         invitation.registerUserProductInfo(getCurrentUser(),
                 productInfoService.findById(invitationdto.getProductInfoId()).orElseGet(ProductInfo::new));
 
+        // TODO : invitation 에 priority 넣어줘야하나?
 
         if (gallery != null)
             saveGallery(gallery, invitation);
@@ -150,4 +155,7 @@ public class InvitationService {
             return false;
     }
 
+    public Invitation findInvitation(Long invitationId) {
+        return invitationRepository.findById(invitationId).orElseGet(null);
+    }
 }

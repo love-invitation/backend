@@ -3,13 +3,16 @@ package jun.invitation.domain.invitation.dto;
 import jun.invitation.domain.invitation.domain.*;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dto.GalleryDto;
+import jun.invitation.domain.priority.domain.Priority;
+import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data @NoArgsConstructor
+@Data @NoArgsConstructor @Slf4j
 public class ResponseInvitationDto {
 
     private Long id;
@@ -31,6 +34,8 @@ public class ResponseInvitationDto {
 
     private MrFamily mrFamily;
 
+    private PriorityDto priorityDto;
+
     public ResponseInvitationDto(Invitation invitation) {
         this.id = invitation.getId();
         this.mainImageUrl = invitation.getMainImageUrl();
@@ -39,6 +44,8 @@ public class ResponseInvitationDto {
         this.title = invitation.getTitle();
         this.contents = invitation.getContents();
         this.wedding = invitation.getWedding();
+
+        this.priorityDto = new PriorityDto(invitation.getPriority());
 
         for (Gallery g : invitation.getGallery()) {
             gallery.add(new GalleryDto(g));
