@@ -5,6 +5,8 @@ import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
+import jun.invitation.domain.productInfo.domain.ProductInfo;
+import jun.invitation.domain.user.domain.User;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -43,10 +45,10 @@ public class Invitation extends Product {
     private Priority priority;
 
     @Embedded
-    private MrsFamily mrsFamily;
+    private BrideInfo brideInfo;
 
     @Embedded
-    private MrFamily mrFamily;
+    private GroomInfo groomInfo;
 
     public void registerMainImage(Map<String, String> savedFileMap) {
         this.mainImageOriginName = savedFileMap.get("originFileName");
@@ -54,15 +56,20 @@ public class Invitation extends Product {
         this.mainImageUrl = savedFileMap.get("imageUrl");
     }
 
+    public void registerUserProductInfo(User user, ProductInfo productInfo, Priority priority) {
+        super.registerUserProductInfo(user, productInfo);
+        this.priority = priority;
+    }
+
     @Builder
     public Invitation(String mainImageUrl, String title, String contents, Wedding wedding,
-                      Priority priority, MrsFamily mrsFamily, MrFamily mrFamily) {
+                      Priority priority, BrideInfo brideInfo, GroomInfo groomInfo) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
         this.wedding = wedding;
-        this.mrsFamily = mrsFamily;
-        this.mrFamily = mrFamily;
+        this.brideInfo = brideInfo;
+        this.groomInfo = groomInfo;
         this.priority = priority;
     }
 
@@ -75,8 +82,8 @@ public class Invitation extends Product {
         this.title = invitationDto.getTitle();
         this.contents = invitationDto.getContents();
         this.wedding = invitationDto.getWedding();
-        this.mrsFamily = invitationDto.getMrsFamily();
-        this.mrFamily = invitationDto.getMrFamily();
+        this.brideInfo = invitationDto.getBrideInfo();
+        this.groomInfo = invitationDto.getGroomInfo();
 
         this.gallery.clear();
         this.transport.clear();

@@ -60,7 +60,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
         // TODO: FRONT 개발자에게 Redirect 해줄 경로 알아내기
-        response.sendRedirect("http://localhost:3000");
+        response.sendRedirect("http://localhost:8080");
     }
 
     // TODO: HTTPS 설정하고 secure(true) 주석 풀어주기

@@ -14,11 +14,13 @@ public class PriorityService {
 
     private final PriorityRepository priorityRepository;
 
-    public Long savePriority(PriorityDto priorityDto) {
+    public Priority savePriority(PriorityDto priorityDto) {
 
         Priority priority = createPriority(priorityDto);
 
-        return priorityRepository.save(priority).getId();
+        priorityRepository.save(priority);
+
+        return priority;
     }
 
     private static Priority createPriority(PriorityDto priorityDto) {
@@ -26,10 +28,12 @@ public class PriorityService {
                 .article(priorityDto.getArticle())
                 .thumbnail(priorityDto.getThumbnail())
                 .contact(priorityDto.getContact())
-                .reservation_date(priorityDto.getReservation_date())
-                .reservation_place(priorityDto.getReservation_place())
-                .transportation(priorityDto.getTransportation())
+                .weddingDate(priorityDto.getWeddingDate())
+                .weddingPlace(priorityDto.getWeddingPlace())
+                .transport(priorityDto.getTransport())
                 .guestbook(priorityDto.getGuestbook())
+                .account(priorityDto.getAccount())
+                .gallery(priorityDto.getGallery())
                 .build();
     }
 

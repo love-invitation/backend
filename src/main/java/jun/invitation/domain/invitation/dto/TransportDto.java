@@ -1,5 +1,6 @@
-package jun.invitation.domain.invitation.domain;
+package jun.invitation.domain.invitation.dto;
 
+import jun.invitation.domain.invitation.domain.Transport;
 import lombok.Data;
 
 @Data

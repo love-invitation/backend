@@ -1,7 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
 import jun.invitation.domain.invitation.domain.*;
-import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.Builder;
 import lombok.Data;
@@ -18,10 +17,10 @@ public class InvitationDto {
     private String contents;
 
     /* 신랑 측 */
-    private MrFamily mrFamily;
+    private GroomInfo groomInfo;
 
     /* 신부 측 */
-    private MrsFamily mrsFamily;
+    private BrideInfo brideInfo;
 
     /* Wedding */
     private Wedding wedding;
@@ -31,12 +30,12 @@ public class InvitationDto {
 
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents,
-                         PriorityDto priorityDto, MrFamily mrFamily, MrsFamily mrsFamily, Wedding wedding) {
+                         PriorityDto priorityDto, GroomInfo groomInfo, BrideInfo brideInfo, Wedding wedding) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
-        this.mrFamily = mrFamily;
-        this.mrsFamily = mrsFamily;
+        this.groomInfo = groomInfo;
+        this.brideInfo = brideInfo;
         this.wedding = wedding;
         this.priorityDto = priorityDto;
     }
@@ -46,8 +45,8 @@ public class InvitationDto {
                 .title(title)
                 .contents(contents)
                 .wedding(wedding)
-                .mrFamily(mrFamily)
-                .mrsFamily(mrsFamily)
+                .groomInfo(groomInfo)
+                .brideInfo(brideInfo)
                 .build();
     }
 }

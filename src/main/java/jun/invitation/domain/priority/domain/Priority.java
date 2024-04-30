@@ -13,22 +13,26 @@ public class Priority {
     private Long id;
 
     private Integer article;
-    private Integer reservation_date;
-    private Integer reservation_place;
-    private Integer transportation;
+    private Integer weddingDate;
+    private Integer weddingPlace;
+    private Integer transport;
+    private Integer gallery;
     private Integer contact;
     private Integer thumbnail;
     private Integer guestbook;
+    private Integer account;
 
     @Builder
-    public Priority(Integer article, Integer reservation_date, Integer reservation_place,
-                    Integer transportation, Integer contact, Integer thumbnail, Integer guestbook) {
+    public Priority(Integer article, Integer weddingDate, Integer weddingPlace, Integer gallery,
+                    Integer transport, Integer contact, Integer thumbnail, Integer guestbook, Integer account) {
         this.article = article;
-        this.reservation_date = reservation_date;
-        this.reservation_place = reservation_place;
-        this.transportation = transportation;
+        this.weddingDate = weddingDate;
+        this.weddingPlace = weddingPlace;
+        this.transport = transport;
+        this.gallery = gallery;
         this.contact = contact;
         this.thumbnail = thumbnail;
         this.guestbook = guestbook;
+        this.account = account;
     }
 }
