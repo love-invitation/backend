@@ -1,54 +1,56 @@
 package jun.invitation.domain.invitation.dto;
 
 import jun.invitation.domain.invitation.domain.*;
-import jun.invitation.domain.gallery.Gallery;
-import jun.invitation.domain.gallery.dto.GalleryDto;
+import jun.invitation.domain.priority.domain.Priority;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Data @NoArgsConstructor
+@Data @NoArgsConstructor @Slf4j
 public class ResponseInvitationDto {
 
     private Long id;
 
-    private String mainImageUrl;
-    private String mainImageOriginName;
-    private String mainImageStoreFileName;
+    private ThumbnailDto thumbnail;
 
-    private String title;
-    private String contents;
+    private ArticleDto article;
 
-    private Wedding wedding;
+    private WeddingDateDto weddingDate;
 
-    private List<GalleryDto> gallery = new ArrayList<>();
+    private WeddingPlaceDto weddingPlace;
 
-    private List<TransportDto> transport = new ArrayList<>();
+    private TransportInfoDto transport;
 
-    private MrsFamily mrsFamily;
+    private GalleryInfoDto gallery;
 
-    private MrFamily mrFamily;
+    private AccountDto account;
+
+    private ContactDto contact;
 
     public ResponseInvitationDto(Invitation invitation) {
+
+        // TODO : priority 값 순서대로 해야함 ..
+
+
+        Priority priority = invitation.getPriority();
+        Wedding wedding = invitation.getWedding();
+        GroomInfo groomInfo = invitation.getGroomInfo();
+        BrideInfo brideInfo = invitation.getBrideInfo();
+
         this.id = invitation.getId();
-        this.mainImageUrl = invitation.getMainImageUrl();
-        this.mainImageOriginName = invitation.getMainImageOriginName();
-        this.mainImageStoreFileName = invitation.getMainImageStoreFileName();
-        this.title = invitation.getTitle();
-        this.contents = invitation.getContents();
-        this.wedding = invitation.getWedding();
 
-        for (Gallery g : invitation.getGallery()) {
-            gallery.add(new GalleryDto(g));
-        }
+        this.thumbnail = new ThumbnailDto( invitation);
 
-        for (Transport t : invitation.getTransport()) {
-            transport.add(new TransportDto(t));
-        }
+        this.article = new ArticleDto(invitation.getTitle(), invitation.getContents(), groomInfo, brideInfo, priority.getArticle());
 
-        this.mrsFamily = invitation.getMrsFamily();
-        this.mrFamily = invitation.getMrFamily();
+        this.weddingDate = new WeddingDateDto(wedding, priority.getWeddingDate());
+        this.weddingPlace = new WeddingPlaceDto(wedding, priority.getWeddingPlace());
+
+        this.transport = new TransportInfoDto(invitation.getTransport(), priority.getTransport());
+        this.gallery = new GalleryInfoDto(invitation.getGallery(), priority.getGallery());
+
+        this.contact = new ContactDto(groomInfo,brideInfo, priority.getContact());
+        this.account = new AccountDto(groomInfo,brideInfo,priority.getAccount());
+
     }
 }

@@ -3,7 +3,6 @@ package jun.invitation.domain.invitation.domain;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ import java.time.LocalDateTime;
 public class Wedding {
 
     private String placeName;
-    private String placeInfo;
+    private String detail;
     private String placeAddress;
     private LocalDateTime date;
     private String dateType;

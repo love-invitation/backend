@@ -3,8 +3,10 @@ package jun.invitation.domain.invitation.api;
 import jakarta.servlet.http.HttpServletRequest;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.invitation.dto.ResponseInvitationDto;
+import jun.invitation.domain.invitation.dto.TransportDto;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor @Slf4j
@@ -24,16 +29,17 @@ public class InvitationController {
     @GetMapping("/product/invitation/read/{invitationId}")
     public ResponseEntity<ResponseDto> readInvitation(@PathVariable(name = "invitationId") Long invitationId) {
 
-        ResponseInvitationDto responseInvitationDto = invitationService.readInvitation(invitationId);
+        LinkedHashMap<String, Object> result = invitationService.readInvitation(invitationId);
+
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
-                .status(HttpStatus.OK.value())
+                .status(OK.value())
                 .message("read success")
-                .result(responseInvitationDto)
+                .result(result)
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(OK)
                 .body(responseDto);
 
     }
@@ -44,15 +50,14 @@ public class InvitationController {
             @RequestPart(name = "gallery") List<MultipartFile> gallery,
             @RequestPart(name = "mainImage") MultipartFile mainImage, HttpServletRequest request) throws IOException {
 
-        invitationService.createInvitation(invitationDto, gallery, mainImage);
-
+        Long invitationId = invitationService.createInvitation(invitationDto, gallery, mainImage);
         ResponseDto responseDto = ResponseDto.builder()
-                .status(HttpStatus.CREATED.value())
+                .status(CREATED.value())
                 .message("create success")
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.CREATED)
+                .status(CREATED)
                 .body(responseDto);
     }
 
@@ -62,12 +67,12 @@ public class InvitationController {
         invitationService.deleteInvitation(invitationId);
 
         ResponseDto responseDto = ResponseDto.builder()
-                .status(HttpStatus.OK.value())
+                .status(OK.value())
                 .message("Invitation[ID : "+ invitationId+"] successfully deleted.")
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(OK)
                 .body(responseDto);
     }
 
@@ -82,12 +87,12 @@ public class InvitationController {
         invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage);
 
         ResponseDto responseDto = ResponseDto.builder()
-                .status(HttpStatus.OK.value())
+                .status(OK.value())
                 .message("Invitation[ID : "+ invitationId+"] successfully updated.")
                 .build();
 
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(OK)
                 .body(responseDto);
 
     }

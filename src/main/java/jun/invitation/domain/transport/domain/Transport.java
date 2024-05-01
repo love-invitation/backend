@@ -1,6 +1,8 @@
-package jun.invitation.domain.invitation.domain;
+package jun.invitation.domain.transport.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.dto.TransportDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,4 +21,12 @@ public class Transport {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invitation_id")
     private Invitation invitation;
+
+    public Transport(TransportDto transportDto, Invitation invitation) {
+        this.kind = transportDto.getKind();
+        this.detail = transportDto.getDetail();
+
+        this.invitation = invitation;
+        invitation.getTransport().add(this);
+    }
 }

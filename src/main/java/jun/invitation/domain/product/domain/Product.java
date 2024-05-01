@@ -1,6 +1,7 @@
 package jun.invitation.domain.product.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.user.domain.User;
 import lombok.Getter;
