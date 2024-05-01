@@ -6,6 +6,7 @@ import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
+import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.user.domain.User;
 import lombok.*;
 
@@ -89,7 +90,5 @@ public class Invitation extends Product {
         this.transport.clear();
     }
 
-    public void registerPriority(Priority priority) {
-        this.priority = priority;
-    }
+
 }

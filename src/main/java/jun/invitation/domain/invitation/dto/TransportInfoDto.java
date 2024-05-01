@@ -1,6 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
-import jun.invitation.domain.invitation.domain.Transport;
+import jun.invitation.domain.transport.domain.Transport;
 import lombok.Data;
 
 import java.util.ArrayList;

@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
+
 @Data @Slf4j @NoArgsConstructor
 public class InvitationDto {
 
@@ -25,11 +27,16 @@ public class InvitationDto {
     /* Wedding */
     private Wedding wedding;
 
+    /* 교통수단 */
+    // 여러 교통 수단이 전달될 수도 있다.
+    // -> 배열로 값이 와도 매핑이 될까?
+    private List<TransportDto> transport;
+
     /* 우선 순위 */
     private PriorityDto priorityDto;
 
     @Builder
-    public InvitationDto(Long productInfoId, String title, String contents,
+    public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport,
                          PriorityDto priorityDto, GroomInfo groomInfo, BrideInfo brideInfo, Wedding wedding) {
         this.productInfoId = productInfoId;
         this.title = title;
@@ -37,6 +44,7 @@ public class InvitationDto {
         this.groomInfo = groomInfo;
         this.brideInfo = brideInfo;
         this.wedding = wedding;
+        this.transport = transport;
         this.priorityDto = priorityDto;
     }
 

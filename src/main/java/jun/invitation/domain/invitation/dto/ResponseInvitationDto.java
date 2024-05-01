@@ -29,6 +29,9 @@ public class ResponseInvitationDto {
 
     public ResponseInvitationDto(Invitation invitation) {
 
+        // TODO : priority 값 순서대로 해야함 ..
+
+
         Priority priority = invitation.getPriority();
         Wedding wedding = invitation.getWedding();
         GroomInfo groomInfo = invitation.getGroomInfo();
@@ -46,8 +49,6 @@ public class ResponseInvitationDto {
         this.transport = new TransportInfoDto(invitation.getTransport(), priority.getTransport());
         this.gallery = new GalleryInfoDto(invitation.getGallery(), priority.getGallery());
 
-        log.info("[priority.getContact()] {}" , priority.getContact());
-        log.info("[priority.getAccount()] {}" , priority.getAccount());
         this.contact = new ContactDto(groomInfo,brideInfo, priority.getContact());
         this.account = new AccountDto(groomInfo,brideInfo,priority.getAccount());
 

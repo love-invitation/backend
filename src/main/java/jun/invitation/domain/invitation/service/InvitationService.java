@@ -3,18 +3,19 @@ package jun.invitation.domain.invitation.service;
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.gallery.Gallery;
-import jun.invitation.domain.invitation.dto.InvitationDto;
-import jun.invitation.domain.invitation.dto.ResponseInvitationDto;
+import jun.invitation.domain.invitation.domain.*;
+import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.gallery.Service.GalleryService;
-import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.domain.product.service.ProductService;
+import jun.invitation.domain.transport.domain.Transport;
+import jun.invitation.domain.transport.service.TransportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static jun.invitation.global.utils.SecurityUtils.*;
 
@@ -37,10 +37,10 @@ public class InvitationService {
     private final ProductInfoService productInfoService;
     private final ProductService productService;
     private final PriorityService priorityService;
+    private final TransportService transportService;
 
     @Transactional
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
-
 
         Priority priority = priorityService.savePriority(invitationdto.getPriorityDto());
 
@@ -52,15 +52,26 @@ public class InvitationService {
                 priority
                 );
 
-        if (gallery != null)
+        if (gallery != null) {
             saveGallery(gallery, invitation);
-
-        if (mainImage != null)
+        }
+        List<TransportDto> transportDtos = invitationdto.getTransport();
+        if (transportDtos != null) {
+            saveTransport(transportDtos, invitation);
+        }
+        if (mainImage != null) {
             invitation.registerMainImage(s3UploadService.saveFile(mainImage));
-
+        }
 
         return saveInvitation(invitation);
 
+    }
+
+    private void saveTransport(List<TransportDto> transportDtos, Invitation invitation) {
+        for (TransportDto transportDto : transportDtos) {
+            Transport transport = new Transport(transportDto, invitation);
+            transportService.addTransport(transport);
+        }
     }
 
     private Long saveInvitation(Invitation invitation) {
@@ -120,12 +131,76 @@ public class InvitationService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseInvitationDto readInvitation(Long invitationId) {
+    public LinkedHashMap<String, Object> readInvitation(Long invitationId) {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
         ResponseInvitationDto responseInvitationDto = new ResponseInvitationDto(invitation);
 
-        return responseInvitationDto;
+        LinkedHashMap<String, Object> stringObjectLinkedHashMap = sortByPriority(invitation);
+
+        return stringObjectLinkedHashMap;
+    }
+
+
+    private LinkedHashMap<String, Object> sortByPriority(Invitation invitation) {
+
+        Priority priority = invitation.getPriority();
+        Wedding wedding = invitation.getWedding();
+        GroomInfo groomInfo = invitation.getGroomInfo();
+        BrideInfo brideInfo = invitation.getBrideInfo();
+        log.info("GETGALLERY {}",invitation.getGallery().toString());
+
+        List<String> sortedPriorityList = priority.getSortedPriorityList();
+
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+
+        result.put("id", invitation.getId());
+        result.put("thumbnail", new ThumbnailDto( invitation));
+
+        for (int i = 0; i < sortedPriorityList.size(); i++) {
+
+            switch (sortedPriorityList.get(i)) {
+                case "article" :
+                    result.put("article",
+                            new ArticleDto(invitation.getTitle(), invitation.getContents(),
+                                    groomInfo, brideInfo, priority.getArticle())
+                    );
+                    break;
+                case "weddingDate":
+                    result.put("weddingDate",
+                            new WeddingDateDto(wedding, priority.getWeddingDate())
+                    );
+                    break;
+                case "weddingPlace":
+                    result.put("weddingPlace",
+                            new WeddingPlaceDto(wedding, priority.getWeddingPlace())
+                    );
+                    break;
+                case "transport":
+                    result.put("transport",
+                            new TransportInfoDto(invitation.getTransport(), priority.getTransport())
+                    );
+                    break;
+                case "gallery":
+                    result.put("gallery",
+                            new GalleryInfoDto(invitation.getGallery(), priority.getGallery())
+                    );
+                    break;
+                case "contact":
+                    result.put("contact",
+                            new ContactDto(groomInfo,brideInfo, priority.getContact())
+                    );
+                    break;
+                case "account":
+                    result.put("account",
+                            new AccountDto(groomInfo,brideInfo,priority.getAccount())
+                    );
+                    break;
+            }
+        }
+
+
+        return result;
     }
 
 
