@@ -2,6 +2,7 @@ package jun.invitation.domain.invitation.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.gallery.Gallery;
+import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
@@ -40,6 +41,9 @@ public class Invitation extends Product {
 
     @OneToMany(mappedBy = "invitation", cascade = CascadeType.ALL)
     private List<Transport> transport = new ArrayList<>();
+
+    @OneToMany(mappedBy = "invitation", cascade = CascadeType.ALL)
+    private List<Guestbook> guestbook = new ArrayList<>();
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "priority_id")

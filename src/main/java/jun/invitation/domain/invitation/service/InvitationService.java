@@ -234,6 +234,6 @@ public class InvitationService {
     }
 
     public Invitation findInvitation(Long invitationId) {
-        return invitationRepository.findById(invitationId).orElseGet(null);
+        return invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
     }
 }

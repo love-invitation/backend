@@ -32,11 +32,13 @@ public class InvitationDto {
     // -> 배열로 값이 와도 매핑이 될까?
     private List<TransportDto> transport;
 
+    private Boolean guestbook;
+
     /* 우선 순위 */
     private PriorityDto priorityDto;
 
     @Builder
-    public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport,
+    public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbook,
                          PriorityDto priorityDto, GroomInfo groomInfo, BrideInfo brideInfo, Wedding wedding) {
         this.productInfoId = productInfoId;
         this.title = title;
@@ -45,6 +47,7 @@ public class InvitationDto {
         this.brideInfo = brideInfo;
         this.wedding = wedding;
         this.transport = transport;
+        this.guestbook = guestbook;
         this.priorityDto = priorityDto;
     }
 
