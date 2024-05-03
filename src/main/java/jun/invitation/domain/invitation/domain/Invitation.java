@@ -49,6 +49,8 @@ public class Invitation extends Product {
     @JoinColumn(name = "priority_id")
     private Priority priority;
 
+    private Boolean guestbookCheck;
+
     @Embedded
     private BrideInfo brideInfo;
 
@@ -67,7 +69,7 @@ public class Invitation extends Product {
     }
 
     @Builder
-    public Invitation(String mainImageUrl, String title, String contents, Wedding wedding,
+    public Invitation(String mainImageUrl, String title, String contents, Wedding wedding, Boolean guestbookCheck,
                       Priority priority, BrideInfo brideInfo, GroomInfo groomInfo) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
@@ -76,6 +78,7 @@ public class Invitation extends Product {
         this.brideInfo = brideInfo;
         this.groomInfo = groomInfo;
         this.priority = priority;
+        this.guestbookCheck = guestbookCheck;
     }
 
     public void update(InvitationDto invitationDto) {

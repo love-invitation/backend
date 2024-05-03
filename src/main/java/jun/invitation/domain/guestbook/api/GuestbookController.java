@@ -2,6 +2,8 @@ package jun.invitation.domain.guestbook.api;
 
 import jun.invitation.domain.guestbook.dto.GuestbookDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
+import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 @Slf4j
 public class GuestbookController {
 
+    private final InvitationService invitationService;
     private final GuestbookService guestbookService;
 
     // Create
@@ -28,7 +31,9 @@ public class GuestbookController {
             @RequestBody GuestbookDto guestbookDto
             ) {
 
-        guestbookService.requestCreate(guestbookDto, invitationId);
+        Invitation invitation = invitationService.findInvitation(invitationId);
+
+        guestbookService.requestCreate(guestbookDto, invitation);
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(CREATED.value())

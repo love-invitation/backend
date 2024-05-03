@@ -1,6 +1,10 @@
 package jun.invitation.domain.invitation.service;
 
 import jun.invitation.aws.s3.service.S3UploadService;
+import jun.invitation.domain.guestbook.dto.GuestbookDto;
+import jun.invitation.domain.guestbook.dto.GuestbookListDto;
+import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
+import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.invitation.domain.*;
@@ -38,6 +42,7 @@ public class InvitationService {
     private final ProductService productService;
     private final PriorityService priorityService;
     private final TransportService transportService;
+    private final GuestbookService guestbookService;
 
     @Transactional
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
@@ -134,7 +139,6 @@ public class InvitationService {
     public LinkedHashMap<String, Object> readInvitation(Long invitationId) {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
-        ResponseInvitationDto responseInvitationDto = new ResponseInvitationDto(invitation);
 
         LinkedHashMap<String, Object> stringObjectLinkedHashMap = sortByPriority(invitation);
 
@@ -148,7 +152,6 @@ public class InvitationService {
         Wedding wedding = invitation.getWedding();
         GroomInfo groomInfo = invitation.getGroomInfo();
         BrideInfo brideInfo = invitation.getBrideInfo();
-        log.info("GETGALLERY {}",invitation.getGallery().toString());
 
         List<String> sortedPriorityList = priority.getSortedPriorityList();
 
@@ -196,6 +199,10 @@ public class InvitationService {
                             new AccountDto(groomInfo,brideInfo,priority.getAccount())
                     );
                     break;
+                case "guestbook":
+                    result.put("guestbook",
+                            new GuestbookListDto(guestbookService.getResponseDtoList(invitation), priority.getGuestbook())
+                    );
             }
         }
 
