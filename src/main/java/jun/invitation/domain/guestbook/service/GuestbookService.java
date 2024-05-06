@@ -1,23 +1,36 @@
 package jun.invitation.domain.guestbook.service;
 
+import jakarta.transaction.Transactional;
 import jun.invitation.domain.guestbook.dao.GuestbookRepository;
 import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.guestbook.dto.GuestbookDto;
 import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
+import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.invitation.service.InvitationService;
+import jun.invitation.domain.user.domain.User;
+import jun.invitation.global.exception.PasswordMismatchException;
+import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
+@Transactional
 public class GuestbookService {
 
+    private static final Logger log = LoggerFactory.getLogger(GuestbookService.class);
     private final GuestbookRepository guestbookRepository;
 
-    public void requestCreate(GuestbookDto guestbookDto, Invitation invitation) {
+    public Long requestCreate(GuestbookDto guestbookDto, Invitation invitation) {
 
         Guestbook guestbook = new Guestbook(
                 guestbookDto.getName(),
@@ -26,7 +39,12 @@ public class GuestbookService {
                 invitation
         );
 
-        guestbookRepository.save(guestbook);
+        Guestbook savedGuestbook = guestbookRepository.save(guestbook);
+        return savedGuestbook.getId();
+    }
+
+    public List<Guestbook> requestAll() {
+        return guestbookRepository.findAll();
     }
 
     public List<GuestbookResponseDto> getResponseDtoList(Invitation invitation) {
@@ -39,5 +57,27 @@ public class GuestbookService {
         }
 
         return result;
+    }
+
+    public void requestDelete(Invitation invitation, Long guestbookId) {
+
+        Guestbook guestbook = guestbookRepository.findById(guestbookId).orElseThrow(GuestbookNotFoundException::new);
+
+        User currentUser = SecurityUtils.getCurrentUser();
+        if (currentUser.getId() == invitation.getUser().getId()){
+            guestbookRepository.delete(guestbook);
+            invitation.getGuestbook().remove(guestbook);
+        }
+    }
+
+    public void requestDelete(Invitation invitation, Long guestbookId, String password) {
+        Guestbook guestbook = guestbookRepository.findById(guestbookId).orElseThrow(GuestbookNotFoundException::new);
+
+        if (guestbook.getPassword().equals(password)) {
+            invitation.getGuestbook().remove(guestbook);
+            guestbookRepository.delete(guestbook);
+        } else {
+            throw new PasswordMismatchException(password);
+        }
     }
 }

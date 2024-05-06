@@ -45,7 +45,7 @@ public class InvitationService {
     private final GuestbookService guestbookService;
 
     @Transactional
-    public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
+    public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException  {
 
         Priority priority = priorityService.savePriority(invitationdto.getPriorityDto());
 

@@ -6,9 +6,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class SecurityUtils {
     public static User getCurrentUser() {
 
-        PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
+        try {
+            PrincipalDetails principalDetails = (PrincipalDetails) SecurityContextHolder.
+                    getContext().getAuthentication().getPrincipal();
 
-        return principalDetails.getUser();
+            return principalDetails.getUser();
+        } catch (NullPointerException e) {
+            return null;
+        }
     }
 }
