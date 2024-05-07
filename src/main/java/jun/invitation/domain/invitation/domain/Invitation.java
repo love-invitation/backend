@@ -30,6 +30,8 @@ public class Invitation extends Product {
     private String mainImageOriginName;
     private String mainImageStoreFileName;
 
+    private String thumbnailContents;
+
     private String title;
     private String contents;
 
@@ -69,8 +71,8 @@ public class Invitation extends Product {
     }
 
     @Builder
-    public Invitation(String mainImageUrl, String title, String contents, Wedding wedding, Boolean guestbookCheck,
-                      Priority priority, BrideInfo brideInfo, GroomInfo groomInfo) {
+    public Invitation(String mainImageUrl, String thumbnailContents, String title, String contents, Wedding wedding, Boolean guestbookCheck,
+                      Priority priority, BrideInfo brideInfo, GroomInfo groomInfo ) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
@@ -79,6 +81,7 @@ public class Invitation extends Product {
         this.groomInfo = groomInfo;
         this.priority = priority;
         this.guestbookCheck = guestbookCheck;
+        this.thumbnailContents = thumbnailContents;
     }
 
     public void update(InvitationDto invitationDto) {
