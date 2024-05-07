@@ -28,15 +28,15 @@ public class InvitationDto {
     private Wedding wedding;
 
     /* 교통수단 */
-    // 여러 교통 수단이 전달될 수도 있다.
-    // -> 배열로 값이 와도 매핑이 될까?
     private List<TransportDto> transport;
+
+    private Boolean guestbookCheck;
 
     /* 우선 순위 */
     private PriorityDto priorityDto;
 
     @Builder
-    public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport,
+    public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbookCheck,
                          PriorityDto priorityDto, GroomInfo groomInfo, BrideInfo brideInfo, Wedding wedding) {
         this.productInfoId = productInfoId;
         this.title = title;
@@ -45,6 +45,7 @@ public class InvitationDto {
         this.brideInfo = brideInfo;
         this.wedding = wedding;
         this.transport = transport;
+        this.guestbookCheck = guestbookCheck;
         this.priorityDto = priorityDto;
     }
 
@@ -55,6 +56,7 @@ public class InvitationDto {
                 .wedding(wedding)
                 .groomInfo(groomInfo)
                 .brideInfo(brideInfo)
+                .guestbookCheck(guestbookCheck)
                 .build();
     }
 }
