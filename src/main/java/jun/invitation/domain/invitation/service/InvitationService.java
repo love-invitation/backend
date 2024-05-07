@@ -158,6 +158,7 @@ public class InvitationService {
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
         result.put("id", invitation.getId());
+        result.put("isPaid", invitation.isPaid());
         result.put("thumbnail", new ThumbnailDto( invitation));
 
         for (int i = 0; i < sortedPriorityList.size(); i++) {

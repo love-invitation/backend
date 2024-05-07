@@ -15,6 +15,9 @@ public class InvitationDto {
     /* 상품 정보 id*/
     private Long productInfoId;
 
+    private String thumbnailContents;
+
+    /* 모시는 글 */
     private String title;
     private String contents;
 
@@ -37,7 +40,7 @@ public class InvitationDto {
 
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbookCheck,
-                         PriorityDto priorityDto, GroomInfo groomInfo, BrideInfo brideInfo, Wedding wedding) {
+                         PriorityDto priorityDto, GroomInfo groomInfo, BrideInfo brideInfo, Wedding wedding, String thumbnailContents) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
@@ -47,6 +50,7 @@ public class InvitationDto {
         this.transport = transport;
         this.guestbookCheck = guestbookCheck;
         this.priorityDto = priorityDto;
+        this.thumbnailContents = thumbnailContents;
     }
 
     public Invitation toInvitation(){
@@ -57,6 +61,7 @@ public class InvitationDto {
                 .groomInfo(groomInfo)
                 .brideInfo(brideInfo)
                 .guestbookCheck(guestbookCheck)
+                .thumbnailContents(thumbnailContents)
                 .build();
     }
 }

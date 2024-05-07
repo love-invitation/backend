@@ -20,6 +20,8 @@ public class ThumbnailDto {
     private String groomName;
     private String brideName;
 
+    private String thumbnailContents;
+
     public ThumbnailDto(Invitation invitation) {
         this.priority = 0;
         this.imageUrl = invitation.getMainImageUrl();
@@ -31,6 +33,8 @@ public class ThumbnailDto {
 
         this.groomName = invitation.getGroomInfo().getGroomName();
         this.brideName = invitation.getBrideInfo().getBrideName();
+
+        this.thumbnailContents = invitation.getThumbnailContents();
 
     }
 }
