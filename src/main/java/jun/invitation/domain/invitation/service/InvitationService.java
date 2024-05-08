@@ -1,9 +1,7 @@
 package jun.invitation.domain.invitation.service;
 
 import jun.invitation.aws.s3.service.S3UploadService;
-import jun.invitation.domain.guestbook.dto.GuestbookDto;
 import jun.invitation.domain.guestbook.dto.GuestbookListDto;
-import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.gallery.Gallery;
@@ -51,7 +49,7 @@ public class InvitationService {
 
         Invitation invitation = invitationdto.toInvitation();
 
-        invitation.registerUserProductInfo(
+        invitation.register(
                 getCurrentUser(),
                 productInfoService.findById(invitationdto.getProductInfoId()).orElseGet(ProductInfo::new),
                 priority
@@ -80,7 +78,7 @@ public class InvitationService {
     }
 
     private Long saveInvitation(Invitation invitation) {
-        return invitationRepository.save(invitation).getId();
+        return invitationRepository.save(invitation).getTsid();
     }
 
     @Transactional
@@ -136,9 +134,10 @@ public class InvitationService {
     }
 
     @Transactional(readOnly = true)
-    public LinkedHashMap<String, Object> readInvitation(Long invitationId) {
+    public LinkedHashMap<String, Object> readInvitation(Long invitationTsid) {
 
-        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
+//        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
+        Invitation invitation = invitationRepository.findByTsid(invitationTsid).orElseThrow(InvitationNotFoundException::new);
 
         LinkedHashMap<String, Object> stringObjectLinkedHashMap = sortByPriority(invitation);
 
@@ -157,7 +156,7 @@ public class InvitationService {
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
-        result.put("id", invitation.getId());
+        result.put("tsid", invitation.getTsid());
         result.put("isPaid", invitation.isPaid());
         result.put("thumbnail", new ThumbnailDto( invitation));
 
@@ -241,7 +240,11 @@ public class InvitationService {
             return false;
     }
 
-    public Invitation findInvitation(Long invitationId) {
+    public Invitation requestFindInvitation(Long invitationId) {
         return invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
+    }
+
+    public Invitation requestFindByTsidInvitation(Long invitationTsid) {
+        return invitationRepository.findByTsid(invitationTsid).orElseThrow(InvitationNotFoundException::new);
     }
 }

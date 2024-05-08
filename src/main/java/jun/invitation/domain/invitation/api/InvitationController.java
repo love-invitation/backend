@@ -22,10 +22,10 @@ public class InvitationController {
 
     private final InvitationService invitationService;
 
-    @GetMapping("/product/invitation/read/{invitationId}")
-    public ResponseEntity<ResponseDto> readInvitation(@PathVariable(name = "invitationId") Long invitationId) {
+    @GetMapping("/product/invitation/read/{invitationTsid}")
+    public ResponseEntity<ResponseDto> readInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
 
-        LinkedHashMap<String, Object> result = invitationService.readInvitation(invitationId);
+        LinkedHashMap<String, Object> result = invitationService.readInvitation(invitationTsid);
 
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
@@ -46,7 +46,8 @@ public class InvitationController {
             @RequestPart(name = "gallery") List<MultipartFile> gallery,
             @RequestPart(name = "mainImage") MultipartFile mainImage, HttpServletRequest request) throws IOException {
 
-        Long invitationId = invitationService.createInvitation(invitationDto, gallery, mainImage);
+        invitationService.createInvitation(invitationDto, gallery, mainImage);
+
         ResponseDto responseDto = ResponseDto.builder()
                 .status(CREATED.value())
                 .message("create success")
