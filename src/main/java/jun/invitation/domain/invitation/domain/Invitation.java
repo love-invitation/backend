@@ -19,7 +19,7 @@ import static jakarta.persistence.FetchType.*;
 
 @Entity @Getter
 @DiscriminatorValue("Invitation")
-@NoArgsConstructor(access = AccessLevel.PROTECTED) @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Invitation extends Product {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,8 +65,8 @@ public class Invitation extends Product {
         this.mainImageUrl = savedFileMap.get("imageUrl");
     }
 
-    public void registerUserProductInfo(User user, ProductInfo productInfo, Priority priority) {
-        super.registerUserProductInfo(user, productInfo);
+    public void register(User user, ProductInfo productInfo, Priority priority) {
+        super.register(user, productInfo);
         this.priority = priority;
     }
 
@@ -84,6 +84,7 @@ public class Invitation extends Product {
         this.thumbnailContents = thumbnailContents;
     }
 
+    // todo : 테스트 필요 : 너무 많이 수정됨
     public void update(InvitationDto invitationDto) {
 
         this.mainImageUrl = null;

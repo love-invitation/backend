@@ -1,7 +1,8 @@
 package jun.invitation.domain.product.domain;
 
+import com.github.f4b6a3.tsid.Tsid;
+import com.github.f4b6a3.tsid.TsidCreator;
 import jakarta.persistence.*;
-import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.user.domain.User;
 import lombok.Getter;
@@ -24,12 +25,16 @@ public class Product {
 
     private boolean isPaid;
 
+    @Column(nullable = false, unique = true)
+    private Long tsid;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void registerUserProductInfo(User user, ProductInfo productInfo) {
+    public void register(User user, ProductInfo productInfo) {
         this.user = user;
+        this.tsid = TsidCreator.getTsid().toLong();
         this.productInfo = productInfo;
     }
 

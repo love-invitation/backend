@@ -7,7 +7,6 @@ import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +29,7 @@ public class GuestbookController {
             @RequestBody GuestbookDto guestbookDto
             ) {
 
-        Invitation invitation = invitationService.findInvitation(invitationId);
+        Invitation invitation = invitationService.requestFindInvitation(invitationId);
 
         guestbookService.requestCreate(guestbookDto, invitation);
 
@@ -52,7 +51,7 @@ public class GuestbookController {
             @RequestBody(required = false) Map<String, String> password
     ) {
 
-        Invitation invitation = invitationService.findInvitation(invitationId);
+        Invitation invitation = invitationService.requestFindInvitation(invitationId);
 
         if (password == null) {
             guestbookService.requestDelete(invitation, guestbookId);
