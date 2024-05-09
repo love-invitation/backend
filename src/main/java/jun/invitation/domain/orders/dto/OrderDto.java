@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class OrderDto {
     private String productInfoName;
     private String productInfoImageUrl;
+    private Long tsid;
     private Boolean isPaid;
     private LocalDateTime lastModified;
 
@@ -18,5 +19,6 @@ public class OrderDto {
 //        this.productInfoImageUrl = orders.getProduct().getProductInfo();
         this.isPaid = orders.getIsPaid();
         this.lastModified = orders.getProduct().getUpdated_At();
+        this.tsid = orders.getProduct().getTsid();
     }
 }

@@ -35,7 +35,6 @@ public class GuestbookController {
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(CREATED.value())
-                .message(guestbookDto.toString())
                 .build();
 
         return ResponseEntity
