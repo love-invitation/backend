@@ -9,6 +9,8 @@ import jun.invitation.domain.invitation.domain.*;
 import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
+import jun.invitation.domain.orders.domain.Orders;
+import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
@@ -41,10 +43,12 @@ public class InvitationService {
     private final PriorityService priorityService;
     private final TransportService transportService;
     private final GuestbookService guestbookService;
+    private final OrderService orderService;
 
     @Transactional
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException  {
 
+        /* 우선 순위 저장*/
         Priority priority = priorityService.savePriority(invitationdto.getPriorityDto());
 
         Invitation invitation = invitationdto.toInvitation();
@@ -55,19 +59,30 @@ public class InvitationService {
                 priority
                 );
 
+        /* 갤러리 저장 */
         if (gallery != null) {
             saveGallery(gallery, invitation);
         }
         List<TransportDto> transportDtos = invitationdto.getTransport();
+
+        /* 교통수단 저장 */
         if (transportDtos != null) {
             saveTransport(transportDtos, invitation);
         }
+
+        /* 메인 이미지 저장 */
         if (mainImage != null) {
             invitation.registerMainImage(s3UploadService.saveFile(mainImage));
         }
 
-        return saveInvitation(invitation);
+        Long invitationTsid = saveInvitation(invitation);
+        saveOrders(invitation);
+        return invitationTsid;
 
+    }
+
+    private void saveOrders(Invitation invitation) {
+        orderService.requestOrder(invitation);
     }
 
     private void saveTransport(List<TransportDto> transportDtos, Invitation invitation) {
@@ -136,7 +151,6 @@ public class InvitationService {
     @Transactional(readOnly = true)
     public LinkedHashMap<String, Object> readInvitation(Long invitationTsid) {
 
-//        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
         Invitation invitation = invitationRepository.findByTsid(invitationTsid).orElseThrow(InvitationNotFoundException::new);
 
         LinkedHashMap<String, Object> stringObjectLinkedHashMap = sortByPriority(invitation);
@@ -152,12 +166,14 @@ public class InvitationService {
         GroomInfo groomInfo = invitation.getGroomInfo();
         BrideInfo brideInfo = invitation.getBrideInfo();
 
+        Orders orders = orderService.requestFindOrder(invitation.getId());
+
         List<String> sortedPriorityList = priority.getSortedPriorityList();
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
         result.put("tsid", invitation.getTsid());
-        result.put("isPaid", invitation.isPaid());
+        result.put("isPaid", orders.getIsPaid());
         result.put("thumbnail", new ThumbnailDto( invitation));
 
         for (int i = 0; i < sortedPriorityList.size(); i++) {

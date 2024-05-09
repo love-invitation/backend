@@ -18,7 +18,9 @@ public enum ErrorCode {
 
     INVITATION_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "E40501", "can't find the invitation."),
 
-    GUESTBOOK_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "E40601", "can't find the guestbook.");
+    GUESTBOOK_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "E40601", "can't find the guestbook."),
+
+    ORDER_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "E40701", "can't find the order.");
 
     private final int status;
     private final String code;

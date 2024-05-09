@@ -22,10 +22,6 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Invitation extends Product {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "invitation_id")
-    private Long id;
-
     private String mainImageUrl;
     private String mainImageOriginName;
     private String mainImageStoreFileName;

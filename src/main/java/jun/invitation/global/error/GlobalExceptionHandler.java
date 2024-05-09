@@ -3,6 +3,7 @@ package jun.invitation.global.error;
 import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
+import jun.invitation.domain.orders.exception.OrderNotFoundException;
 import jun.invitation.domain.user.exception.UserNotFoundException;
 import jun.invitation.global.exception.PasswordMismatchException;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,13 @@ public class GlobalExceptionHandler {
     /* GUESTBOOK ERROR */
     @ExceptionHandler(GuestbookNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlerGuestbookNotFoundException(GuestbookNotFoundException e) {
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.GUESTBOOK_NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /* ORDER ERROR */
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerOrderNotFoundException(OrderNotFoundException e) {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.GUESTBOOK_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
