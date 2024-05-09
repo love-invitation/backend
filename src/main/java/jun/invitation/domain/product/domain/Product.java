@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.user.domain.User;
+import jun.invitation.global.entity.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +17,7 @@ import static jakarta.persistence.FetchType.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "Product_Type")
 @NoArgsConstructor
-public class Product {
+public class Product extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "product_id")
@@ -26,7 +27,6 @@ public class Product {
     @JoinColumn(name = "productInfo_id")
     private ProductInfo productInfo;
 
-//    private boolean isPaid;
 
     @Column(nullable = false, unique = true)
     private Long tsid;
@@ -45,6 +45,5 @@ public class Product {
     public Product(ProductInfo productInfo, User user) {
         this.productInfo = productInfo;
         this.user = user;
-//        this.isPaid = false;
     }
 }

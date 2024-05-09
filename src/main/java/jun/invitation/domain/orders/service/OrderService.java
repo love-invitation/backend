@@ -29,7 +29,7 @@ public class OrderService {
         orderRepository.save(orders);
     }
 
-    public List<Orders> requestOrderDtoList(Long userId) {
+    public List<OrderDto> requestOrderDtoList(Long userId) {
         List<Orders> ordersList = orderRepository.findByUser_id(userId);
 
         List<OrderDto> orderDtoList = new ArrayList<>();
@@ -38,7 +38,7 @@ public class OrderService {
             orderDtoList.add(new OrderDto(orders));
         }
 
-        return ordersList;
+        return orderDtoList;
     }
 
     public Orders requestFindOrder(Long id) {

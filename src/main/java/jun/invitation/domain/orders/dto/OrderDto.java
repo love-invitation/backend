@@ -16,7 +16,7 @@ public class OrderDto {
         this.productInfoName = orders.getProduct().getProductInfo().getName();
         // TODO : 이미지 경로 추가 해야함
 //        this.productInfoImageUrl = orders.getProduct().getProductInfo();
-        this.isPaid = isPaid;
-        this.lastModified = lastModified;
+        this.isPaid = orders.getIsPaid();
+        this.lastModified = orders.getProduct().getUpdated_At();
     }
 }
