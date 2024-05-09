@@ -26,7 +26,7 @@ public class Product {
     @JoinColumn(name = "productInfo_id")
     private ProductInfo productInfo;
 
-    private boolean isPaid;
+//    private boolean isPaid;
 
     @Column(nullable = false, unique = true)
     private Long tsid;
@@ -45,6 +45,6 @@ public class Product {
     public Product(ProductInfo productInfo, User user) {
         this.productInfo = productInfo;
         this.user = user;
-        this.isPaid = false;
+//        this.isPaid = false;
     }
 }

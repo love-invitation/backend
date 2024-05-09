@@ -9,6 +9,7 @@ import jun.invitation.domain.invitation.domain.*;
 import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
+import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.service.PriorityService;
@@ -165,12 +166,14 @@ public class InvitationService {
         GroomInfo groomInfo = invitation.getGroomInfo();
         BrideInfo brideInfo = invitation.getBrideInfo();
 
+        Orders orders = orderService.requestFindOrder(invitation.getId());
+
         List<String> sortedPriorityList = priority.getSortedPriorityList();
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
         result.put("tsid", invitation.getTsid());
-        result.put("isPaid", invitation.isPaid());
+        result.put("isPaid", orders.getIsPaid());
         result.put("thumbnail", new ThumbnailDto( invitation));
 
         for (int i = 0; i < sortedPriorityList.size(); i++) {

@@ -5,6 +5,7 @@ import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.global.entity.BaseEntity;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 
 @NoArgsConstructor
-@Entity(name = "Orders")
+@Entity(name = "Orders") @Getter
 public class Orders extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
@@ -29,9 +30,12 @@ public class Orders extends BaseEntity {
     @JoinColumn(name = "product_id" )
     private Product product;
 
+    private Boolean isPaid;
+
     @Builder
     public Orders(User user, Product product) {
         this.user = user;
         this.product = product;
+        this.isPaid = false;
     }
 }
