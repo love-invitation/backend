@@ -1,10 +1,14 @@
 package jun.invitation.domain.productInfo.api;
 
 import jun.invitation.domain.productInfo.domain.ProductInfo;
+import jun.invitation.domain.productInfo.dto.ProductInfoDto;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
+import jun.invitation.global.dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,29 +23,36 @@ public class ProductInfoController {
     private final ProductInfoService productInfoService;
 
     @GetMapping("/api/product/info")
-    public Result getProductByProductInfo() {
+    public ResponseEntity<ResponseDto> getProductByProductInfo() {
 
         List<ProductInfo> productInfoList = productInfoService.allProductCategory();
-        List<ProductInfoDto> result = productInfoList.stream()
-                .map(pl -> new ProductInfoDto(pl.getId(), pl.getName(), pl.getPrice()))
+        List<ProductInfoDto> productInfoDtos = productInfoList.stream()
+                .map(pl -> new ProductInfoDto(pl.getImageUrl(), pl.getName(), pl.getPrice()))
                 .collect(Collectors.toList());
 
-        return new Result(result);
+        ResponseDto<Object> result = ResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .result(productInfoDtos)
+                .message("success")
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
     }
 
-    @Data
-    @AllArgsConstructor
-    static class ProductInfoDto {
-        private Long id;
-        private String name;
-        private BigDecimal price;
-    }
+    @GetMapping("/api/product/info/best")
+    public ResponseEntity<ResponseDto> handleBestProductInfos() {
+        List<ProductInfoDto> productInfoDtos = productInfoService.requestBestProductInfos();
 
-    @Data
-    @AllArgsConstructor
-    static class Result<T> {
-        private T data;
-    }
+        ResponseDto<Object> result = ResponseDto.builder()
+                .result(productInfoDtos)
+                .message("success.")
+                .build();
 
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
+    }
 
 }

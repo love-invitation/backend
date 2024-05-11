@@ -15,11 +15,28 @@ public class ProductInfo {
     @Column(name = "productInfo_id")
     private Long id;
 
+    private String imageUrl;
+
     private String name;
     private BigDecimal price;
 
-    public ProductInfo(String name, BigDecimal price) {
+    private Boolean best;
+    private Boolean newest;
+
+
+    public ProductInfo(String imageUrl, String name, BigDecimal price) {
+        this.imageUrl = imageUrl;
         this.name = name;
         this.price = price;
+        this.best = false;
+        this.newest = false;
+    }
+
+    public ProductInfo(String imageUrl, String name, BigDecimal price, Boolean best, Boolean newest) {
+        this.imageUrl = imageUrl;
+        this.name = name;
+        this.price = price;
+        this.best = best;
+        this.newest = newest;
     }
 }
