@@ -1,20 +1,15 @@
 package jun.invitation.domain.productInfo.api;
 
-import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.dto.ProductInfoDto;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.global.dto.ResponseDto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,10 +20,7 @@ public class ProductInfoController {
     @GetMapping("/api/product/info")
     public ResponseEntity<ResponseDto> getProductByProductInfo() {
 
-        List<ProductInfo> productInfoList = productInfoService.allProductCategory();
-        List<ProductInfoDto> productInfoDtos = productInfoList.stream()
-                .map(pl -> new ProductInfoDto(pl.getImageUrl(), pl.getName(), pl.getPrice()))
-                .collect(Collectors.toList());
+        List<ProductInfoDto> productInfoDtos = productInfoService.allProductCategory();
 
         ResponseDto<Object> result = ResponseDto.builder()
                 .status(HttpStatus.OK.value())
