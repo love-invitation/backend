@@ -26,7 +26,7 @@ public class ProductInfoService {
         List<ProductInfo> productInfoList = productInfoRepository.findAll();
 
         return productInfoList.stream()
-                .map(productInfo -> new ProductInfoDto(productInfo.getImageUrl(), productInfo.getName(), productInfo.getPrice()))
+                .map(ProductInfoDto::new)
                 .collect(Collectors.toList());
     }
 
@@ -44,7 +44,7 @@ public class ProductInfoService {
         List<ProductInfo> productInfoByBest = productInfoRepository.findByBestTrue();
 
         return productInfoByBest.stream()
-                .map(productInfo -> new ProductInfoDto(productInfo.getImageUrl(),productInfo.getName(), productInfo.getPrice()))
+                .map(ProductInfoDto::new)
                 .collect(Collectors.toList());
     }
 }
