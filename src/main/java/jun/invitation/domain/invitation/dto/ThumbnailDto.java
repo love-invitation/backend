@@ -1,5 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jun.invitation.domain.invitation.domain.Invitation;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,9 @@ public class ThumbnailDto {
     private String imageOriginName;
     private String imageStoreFileName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime weddingDate;
+
     private String detail;
 
     private String groomName;
