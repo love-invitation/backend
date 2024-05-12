@@ -1,5 +1,6 @@
 package jun.invitation.domain.orders.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jun.invitation.domain.orders.domain.Orders;
 import lombok.Data;
 
@@ -11,6 +12,8 @@ public class OrderDto {
     private String productInfoImageUrl;
     private Long tsid;
     private Boolean isPaid;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastModified;
 
     public OrderDto(Orders orders) {
