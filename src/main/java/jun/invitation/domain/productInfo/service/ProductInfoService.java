@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +22,12 @@ public class ProductInfoService {
         return;
     }
 
-    public List<ProductInfo> allProductCategory() {
-        return productInfoRepository.findAll();
+    public List<ProductInfoDto> allProductCategory() {
+        List<ProductInfo> productInfoList = productInfoRepository.findAll();
+
+        return productInfoList.stream()
+                .map(pl -> new ProductInfoDto(pl.getImageUrl(), pl.getName(), pl.getPrice()))
+                .collect(Collectors.toList());
     }
 
     public ProductInfo findOne(String name) {

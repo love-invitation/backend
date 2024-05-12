@@ -25,10 +25,7 @@ public class ProductInfoController {
     @GetMapping("/api/product/info")
     public ResponseEntity<ResponseDto> getProductByProductInfo() {
 
-        List<ProductInfo> productInfoList = productInfoService.allProductCategory();
-        List<ProductInfoDto> productInfoDtos = productInfoList.stream()
-                .map(pl -> new ProductInfoDto(pl.getImageUrl(), pl.getName(), pl.getPrice()))
-                .collect(Collectors.toList());
+        List<ProductInfoDto> productInfoDtos = productInfoService.allProductCategory();
 
         ResponseDto<Object> result = ResponseDto.builder()
                 .status(HttpStatus.OK.value())
