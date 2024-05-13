@@ -12,6 +12,7 @@ import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.domain.Priority;
+import jun.invitation.domain.priority.dto.PriorityDto;
 import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.gallery.Service.GalleryService;
@@ -75,8 +76,8 @@ public class InvitationService {
             invitation.registerMainImage(s3UploadService.saveFile(mainImage));
         }
 
-        saveOrders(invitation);
         Long invitationTsid = saveInvitation(invitation);
+        saveOrders(invitation);
 
         return invitationTsid;
 
