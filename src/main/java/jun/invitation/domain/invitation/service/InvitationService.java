@@ -75,8 +75,9 @@ public class InvitationService {
             invitation.registerMainImage(s3UploadService.saveFile(mainImage));
         }
 
-        Long invitationTsid = saveInvitation(invitation);
         saveOrders(invitation);
+        Long invitationTsid = saveInvitation(invitation);
+
         return invitationTsid;
 
     }
@@ -87,8 +88,7 @@ public class InvitationService {
 
     private void saveTransport(List<TransportDto> transportDtos, Invitation invitation) {
         for (TransportDto transportDto : transportDtos) {
-            Transport transport = new Transport(transportDto, invitation);
-            transportService.addTransport(transport);
+            new Transport(transportDto, invitation);
         }
     }
 
@@ -242,7 +242,6 @@ public class InvitationService {
 
                 Gallery newGallery = new Gallery(originFileName,storeFileName,sequence++,savedUrlPath);
                 newGallery.setInvitation(invitation);
-                galleryService.saveGallery(newGallery);
             }
         }
     }
