@@ -1,6 +1,7 @@
 package jun.invitation.domain.productInfo.api;
 
 import jun.invitation.domain.productInfo.dto.ProductInfoDto;
+import jun.invitation.domain.productInfo.dto.ProductInfoResDto;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,11 @@ public class ProductInfoController {
 
         List<ProductInfoDto> productInfoDtos = productInfoService.allProductCategory();
 
+        ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos);
+
         ResponseDto<Object> result = ResponseDto.builder()
                 .status(HttpStatus.OK.value())
-                .result(productInfoDtos)
+                .result(productInfoResDto)
                 .message("success")
                 .build();
 
@@ -37,8 +40,11 @@ public class ProductInfoController {
     public ResponseEntity<ResponseDto> handleBestProductInfos() {
         List<ProductInfoDto> productInfoDtos = productInfoService.requestBestProductInfos();
 
+        ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos);
+
         ResponseDto<Object> result = ResponseDto.builder()
-                .result(productInfoDtos)
+                .status(HttpStatus.OK.value())
+                .result(productInfoResDto)
                 .message("success.")
                 .build();
 
