@@ -19,7 +19,7 @@ import static jakarta.persistence.FetchType.*;
 @NoArgsConstructor
 public class Product extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
     private Long id;
 
@@ -40,10 +40,5 @@ public class Product extends BaseEntity {
         this.user = user;
         this.tsid = TsidCreator.getTsid().toLong();
         this.productInfo = productInfo;
-    }
-
-    public Product(ProductInfo productInfo, User user) {
-        this.productInfo = productInfo;
-        this.user = user;
     }
 }
