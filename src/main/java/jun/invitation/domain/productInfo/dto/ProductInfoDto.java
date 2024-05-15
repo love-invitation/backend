@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 
 import static lombok.AccessLevel.*;
@@ -24,7 +23,7 @@ public class ProductInfoDto {
 
     public ProductInfoDto(ProductInfo productInfo) {
         this.imageUrl = productInfo.getImageUrl();
-        this.templateName = productInfo.getName();
+        this.templateName = productInfo.getTemplateName();
         this.price = productInfo.getPrice();
         this.best = productInfo.getBest();
         this.newest = productInfo.getNewest();

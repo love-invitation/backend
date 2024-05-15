@@ -21,7 +21,7 @@ public class ProductInfoController {
     @GetMapping("/api/product/info")
     public ResponseEntity<ResponseDto> getProductByProductInfo() {
 
-        List<ProductInfoDto> productInfoDtos = productInfoService.allProductCategory();
+        List<ProductInfoDto> productInfoDtos = productInfoService.requestAllProductInfos();
 
         ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos);
 

@@ -17,24 +17,24 @@ public class ProductInfo {
 
     private String imageUrl;
 
-    private String name;
+    private String templateName;
     private BigDecimal price;
 
     private Boolean best;
     private Boolean newest;
 
 
-    public ProductInfo(String imageUrl, String name, BigDecimal price) {
+    public ProductInfo(String imageUrl, String templateName, BigDecimal price) {
         this.imageUrl = imageUrl;
-        this.name = name;
+        this.templateName = templateName;
         this.price = price;
         this.best = false;
         this.newest = false;
     }
 
-    public ProductInfo(String imageUrl, String name, BigDecimal price, Boolean best, Boolean newest) {
+    public ProductInfo(String imageUrl, String templateName, BigDecimal price, Boolean best, Boolean newest) {
         this.imageUrl = imageUrl;
-        this.name = name;
+        this.templateName = templateName;
         this.price = price;
         this.best = best;
         this.newest = newest;

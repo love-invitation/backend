@@ -22,17 +22,12 @@ public class ProductInfoService {
         return;
     }
 
-    public List<ProductInfoDto> allProductCategory() {
+    public List<ProductInfoDto> requestAllProductInfos() {
         List<ProductInfo> productInfoList = productInfoRepository.findAll();
 
         return productInfoList.stream()
                 .map(ProductInfoDto::new)
                 .collect(Collectors.toList());
-    }
-
-    public ProductInfo findOne(String name) {
-
-        return productInfoRepository.findByName(name);
     }
 
     public Optional<ProductInfo> findById(Long id) {

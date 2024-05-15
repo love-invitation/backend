@@ -17,7 +17,7 @@ public class OrderDto {
     private LocalDateTime lastModified;
 
     public OrderDto(Orders orders) {
-        this.productInfoName = orders.getProduct().getProductInfo().getName();
+        this.productInfoName = orders.getProduct().getProductInfo().getTemplateName();
         // TODO : 이미지 경로 추가 해야함
 //        this.productInfoImageUrl = orders.getProduct().getProductInfo();
         this.isPaid = orders.getIsPaid();
