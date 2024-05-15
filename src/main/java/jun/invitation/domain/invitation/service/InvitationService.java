@@ -23,11 +23,13 @@ import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.service.TransportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static jun.invitation.global.utils.SecurityUtils.*;
@@ -45,6 +47,13 @@ public class InvitationService {
     private final TransportService transportService;
     private final GuestbookService guestbookService;
     private final OrderService orderService;
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void removeAfterWedding() {
+        LocalDateTime now = LocalDateTime.now();
+        invitationRepository.deleteByWedding_DateBefore(now);
+    }
 
     @Transactional
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException  {
