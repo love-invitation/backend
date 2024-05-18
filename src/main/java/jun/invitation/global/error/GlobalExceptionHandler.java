@@ -1,6 +1,7 @@
 package jun.invitation.global.error;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import jun.invitation.auth.jwt.exception.NoTokenException;
 import jun.invitation.auth.refreshToken.execption.RefreshTokenNotFoundException;
 import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<ErrorResponse> handlerTokenExpiredException() {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.EXPIRED_TOKEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NoTokenException.class)
+    public ResponseEntity<ErrorResponse> handlerNoTokenException() {
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_TOKEN);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
