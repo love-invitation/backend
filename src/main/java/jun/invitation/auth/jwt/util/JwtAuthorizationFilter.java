@@ -4,13 +4,16 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jun.invitation.auth.PrincipalDetails;
 import jun.invitation.auth.jwt.JwtProperties;
+import jun.invitation.auth.jwt.exception.InvalidTokenException;
+import jun.invitation.auth.jwt.exception.NoTokenException;
+import jun.invitation.auth.jwt.service.TokenService;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.domain.user.dao.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,27 +22,31 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final TokenService tokenService;
 
-    public JwtAuthorizationFilter(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        String cookie = extractToken(request);
+        String cookie = tokenService.extractToken(request.getCookies());
         log.info("Cookie = {}" , cookie);
-        if (cookie == null || !cookie.startsWith(JwtProperties.TOKEN_PREFIX)) {
+
+        if (cookie == null) {
+            request.setAttribute("exception", new NoTokenException());
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (!cookie.startsWith(JwtProperties.TOKEN_PREFIX)) {
+            request.setAttribute("exception", new InvalidTokenException());
             chain.doFilter(request, response);
             return;
         }
@@ -47,8 +54,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String token = cookie.replace(JwtProperties.TOKEN_PREFIX, "");
 
 
-        String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
-                .getClaim("username").asString();
+        String username = null;
+        try {
+            username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
+                    .getClaim("username").asString();
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            request.setAttribute("exception", e);
+        }
 
         if (username != null) {
             User user = userRepository.findByUsername(username);
@@ -65,18 +78,5 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         chain.doFilter(request, response);
     }
 
-    public String extractToken(HttpServletRequest request) throws UnsupportedEncodingException {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (JwtProperties.HEADER_STRING.equals(cookie.getName())) {
-                    String header = cookie.getValue();
-                    return URLDecoder.decode(header, StandardCharsets.UTF_8.name())
-                            .replaceAll("%20", " ");
-                }
-            }
-        }
-        return null;
-    }
 }
 

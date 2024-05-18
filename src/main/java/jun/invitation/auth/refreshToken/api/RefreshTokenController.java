@@ -1,7 +1,7 @@
-package jun.invitation.auth.jwt.refreshToken.api;
+package jun.invitation.auth.refreshToken.api;
 
 import jun.invitation.auth.jwt.JwtProperties;
-import jun.invitation.auth.jwt.refreshToken.domain.RefreshToken;
+import jun.invitation.auth.refreshToken.domain.RefreshToken;
 import jun.invitation.auth.jwt.service.TokenService;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.domain.user.exception.UserNotFoundException;

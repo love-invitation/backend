@@ -1,11 +1,16 @@
 package jun.invitation.global.error;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import jun.invitation.auth.jwt.exception.InvalidTokenException;
+import jun.invitation.auth.jwt.exception.NoTokenException;
+import jun.invitation.auth.refreshToken.execption.RefreshTokenNotFoundException;
 import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.exception.OrderNotFoundException;
 import jun.invitation.domain.user.exception.UserNotFoundException;
 import jun.invitation.global.exception.PasswordMismatchException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     /* REQUEST BODY */
@@ -20,6 +26,32 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.BAD_REQUEST, e.getBindingResult());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /* JWT TOKEN ERROR */
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ErrorResponse> handlerTokenExpiredException() {
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.EXPIRED_TOKEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(NoTokenException.class)
+    public ResponseEntity<ErrorResponse> handlerNoTokenException() {
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.NO_TOKEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<ErrorResponse> handlerInvalidException() {
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.WRONG_TOKEN);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
+    /* REFRESH TOKEN ERROR*/
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerRefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MISMATCH_PASSWORD);
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     /* GLOBAL ERROR */

@@ -1,4 +1,4 @@
-package jun.invitation.auth.jwt.refreshToken.domain;
+package jun.invitation.auth.refreshToken.domain;
 
 
 import lombok.AllArgsConstructor;

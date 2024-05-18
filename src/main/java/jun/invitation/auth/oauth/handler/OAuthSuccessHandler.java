@@ -1,13 +1,12 @@
 package jun.invitation.auth.oauth.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jun.invitation.auth.jwt.JwtProperties;
 import jun.invitation.auth.jwt.service.TokenService;
-import jun.invitation.auth.jwt.refreshToken.domain.RefreshToken;
+import jun.invitation.auth.refreshToken.domain.RefreshToken;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ import java.util.UUID;
 @Component
 public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final ObjectMapper objectMapper;
     private final TokenService tokenService;
 
     @Override
