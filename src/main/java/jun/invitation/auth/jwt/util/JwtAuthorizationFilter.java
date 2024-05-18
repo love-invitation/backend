@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jun.invitation.auth.PrincipalDetails;
 import jun.invitation.auth.jwt.JwtProperties;
+import jun.invitation.auth.jwt.exception.InvalidTokenException;
 import jun.invitation.auth.jwt.exception.NoTokenException;
 import jun.invitation.auth.jwt.service.TokenService;
 import jun.invitation.domain.user.domain.User;
@@ -37,8 +38,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String cookie = tokenService.extractToken(request.getCookies());
         log.info("Cookie = {}" , cookie);
-        if (cookie == null || !cookie.startsWith(JwtProperties.TOKEN_PREFIX)) {
-            request.setAttribute("exception", new NoTokenException("토큰을 찾을 수 없습니다."));
+
+        if (cookie == null) {
+            request.setAttribute("exception", new NoTokenException());
+            chain.doFilter(request, response);
+            return;
+        }
+
+        if (!cookie.startsWith(JwtProperties.TOKEN_PREFIX)) {
+            request.setAttribute("exception", new InvalidTokenException());
             chain.doFilter(request, response);
             return;
         }
