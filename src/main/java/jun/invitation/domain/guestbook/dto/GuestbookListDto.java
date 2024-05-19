@@ -1,15 +1,15 @@
 package jun.invitation.domain.guestbook.dto;
 
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 @Data
 public class GuestbookListDto {
     private Integer priority;
-    private List<GuestbookResponseDto> guestbookList;
+    private Page<GuestbookResponseDto> guestbookList;
 
-    public GuestbookListDto(List<GuestbookResponseDto> responseDtoList, Integer priority) {
+    public GuestbookListDto(Page<GuestbookResponseDto> responseDtoList, Integer priority) {
         this.priority = priority;
         this.guestbookList = responseDtoList;
     }

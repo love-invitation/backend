@@ -2,6 +2,7 @@ package jun.invitation.domain.invitation.service;
 
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.guestbook.dto.GuestbookListDto;
+import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.gallery.Gallery;
@@ -23,6 +24,9 @@ import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.service.TransportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -226,8 +230,10 @@ public class InvitationService {
                     );
                     break;
                 case "guestbook":
+                    Pageable page = PageRequest.of(0,3);
+                    Page<GuestbookResponseDto> guestbookResponseDtoPage = guestbookService.getResponseDtoList(invitation.getId(), page);
                     result.put("guestbook",
-                            new GuestbookListDto(guestbookService.getResponseDtoList(invitation), priority.getGuestbook())
+                            new GuestbookListDto(guestbookResponseDtoPage, priority.getGuestbook())
                     );
             }
         }
