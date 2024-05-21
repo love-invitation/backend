@@ -55,19 +55,4 @@ public class ProductInfoController {
                 .body(result);
     }
 
-    @GetMapping("/test/{id}")
-    public ResponseEntity<ResponseDto> test(@PathVariable(name = "id") Long id) {
-        ProductInfo byId = productInfoService.findById(id);
-
-        ResponseDto<Object> result = ResponseDto.builder()
-                .status(HttpStatus.OK.value())
-                .result(byId)
-                .message("success.")
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(result);
-    }
-
 }
