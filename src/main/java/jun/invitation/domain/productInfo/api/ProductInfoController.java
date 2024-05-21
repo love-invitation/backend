@@ -25,7 +25,7 @@ public class ProductInfoController {
 
         List<ProductInfoDto> productInfoDtos = productInfoService.requestAllProductInfos();
 
-        ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos);
+        ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos, null);
 
         ResponseDto<Object> result = ResponseDto.builder()
                 .status(HttpStatus.OK.value())
@@ -42,7 +42,27 @@ public class ProductInfoController {
     public ResponseEntity<ResponseDto> handleBestProductInfos() {
         List<ProductInfoDto> productInfoDtos = productInfoService.requestBestProductInfos();
 
-        ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos);
+        ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos, null);
+
+        ResponseDto<Object> result = ResponseDto.builder()
+                .status(HttpStatus.OK.value())
+                .result(productInfoResDto)
+                .message("success.")
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(result);
+    }
+
+    @GetMapping("/api/product/info/{productInfoId}")
+    public ResponseEntity<ResponseDto> handleProductInfo(@PathVariable(name = "productInfoId") Long productInfoId) {
+
+        ProductInfo byId = productInfoService.findById(productInfoId);
+
+        ProductInfoDto productInfoDto = new ProductInfoDto(byId);
+
+        ProductInfoResDto productInfoResDto = new ProductInfoResDto(null, productInfoDto);
 
         ResponseDto<Object> result = ResponseDto.builder()
                 .status(HttpStatus.OK.value())
