@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ProductInfoRepository extends JpaRepository<ProductInfo, Long> {
-    ProductInfo findByName(String name);
+    ProductInfo findByTemplateName(String name);
     List<ProductInfo> findByBestTrue();
 }

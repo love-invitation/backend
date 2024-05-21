@@ -18,6 +18,7 @@ import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
+import jun.invitation.domain.productInfo.exception.ProductInfoNotFoundException;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.transport.domain.Transport;
@@ -67,9 +68,11 @@ public class InvitationService {
 
         Invitation invitation = invitationdto.toInvitation();
 
+        ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
+
         invitation.register(
                 getCurrentUser(),
-                productInfoService.findById(invitationdto.getProductInfoId()).orElseGet(ProductInfo::new),
+                productInfo,
                 priority
                 );
 

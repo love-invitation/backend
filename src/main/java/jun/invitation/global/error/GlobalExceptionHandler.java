@@ -8,6 +8,7 @@ import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.exception.OrderNotFoundException;
+import jun.invitation.domain.productInfo.exception.ProductInfoNotFoundException;
 import jun.invitation.domain.user.exception.UserNotFoundException;
 import jun.invitation.global.exception.PasswordMismatchException;
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +93,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<ErrorResponse> handlerOrderNotFoundException(OrderNotFoundException e) {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.GUESTBOOK_NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /* PRODUCTINFO ERROR */
+    @ExceptionHandler(ProductInfoNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerProductInfoNotFoundException(ProductInfoNotFoundException e) {
+        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.PRODUCTINFO_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
