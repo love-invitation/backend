@@ -3,6 +3,7 @@ package jun.invitation.domain.productInfo.service;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.dao.ProductInfoRepository;
 import jun.invitation.domain.productInfo.dto.ProductInfoDto;
+import jun.invitation.domain.productInfo.exception.ProductInfoNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +31,8 @@ public class ProductInfoService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<ProductInfo> findById(Long id) {
-        return productInfoRepository.findById(id);
+    public ProductInfo findById(Long id) {
+        return productInfoRepository.findById(id).orElseThrow(ProductInfoNotFoundException::new);
     }
 
     public List<ProductInfoDto> requestBestProductInfos() {

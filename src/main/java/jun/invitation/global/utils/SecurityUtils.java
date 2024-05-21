@@ -2,6 +2,7 @@ package jun.invitation.global.utils;
 
 import jun.invitation.auth.PrincipalDetails;
 import jun.invitation.domain.user.domain.User;
+import jun.invitation.domain.user.exception.UserNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 public class SecurityUtils {
     public static User getCurrentUser() {
@@ -12,7 +13,7 @@ public class SecurityUtils {
 
             return principalDetails.getUser();
         } catch (NullPointerException e) {
-            return null;
+            throw new UserNotFoundException(e);
         }
     }
 }

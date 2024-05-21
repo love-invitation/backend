@@ -13,6 +13,7 @@ import static lombok.AccessLevel.*;
 @Data @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class ProductInfoDto {
+    private Long id;
     private String imageUrl;
     private String templateName;
     private BigDecimal price;
@@ -22,6 +23,7 @@ public class ProductInfoDto {
     private Boolean newest;
 
     public ProductInfoDto(ProductInfo productInfo) {
+        this.id = productInfo.getId();
         this.imageUrl = productInfo.getImageUrl();
         this.templateName = productInfo.getTemplateName();
         this.price = productInfo.getPrice();
