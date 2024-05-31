@@ -3,11 +3,8 @@ package jun.invitation.global.config;
 import jun.invitation.auth.jwt.util.JwtAuthorizationFilter;
 import jun.invitation.auth.oauth.handler.OAuthSuccessHandler;
 import jun.invitation.auth.oauth.PrincipalOauth2UserService;
-import jun.invitation.domain.user.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,22 +14,19 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.CorsFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
     private final PrincipalOauth2UserService principalOauth2UserService;
     private final OAuthSuccessHandler oAuthSuccessHandler;
     private final JwtAuthorizationFilter jwtAuthorizationFilter;
     private final AuthenticationEntryPoint entryPoint;
-    @Autowired
-    private final CorsFilter corsFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,7 +37,6 @@ public class SecurityConfig {
         log.info("SecurityFilterChain EntryPoint :{}", entryPoint.getClass());
 
         return http.csrf(CsrfConfigurer::disable)
-                .addFilter(corsFilter)
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)

@@ -57,17 +57,18 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(HttpHeaders.SET_COOKIE, responseCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
-        // TODO: FRONT 개발자에게 Redirect 해줄 경로 알아내기
-        response.sendRedirect("http://localhost:8080");
+
+        response.sendRedirect("https://dev.pinkcotton.shop:3000");
     }
 
     // TODO: HTTPS 설정하고 secure(true) 주석 풀어주기
     private static ResponseCookie createCookie(String name, String value, int days) {
         return ResponseCookie.from(name, value)
-                .httpOnly(true)
                 .maxAge(Duration.ofDays(days))
+                .sameSite("None")
+                .domain(".pinkcotton.shop")
                 .path("/")
-//                .secure(true)
+                .secure(true)
                 .build();
     }
 }

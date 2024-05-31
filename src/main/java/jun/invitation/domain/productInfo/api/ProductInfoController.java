@@ -1,23 +1,31 @@
 package jun.invitation.domain.productInfo.api;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.dto.ProductInfoDto;
 import jun.invitation.domain.productInfo.dto.ProductInfoResDto;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 public class ProductInfoController {
 
+    private static final Logger log = LoggerFactory.getLogger(ProductInfoController.class);
     private final ProductInfoService productInfoService;
 
     @GetMapping("/api/product/info")
