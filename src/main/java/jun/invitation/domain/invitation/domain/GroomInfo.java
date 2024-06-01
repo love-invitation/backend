@@ -12,13 +12,16 @@ public class GroomInfo {
 
     private String groomName;
     private String groomPhone;
+    private String groomBankName;
     private String groomAccount;
 
     private String groomFatherName;
+    private String groomFatherBankName;
     private String groomFatherPhone;
     private String groomFatherAccount;
 
     private String groomMotherName;
+    private String groomMotherBankName;
     private String groomMotherPhone;
     private String groomMotherAccount;
 

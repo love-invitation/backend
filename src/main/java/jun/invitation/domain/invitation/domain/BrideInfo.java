@@ -12,14 +12,17 @@ public class BrideInfo {
 
     private String brideName;
     private String bridePhone;
+    private String brideBankName;
     private String brideAccount;
 
     private String brideFatherName;
     private String brideFatherPhone;
+    private String brideFatherBankName;
     private String brideFatherAccount;
 
     private String brideMotherName;
     private String brideMotherPhone;
+    private String brideMotherBankName;
     private String brideMotherAccount;
 
     private String brideRelation;
