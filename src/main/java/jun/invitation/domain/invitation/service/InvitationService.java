@@ -114,7 +114,7 @@ public class InvitationService {
     }
 
     @Transactional
-    public void deleteInvitation(Long invitationId) throws Exception {
+    public void deleteInvitation(Long invitationId) {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
 
@@ -122,12 +122,8 @@ public class InvitationService {
             throw new InvitationAccessDeniedException();
         }
 
-
-        List<Gallery> galleryList = invitation.getGallery();
-
-        for (Gallery gallery : galleryList) {
-            s3UploadService.delete(gallery.getStoreFileName());
-        }
+        List<Gallery> galleries = invitation.getGallery();
+        galleryService.deleteByDelete(galleries);
 
         s3UploadService.delete(invitation.getMainImageStoreFileName());
 
@@ -147,11 +143,8 @@ public class InvitationService {
         }
 
         /* 청첩장의 기존 이미지 s3에서 지우고 DB에도 삭제 */
-        List<Gallery> galleryList = invitation.getGallery();
-        for (Gallery g : galleryList) {
-            s3UploadService.delete(g.getStoreFileName());
-            galleryService.delete(g);
-        }
+        List<Gallery> galleries = invitation.getGallery();
+        galleryService.deleteByUpdate(galleries);
 
         /* 청첩장의 메인 이미지 s3에서 지우기 */
         s3UploadService.delete(invitation.getMainImageStoreFileName());
