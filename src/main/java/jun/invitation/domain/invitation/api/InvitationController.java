@@ -23,7 +23,7 @@ public class InvitationController {
     private final InvitationService invitationService;
 
     @GetMapping("/product/invitation/read/{invitationTsid}")
-    public ResponseEntity<ResponseDto> readInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
+    public ResponseEntity<ResponseDto> getInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
 
         LinkedHashMap<String, Object> result = invitationService.readInvitation(invitationTsid);
 
