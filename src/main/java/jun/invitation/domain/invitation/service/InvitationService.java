@@ -1,5 +1,7 @@
 package jun.invitation.domain.invitation.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.guestbook.dto.GuestbookListDto;
 import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
@@ -51,6 +53,9 @@ public class InvitationService {
     private final TransportService transportService;
     private final GuestbookService guestbookService;
     private final OrderService orderService;
+
+    @PersistenceContext
+    private EntityManager em;
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -117,9 +122,9 @@ public class InvitationService {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
 
-//        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
-//            throw new InvitationAccessDeniedException();
-//        }
+        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
+            throw new InvitationAccessDeniedException();
+        }
 
         if (invitation.getMainImageStoreFileName() != null) {
             s3UploadService.delete(invitation.getMainImageStoreFileName());
@@ -129,6 +134,7 @@ public class InvitationService {
         guestbookService.deleteByGuestbooks(invitation.getGuestbook());
         transportService.deleteByTransports(invitation.getTransport());
         productService.deleteByInvitation(invitation);
+        priorityService.delete(invitation.getPriority());
     }
 
 

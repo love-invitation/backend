@@ -1,18 +1,27 @@
 package jun.invitation.domain.priority.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jun.invitation.domain.priority.dao.PriorityRepository;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class PriorityService {
 
     private final PriorityRepository priorityRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     public Priority savePriority(PriorityDto priorityDto) {
 
@@ -37,4 +46,7 @@ public class PriorityService {
                 .build();
     }
 
+    public void delete(Priority priority) {
+        priorityRepository.delete(priority);
+    }
 }

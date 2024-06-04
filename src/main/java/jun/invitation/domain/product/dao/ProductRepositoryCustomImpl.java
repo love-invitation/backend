@@ -21,5 +21,8 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom{
         queryFactory.delete(product)
                 .where(product.id.eq(invitation.getId()))
                 .execute();
+
+        em.flush();
+        em.clear();
     }
 }

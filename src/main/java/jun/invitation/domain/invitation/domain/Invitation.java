@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.FetchType.*;
 
 @Entity @Getter
@@ -34,16 +35,16 @@ public class Invitation extends Product {
     @Embedded
     private Wedding wedding;
 
-    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     private List<Gallery> gallery = new ArrayList<>();
 
-    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     private List<Transport> transport = new ArrayList<>();
 
-    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     private List<Guestbook> guestbook = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY, cascade = PERSIST)
     @JoinColumn(name = "priority_id")
     private Priority priority;
 
