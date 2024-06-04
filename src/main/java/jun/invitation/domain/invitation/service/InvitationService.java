@@ -127,6 +127,7 @@ public class InvitationService {
 
         galleryService.deleteByGalleries(invitation.getGallery());
         guestbookService.deleteByGuestbooks(invitation.getGuestbook());
+        transportService.deleteByTransports(invitation.getTransport());
         productService.deleteByInvitation(invitation);
     }
 

@@ -6,14 +6,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional @RequiredArgsConstructor
 public class TransportService {
 
     private final TransportRepository transportRepository;
 
-    public void addTransport(Transport transport) {
-        transportRepository.save(transport);
+    public void deleteByTransports(List<Transport> transports) {
+        transportRepository.deleteByTransports(transports);
     }
-
 }

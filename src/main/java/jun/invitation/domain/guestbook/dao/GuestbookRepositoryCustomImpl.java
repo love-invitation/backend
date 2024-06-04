@@ -30,6 +30,5 @@ public class GuestbookRepositoryCustomImpl implements GuestbookRepositoryCustom 
                 .execute();
 
         em.flush();
-        em.clear();
     }
 }

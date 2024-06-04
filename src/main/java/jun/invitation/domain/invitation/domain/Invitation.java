@@ -37,7 +37,7 @@ public class Invitation extends Product {
     @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
     private List<Gallery> gallery = new ArrayList<>();
 
-    @OneToMany(mappedBy = "invitation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
     private List<Transport> transport = new ArrayList<>();
 
     @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)

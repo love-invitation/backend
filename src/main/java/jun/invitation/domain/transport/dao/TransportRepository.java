@@ -4,5 +4,7 @@ import jun.invitation.domain.transport.domain.Transport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-public interface TransportRepository extends JpaRepository<Transport, Long> {
+import java.util.List;
+
+public interface TransportRepository extends JpaRepository<Transport, Long>, TransportRepositoryCustom {
 }
