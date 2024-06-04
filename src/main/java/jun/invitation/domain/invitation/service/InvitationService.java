@@ -13,16 +13,15 @@ import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.domain.Priority;
-import jun.invitation.domain.priority.dto.PriorityDto;
 import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
-import jun.invitation.domain.productInfo.exception.ProductInfoNotFoundException;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.service.TransportService;
+import jun.invitation.global.aop.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -122,13 +121,12 @@ public class InvitationService {
             throw new InvitationAccessDeniedException();
         }
 
-        List<Gallery> galleries = invitation.getGallery();
-        galleryService.deleteByDelete(galleries);
+        if (invitation.getMainImageStoreFileName() != null) {
+            s3UploadService.delete(invitation.getMainImageStoreFileName());
+        }
 
-        s3UploadService.delete(invitation.getMainImageStoreFileName());
-
-        invitationRepository.delete(invitation);
-
+        galleryService.deleteByGalleries(invitation.getGallery());
+        productService.deleteByInvitation(invitation);
     }
 
 

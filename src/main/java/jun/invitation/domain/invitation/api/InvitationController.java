@@ -1,6 +1,10 @@
 package jun.invitation.domain.invitation.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jun.invitation.domain.gallery.Gallery;
+import jun.invitation.domain.invitation.dao.InvitationRepository;
+import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.domain.Wedding;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -21,6 +26,7 @@ import static org.springframework.http.HttpStatus.*;
 public class InvitationController {
 
     private final InvitationService invitationService;
+    private final InvitationRepository invitationRepository;
 
     @GetMapping("/product/invitation/read/{invitationTsid}")
     public ResponseEntity<ResponseDto> getInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
@@ -92,6 +98,23 @@ public class InvitationController {
                 .status(OK)
                 .body(responseDto);
 
+    }
+
+    @GetMapping("/test/insert")
+    public ResponseEntity<ResponseDto> insert() {
+        Invitation invitation = new Invitation(null, null, null, null, new Wedding(null, null, null, LocalDateTime.now().minusDays(1), null),null,null,null,null);
+        invitation.register(null,null);
+
+        for (int i = 0; i < 12 ; i++) {
+            Gallery gallery = new Gallery();
+            gallery.setInvitation(invitation);
+        }
+
+        invitationRepository.save(invitation);
+
+        return ResponseEntity
+                .status(OK)
+                .build();
     }
 
 }

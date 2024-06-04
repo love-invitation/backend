@@ -20,7 +20,7 @@ public class Gallery {
 
     private String imageUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invitation_id")
     private Invitation invitation;
 

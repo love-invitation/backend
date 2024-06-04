@@ -3,6 +3,7 @@ package jun.invitation.domain.gallery.Service;
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dao.GalleryRepository;
+import jun.invitation.global.aop.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +26,7 @@ public class GalleryService {
     }
 
     @Transactional
-    public void deleteByDelete(List<Gallery> galleries) {
-        for (Gallery g : galleries) {
-            s3UploadService.delete(g.getStoreFileName());
-        }
+    public void deleteByGalleries(List<Gallery> galleries) {
+        galleryRepository.deleteByGalleries(galleries);
     }
 }
