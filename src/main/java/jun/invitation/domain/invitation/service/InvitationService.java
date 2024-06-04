@@ -133,6 +133,7 @@ public class InvitationService {
         galleryService.deleteByGalleries(invitation.getGallery());
         guestbookService.deleteByGuestbooks(invitation.getGuestbook());
         transportService.deleteByTransports(invitation.getTransport());
+        orderService.delete(invitationId);
         productService.deleteByInvitation(invitation);
         priorityService.delete(invitation.getPriority());
     }

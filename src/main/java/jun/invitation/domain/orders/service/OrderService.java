@@ -44,4 +44,8 @@ public class OrderService {
     public Orders requestFindOrder(Long id) {
         return orderRepository.findByProduct_id(id).orElseThrow(OrderNotFoundException::new);
     }
+
+    public void delete(Long invitationId) {
+        orderRepository.deleteByProductId(invitationId);
+    }
 }
