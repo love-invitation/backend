@@ -5,6 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GuestbookRepository extends JpaRepository<Guestbook, Long> {
+public interface GuestbookRepository extends JpaRepository<Guestbook, Long>, GuestbookRepositoryCustom {
     Page<Guestbook> findByInvitation_id(Long invitationId, Pageable pageable);
 }

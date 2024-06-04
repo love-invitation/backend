@@ -117,15 +117,16 @@ public class InvitationService {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
 
-        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
-            throw new InvitationAccessDeniedException();
-        }
+//        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
+//            throw new InvitationAccessDeniedException();
+//        }
 
         if (invitation.getMainImageStoreFileName() != null) {
             s3UploadService.delete(invitation.getMainImageStoreFileName());
         }
 
         galleryService.deleteByGalleries(invitation.getGallery());
+        guestbookService.deleteByGuestbooks(invitation.getGuestbook());
         productService.deleteByInvitation(invitation);
     }
 

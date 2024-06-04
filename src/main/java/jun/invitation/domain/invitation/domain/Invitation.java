@@ -34,14 +34,13 @@ public class Invitation extends Product {
     @Embedded
     private Wedding wedding;
 
-    @OneToMany(mappedBy = "invitation", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
     private List<Gallery> gallery = new ArrayList<>();
 
     @OneToMany(mappedBy = "invitation", cascade = CascadeType.ALL)
     private List<Transport> transport = new ArrayList<>();
 
-    @OneToMany(mappedBy = "invitation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "invitation", cascade = CascadeType.PERSIST)
     private List<Guestbook> guestbook = new ArrayList<>();
 
     @OneToOne(fetch = LAZY)

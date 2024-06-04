@@ -28,8 +28,5 @@ public class GalleryRepositoryCustomImpl implements GalleryRepositoryCustom{
         queryFactory.delete(gallery)
                 .where(gallery.in(galleries))
                 .execute();
-
-        em.flush();
-        em.clear();
     }
 }

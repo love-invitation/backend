@@ -88,4 +88,9 @@ public class GuestbookService {
             throw new PasswordMismatchException(password);
         }
     }
+
+    @Transactional
+    public void deleteByGuestbooks(List<Guestbook> guestbooks) {
+        guestbookRepository.deleteByGuestbooks(guestbooks);
+    }
 }
