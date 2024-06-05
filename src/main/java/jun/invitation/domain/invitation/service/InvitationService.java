@@ -125,7 +125,7 @@ public class InvitationService {
 
         galleryService.deleteByGalleries(invitationId);
         guestbookService.deleteByGuestbooks(invitationId);
-        transportService.deleteByTransports(invitationId);
+        transportService.delete(invitationId);
         orderService.delete(invitationId);
         productService.deleteByInvitation(invitation);
         priorityService.delete(invitation.getPriority());

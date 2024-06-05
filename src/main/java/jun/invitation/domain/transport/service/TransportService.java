@@ -17,7 +17,7 @@ public class TransportService {
 
     private final TransportRepository transportRepository;
 
-    public void deleteByTransports(Long invitationId) {
+    public void delete(Long invitationId) {
         transportRepository.deleteByInvitationId(invitationId);
     }
 
