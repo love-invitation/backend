@@ -21,7 +21,7 @@ public class GalleryService {
     private final S3UploadService s3UploadService;
 
     @Transactional
-    public void deleteByUpdate(List<Gallery> galleries) {
+    public void delete(List<Gallery> galleries) {
         for (Gallery g : galleries) {
             s3UploadService.delete(g.getStoreFileName());
             galleryRepository.delete(g);
@@ -29,11 +29,11 @@ public class GalleryService {
     }
 
     @Transactional
-    public void deleteByGalleries(Long invitationId) {
+    public void delete(Long invitationId) {
         galleryRepository.deleteByInvitationId(invitationId);
     }
 
-    public void saveGallery(List<MultipartFile> gallery, Invitation invitation) throws IOException {
+    public void save(List<MultipartFile> gallery, Invitation invitation) throws IOException {
 
         Long sequence = 1L;
 

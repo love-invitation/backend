@@ -80,7 +80,7 @@ public class InvitationService {
 
         /* 갤러리 저장 */
         if (gallery != null) {
-            galleryService.saveGallery(gallery, invitation);
+            galleryService.save(gallery, invitation);
         }
         List<TransportDto> transportDtos = invitationdto.getTransport();
 
@@ -123,7 +123,7 @@ public class InvitationService {
             s3UploadService.delete(invitation.getMainImageStoreFileName());
         }
 
-        galleryService.deleteByGalleries(invitationId);
+        galleryService.delete(invitationId);
         guestbookService.deleteByGuestbooks(invitationId);
         transportService.delete(invitationId);
         orderService.delete(invitationId);
@@ -144,7 +144,7 @@ public class InvitationService {
 
         /* 청첩장의 기존 이미지 s3에서 지우고 DB에도 삭제 */
         List<Gallery> galleries = invitation.getGallery();
-        galleryService.deleteByUpdate(galleries);
+        galleryService.delete(galleries);
 
         /* 청첩장의 메인 이미지 s3에서 지우기 */
         s3UploadService.delete(invitation.getMainImageStoreFileName());
@@ -152,7 +152,7 @@ public class InvitationService {
         invitation.update(invitationDto);
 
         // Gallery 생성
-        galleryService.saveGallery(gallery, invitation);
+        galleryService.save(gallery, invitation);
 
         // main Image 저장
         invitation.registerMainImage(s3UploadService.saveFile(mainImage));
