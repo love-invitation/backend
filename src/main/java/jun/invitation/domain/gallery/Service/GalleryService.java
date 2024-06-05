@@ -4,7 +4,6 @@ import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dao.GalleryRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.global.aop.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +29,8 @@ public class GalleryService {
     }
 
     @Transactional
-    public void deleteByGalleries(List<Gallery> galleries) {
-        galleryRepository.deleteByGalleries(galleries);
+    public void deleteByGalleries(Long invitationId) {
+        galleryRepository.deleteByInvitationId(invitationId);
     }
 
     public void saveGallery(List<MultipartFile> gallery, Invitation invitation) throws IOException {

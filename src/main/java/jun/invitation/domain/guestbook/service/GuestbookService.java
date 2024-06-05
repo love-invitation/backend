@@ -7,17 +7,11 @@ import jun.invitation.domain.guestbook.dto.GuestbookDto;
 import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
 import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
-import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.global.exception.PasswordMismatchException;
 import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -90,7 +84,7 @@ public class GuestbookService {
     }
 
     @Transactional
-    public void deleteByGuestbooks(List<Guestbook> guestbooks) {
-        guestbookRepository.deleteByGuestbooks(guestbooks);
+    public void deleteByGuestbooks(Long invitationId) {
+        guestbookRepository.deleteByInvitationId(invitationId);
     }
 }

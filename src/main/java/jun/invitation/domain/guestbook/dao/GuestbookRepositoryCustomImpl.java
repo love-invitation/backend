@@ -23,12 +23,10 @@ public class GuestbookRepositoryCustomImpl implements GuestbookRepositoryCustom 
     private EntityManager em;
 
     @Override
-    public void deleteByGuestbooks(List<Guestbook> guestbooks) {
+    public void deleteByInvitationId(Long invitationId) {
 
         queryFactory.delete(guestbook)
-                .where(guestbook.in(guestbooks))
+                .where(guestbook.invitation.id.in(invitationId))
                 .execute();
-
-        em.flush();
     }
 }

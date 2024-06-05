@@ -130,9 +130,9 @@ public class InvitationService {
             s3UploadService.delete(invitation.getMainImageStoreFileName());
         }
 
-        galleryService.deleteByGalleries(invitation.getGallery());
-        guestbookService.deleteByGuestbooks(invitation.getGuestbook());
-        transportService.deleteByTransports(invitation.getTransport());
+        galleryService.deleteByGalleries(invitationId);
+        guestbookService.deleteByGuestbooks(invitationId);
+        transportService.deleteByTransports(invitationId);
         orderService.delete(invitationId);
         productService.deleteByInvitation(invitation);
         priorityService.delete(invitation.getPriority());
