@@ -21,9 +21,7 @@ import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.domain.product.service.ProductService;
-import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.service.TransportService;
-import jun.invitation.global.aop.LogExecutionTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -88,7 +86,7 @@ public class InvitationService {
 
         /* 교통수단 저장 */
         if (transportDtos != null) {
-            saveTransport(transportDtos, invitation);
+            transportService.save(transportDtos, invitation);
         }
 
         /* 메인 이미지 저장 */
@@ -107,11 +105,6 @@ public class InvitationService {
         orderService.requestOrder(invitation);
     }
 
-    private void saveTransport(List<TransportDto> transportDtos, Invitation invitation) {
-        for (TransportDto transportDto : transportDtos) {
-            new Transport(transportDto, invitation);
-        }
-    }
 
     private Long saveInvitation(Invitation invitation) {
         return invitationRepository.save(invitation).getTsid();

@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Transport {
 
-    @Id @Column(name = "transport_id")
+    @Id
+    @Column(name = "transport_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -22,10 +23,12 @@ public class Transport {
     @JoinColumn(name = "invitation_id")
     private Invitation invitation;
 
-    public Transport(TransportDto transportDto, Invitation invitation) {
+    public Transport(TransportDto transportDto) {
         this.kind = transportDto.getKind();
         this.detail = transportDto.getDetail();
+    }
 
+    public void register(Invitation invitation) {
         this.invitation = invitation;
         invitation.getTransport().add(this);
     }
