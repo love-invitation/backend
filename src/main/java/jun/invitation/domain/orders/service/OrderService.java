@@ -1,5 +1,7 @@
 package jun.invitation.domain.orders.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.orders.dao.OrderRepository;
@@ -19,6 +21,9 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     public void requestOrder(Invitation invitation) {
         Orders orders = Orders.builder()
