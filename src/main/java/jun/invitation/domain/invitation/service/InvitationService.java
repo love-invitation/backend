@@ -82,7 +82,7 @@ public class InvitationService {
 
         /* 갤러리 저장 */
         if (gallery != null) {
-            saveGallery(gallery, invitation);
+            galleryService.saveGallery(gallery, invitation);
         }
         List<TransportDto> transportDtos = invitationdto.getTransport();
 
@@ -159,7 +159,7 @@ public class InvitationService {
         invitation.update(invitationDto);
 
         // Gallery 생성
-        saveGallery(gallery, invitation);
+        galleryService.saveGallery(gallery, invitation);
 
         // main Image 저장
         invitation.registerMainImage(s3UploadService.saveFile(mainImage));
@@ -243,26 +243,6 @@ public class InvitationService {
 
 
         return result;
-    }
-
-
-
-    private void saveGallery(List<MultipartFile> gallery, Invitation invitation) throws IOException {
-
-        Long sequence = 1L;
-
-        for (MultipartFile file : gallery) {
-            Map<String, String> savedFileMap = s3UploadService.saveFile(file);
-
-            if (savedFileMap != null) {
-                String originFileName = savedFileMap.get("originFileName");
-                String storeFileName = savedFileMap.get("storeFileName");
-                String savedUrlPath = savedFileMap.get("imageUrl");
-
-                Gallery newGallery = new Gallery(originFileName,storeFileName,sequence++,savedUrlPath);
-                newGallery.setInvitation(invitation);
-            }
-        }
     }
 
     public boolean isYours (Long userId, Long productId) {
