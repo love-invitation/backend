@@ -65,6 +65,7 @@ public class InvitationService {
     @Transactional
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException  {
 
+        log.info("invitationDto : {}", invitationdto.toString());
         /* 우선 순위 저장*/
         Priority priority = priorityService.savePriority(invitationdto.getPriorityDto());
 
@@ -73,7 +74,8 @@ public class InvitationService {
         ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
 
         invitation.register(
-                getCurrentUser(),
+//                getCurrentUser(),
+                null,
                 productInfo,
                 priority
                 );
@@ -115,16 +117,16 @@ public class InvitationService {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
 
-        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
-            throw new InvitationAccessDeniedException();
-        }
+//        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
+//            throw new InvitationAccessDeniedException();
+//        }
 
         if (invitation.getMainImageStoreFileName() != null) {
             s3UploadService.delete(invitation.getMainImageStoreFileName());
         }
 
         galleryService.delete(invitationId);
-        guestbookService.deleteByGuestbooks(invitationId);
+        guestbookService.delete(invitationId);
         transportService.delete(invitationId);
         orderService.delete(invitationId);
         productService.deleteByInvitation(invitation);
@@ -133,29 +135,41 @@ public class InvitationService {
 
 
     @Transactional
-    public void updateInvitation(Long invitationId, InvitationDto invitationDto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException {
+    public void updateInvitation(Long invitationId, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage) throws IOException {
 
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(InvitationNotFoundException::new);
 
-        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
-            throw new InvitationAccessDeniedException();
-        }
+        // 유효성 check
+//        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
+//            throw new InvitationAccessDeniedException();
+//        }
 
-        /* 청첩장의 기존 이미지 s3에서 지우고 DB에도 삭제 */
-        List<Gallery> galleries = invitation.getGallery();
-        galleryService.delete(galleries);
+        List<Gallery> currentGalleries = invitation.getGallery();
+        galleryService.update(currentGalleries,invitation, newGalleries);
 
-        /* 청첩장의 메인 이미지 s3에서 지우기 */
-        s3UploadService.delete(invitation.getMainImageStoreFileName());
-
+        mainImageUpdate(mainImage, invitation);
         invitation.update(invitationDto);
+    }
 
-        // Gallery 생성
-        galleryService.save(gallery, invitation);
+    /**
+     *  기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
+     *  기존 o, main Image x : 기존 삭제 , 메인 이미지 저장 x
+     *  기존 x, main Image O : 기존 삭제 x, 메인 이미지 저장 o
+     *  기존 x, main Image x : 아무 행동 x
+     */
+    private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws IOException {
+        String mainImageStoreFileName = invitation.getMainImageStoreFileName();
 
-        // main Image 저장
-        invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+        // 기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
+        if (mainImageStoreFileName != null && mainImage != null) {
+            s3UploadService.delete(mainImageStoreFileName);
+            invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+        } else if (mainImageStoreFileName != null && mainImage == null) {
+            s3UploadService.delete(mainImageStoreFileName);
+        } else if (mainImageStoreFileName == null && mainImage != null){
+            invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+        }
     }
 
     @Transactional(readOnly = true)

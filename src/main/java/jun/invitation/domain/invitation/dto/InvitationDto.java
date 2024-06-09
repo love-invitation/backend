@@ -1,5 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jun.invitation.domain.invitation.domain.*;
 import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.Builder;
@@ -9,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-@Data @Slf4j @NoArgsConstructor
+@Data
+@Slf4j
+@NoArgsConstructor
 public class InvitationDto {
 
     /* 상품 정보 id*/

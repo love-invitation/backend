@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,24 +43,12 @@ public class GuestbookService {
         return guestbookRepository.findAll();
     }
 
-    public List<GuestbookResponseDto> getResponseDtoList(Invitation invitation) {
-
-        List<GuestbookResponseDto> result = new ArrayList<>();
-
-        List<Guestbook> guestbookList = invitation.getGuestbook();
-        for (Guestbook guestbook : guestbookList) {
-            result.add(new GuestbookResponseDto(guestbook));
-        }
-
-        return result;
-    }
-
     public Page<GuestbookResponseDto> getResponseDtoList(Long invitationId, Pageable pageable) {
         return guestbookRepository.findByInvitation_id(invitationId, pageable)
                 .map(guestbook -> new GuestbookResponseDto(guestbook));
     }
 
-    public void requestDelete(Invitation invitation, Long guestbookId) {
+    public void delete(Invitation invitation, Long guestbookId) {
 
         Guestbook guestbook = guestbookRepository.findById(guestbookId).orElseThrow(GuestbookNotFoundException::new);
 
@@ -72,7 +59,7 @@ public class GuestbookService {
         }
     }
 
-    public void requestDelete(Invitation invitation, Long guestbookId, String password) {
+    public void delete(Invitation invitation, Long guestbookId, String password) {
         Guestbook guestbook = guestbookRepository.findById(guestbookId).orElseThrow(GuestbookNotFoundException::new);
 
         if (guestbook.getPassword().equals(password)) {
@@ -84,7 +71,7 @@ public class GuestbookService {
     }
 
     @Transactional
-    public void deleteByGuestbooks(Long invitationId) {
+    public void delete(Long invitationId) {
         guestbookRepository.deleteByInvitationId(invitationId);
     }
 }

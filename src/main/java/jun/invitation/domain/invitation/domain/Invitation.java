@@ -81,22 +81,18 @@ public class Invitation extends Product {
         this.thumbnailContents = thumbnailContents;
     }
 
-    // todo : 테스트 필요 : 너무 많이 수정됨
     public void update(InvitationDto invitationDto) {
-
-        this.mainImageUrl = null;
-        this.mainImageOriginName = null;
-        this.mainImageStoreFileName = null;
 
         this.title = invitationDto.getTitle();
         this.contents = invitationDto.getContents();
         this.wedding = invitationDto.getWedding();
         this.brideInfo = invitationDto.getBrideInfo();
         this.groomInfo = invitationDto.getGroomInfo();
+        this.guestbookCheck = invitationDto.getGuestbookCheck();
+        this.thumbnailContents = invitationDto.getThumbnailContents();
 
-        this.gallery.clear();
+        this.getPriority().update(invitationDto.getPriorityDto());
+
         this.transport.clear();
     }
-
-
 }

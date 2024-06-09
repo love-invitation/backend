@@ -27,7 +27,10 @@ public class OrderService {
 
     public void requestOrder(Invitation invitation) {
         Orders orders = Orders.builder()
-                .user(SecurityUtils.getCurrentUser())
+                .user(
+//                        SecurityUtils.getCurrentUser(),
+                        null
+                )
                 .product(invitation)
                 .build();
 

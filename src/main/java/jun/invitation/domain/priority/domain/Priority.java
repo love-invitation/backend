@@ -1,6 +1,7 @@
 package jun.invitation.domain.priority.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,6 +42,22 @@ public class Priority {
         this.thumbnail = thumbnail;
         this.guestbook = guestbook;
         this.account = account;
+    }
+
+    public void update(PriorityDto priorityDto) {
+
+        if (priorityDto == null) {
+            return;
+        }
+        this.article = priorityDto.getArticle();
+        this.weddingDate = priorityDto.getWeddingDate();
+        this.weddingPlace = priorityDto.getWeddingPlace();
+        this.transport = priorityDto.getTransport();
+        this.gallery = priorityDto.getGallery();
+        this.contact = priorityDto.getContact();
+        this.thumbnail = priorityDto.getThumbnail();
+        this.guestbook = priorityDto.getGuestbook();
+        this.account = priorityDto.getAccount();
     }
 
     public List<String> getSortedPriorityList() {

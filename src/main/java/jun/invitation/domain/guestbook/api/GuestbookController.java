@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,9 +76,9 @@ public class GuestbookController {
         Invitation invitation = invitationService.requestFindInvitation(invitationId);
 
         if (password == null) {
-            guestbookService.requestDelete(invitation, guestbookId);
+            guestbookService.delete(invitation, guestbookId);
         } else {
-            guestbookService.requestDelete(invitation, guestbookId, password.get("password"));
+            guestbookService.delete(invitation, guestbookId, password.get("password"));
         }
 
         ResponseDto<Object> responseDto = ResponseDto.builder()

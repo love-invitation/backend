@@ -50,4 +50,25 @@ public class GalleryService {
             }
         }
     }
+
+    /**
+     * 1. 기존 gallery o, new gallery o : 기존 gallery 삭제, new gallery 저장
+     * 2. 기존 gallery o, new gallery x : 기존 gallery 삭제
+     * 3. 기존 gallery x, new gallery o : new gallery 저장
+     * 4. 기존 gallery x, new gallery x : 아무 행동 x
+     */
+    public void update(List<Gallery> currentGalleries, Invitation invitation, List<MultipartFile> newGalleries) throws IOException {
+        // 1.
+        if (!currentGalleries.isEmpty() && newGalleries != null) {
+            delete(currentGalleries);
+            invitation.getGallery().clear();
+            save(newGalleries, invitation);
+        } else if (!currentGalleries.isEmpty() && newGalleries == null){
+            // 2.
+            delete(currentGalleries);
+        } else if (currentGalleries.isEmpty() && newGalleries != null) {
+            // 3.
+            save(newGalleries, invitation);
+        }
+    }
 }
