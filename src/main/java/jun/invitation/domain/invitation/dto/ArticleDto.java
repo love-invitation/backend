@@ -17,7 +17,12 @@ public class ArticleDto {
         this.priority = priority;
         this.title = title;
         this.contents = contents;
-        this.groomInfo = new GroomInfoDto(groomInfo);
-        this.brideInfo = new BrideInfoDto(brideInfo);
+
+        if (groomInfo != null) {
+            this.groomInfo = new GroomInfoDto(groomInfo);
+        }
+        if (brideInfo != null) {
+            this.brideInfo = new BrideInfoDto(brideInfo);
+        }
     }
 }

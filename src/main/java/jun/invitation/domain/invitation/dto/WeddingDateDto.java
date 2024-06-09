@@ -3,6 +3,7 @@ package jun.invitation.domain.invitation.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jun.invitation.domain.invitation.domain.Wedding;
 import lombok.Data;
+import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,9 @@ public class WeddingDateDto {
 
     public WeddingDateDto(Wedding wedding, Integer priority) {
         this.priority = priority;
-        this.date = wedding.getDate();
-        this.dateType = wedding.getDateType();
+        if (wedding != null) {
+            this.date = wedding.getDate();
+            this.dateType = wedding.getDateType();
+        }
     }
 }

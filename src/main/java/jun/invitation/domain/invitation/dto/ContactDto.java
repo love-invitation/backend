@@ -18,20 +18,25 @@ public class ContactDto {
 
         this.priority = priority;
 
-        this.groomContactInfo = new ContactInfoDto(
-                groomInfo.getGroomPhone(),
-                groomInfo.getGroomFatherName(),
-                groomInfo.getGroomFatherPhone(),
-                groomInfo.getGroomMotherName(),
-                groomInfo.getGroomMotherPhone()
-        );
+        if (groomInfo != null) {
+            this.groomContactInfo = new ContactInfoDto(
+                    groomInfo.getGroomPhone(),
+                    groomInfo.getGroomFatherName(),
+                    groomInfo.getGroomFatherPhone(),
+                    groomInfo.getGroomMotherName(),
+                    groomInfo.getGroomMotherPhone()
+            );
+        }
 
-        this.brideContactInfo = new ContactInfoDto(
-                brideInfo.getBridePhone(),
-                brideInfo.getBrideFatherName(),
-                brideInfo.getBrideFatherPhone(),
-                brideInfo.getBrideMotherName(),
-                brideInfo.getBrideMotherPhone()
-        );
+        if (brideInfo != null) {
+            this.brideContactInfo = new ContactInfoDto(
+                    brideInfo.getBridePhone(),
+                    brideInfo.getBrideFatherName(),
+                    brideInfo.getBrideFatherPhone(),
+                    brideInfo.getBrideMotherName(),
+                    brideInfo.getBrideMotherPhone()
+            );
+        }
+
     }
 }

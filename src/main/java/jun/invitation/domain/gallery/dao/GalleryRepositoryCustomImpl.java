@@ -3,8 +3,11 @@ package jun.invitation.domain.gallery.dao;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jun.invitation.domain.gallery.Gallery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
 
 import static jun.invitation.domain.gallery.QGallery.*;
 
@@ -21,6 +24,13 @@ public class GalleryRepositoryCustomImpl implements GalleryRepositoryCustom{
     public void deleteByInvitationId(Long invitationId) {
         queryFactory.delete(gallery)
                 .where(gallery.invitation.id.in(invitationId))
+                .execute();
+    }
+
+    @Override
+    public void deleteByGalleries(List<Gallery> galleries) {
+        queryFactory.delete(gallery)
+                .where(gallery.in(galleries))
                 .execute();
     }
 }

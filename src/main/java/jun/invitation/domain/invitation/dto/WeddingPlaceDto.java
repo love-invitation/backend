@@ -14,8 +14,10 @@ public class WeddingPlaceDto {
 
         this.priority = priority;
 
-        this.placeName = wedding.getPlaceName();
-        this.detail = wedding.getDetail();
-        this.placeAddress = wedding.getPlaceAddress();
+        if (wedding != null){
+            this.placeName = wedding.getPlaceName();
+            this.detail = wedding.getDetail();
+            this.placeAddress = wedding.getPlaceAddress();
+        }
     }
 }

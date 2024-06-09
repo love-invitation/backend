@@ -5,6 +5,7 @@ import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dao.GalleryRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,19 +16,21 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GalleryService {
 
     private final GalleryRepository galleryRepository;
     private final S3UploadService s3UploadService;
 
     @Transactional
-    public void delete(List<Gallery> galleries) {
-        for (Gallery g : galleries) {
+    public void delete(List<Gallery> galleries, Invitation invitation) {
+        galleries.forEach(g -> {
             s3UploadService.delete(g.getStoreFileName());
-            galleryRepository.delete(g);
-        }
+        });
+        galleryRepository.deleteByGalleries(galleries);
     }
 
+    // TODO : s3 삭제 필요
     @Transactional
     public void delete(Long invitationId) {
         galleryRepository.deleteByInvitationId(invitationId);
@@ -60,12 +63,12 @@ public class GalleryService {
     public void update(List<Gallery> currentGalleries, Invitation invitation, List<MultipartFile> newGalleries) throws IOException {
         // 1.
         if (!currentGalleries.isEmpty() && newGalleries != null) {
-            delete(currentGalleries);
+            delete(currentGalleries, invitation);
             invitation.getGallery().clear();
             save(newGalleries, invitation);
         } else if (!currentGalleries.isEmpty() && newGalleries == null){
             // 2.
-            delete(currentGalleries);
+            delete(currentGalleries, invitation);
         } else if (currentGalleries.isEmpty() && newGalleries != null) {
             // 3.
             save(newGalleries, invitation);

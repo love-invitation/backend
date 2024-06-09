@@ -16,26 +16,30 @@ public class AccountDto {
 
         this.priority = priority;
 
-        this.groomAccountInfo = new AccountInfoDto(
-                groomInfo.getGroomAccount(),
-                groomInfo.getGroomBankName(),
-                groomInfo.getGroomFatherName(),
-                groomInfo.getGroomFatherBankName(),
-                groomInfo.getGroomFatherAccount(),
-                groomInfo.getGroomMotherName(),
-                groomInfo.getGroomMotherBankName(),
-                groomInfo.getGroomMotherAccount()
-        );
+        if (groomInfo != null){
+            this.groomAccountInfo = new AccountInfoDto(
+                    groomInfo.getGroomAccount(),
+                    groomInfo.getGroomBankName(),
+                    groomInfo.getGroomFatherName(),
+                    groomInfo.getGroomFatherBankName(),
+                    groomInfo.getGroomFatherAccount(),
+                    groomInfo.getGroomMotherName(),
+                    groomInfo.getGroomMotherBankName(),
+                    groomInfo.getGroomMotherAccount()
+            );
+        }
 
-        this.brideAccountInfo = new AccountInfoDto(
-                brideInfo.getBrideAccount(),
-                brideInfo.getBrideBankName(),
-                brideInfo.getBrideFatherName(),
-                brideInfo.getBrideFatherBankName(),
-                brideInfo.getBrideFatherAccount(),
-                brideInfo.getBrideMotherName(),
-                brideInfo.getBrideMotherBankName(),
-                brideInfo.getBrideMotherAccount()
-        );
+        if (brideInfo != null) {
+            this.brideAccountInfo = new AccountInfoDto(
+                    brideInfo.getBrideAccount(),
+                    brideInfo.getBrideBankName(),
+                    brideInfo.getBrideFatherName(),
+                    brideInfo.getBrideFatherBankName(),
+                    brideInfo.getBrideFatherAccount(),
+                    brideInfo.getBrideMotherName(),
+                    brideInfo.getBrideMotherBankName(),
+                    brideInfo.getBrideMotherAccount()
+            );
+        }
     }
 }
