@@ -1,7 +1,9 @@
 package jun.invitation.domain.invitation.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jun.invitation.domain.invitation.domain.*;
+import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
+import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.Builder;
 import lombok.Data;

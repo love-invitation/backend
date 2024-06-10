@@ -1,11 +1,10 @@
 package jun.invitation.domain.invitation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jun.invitation.domain.invitation.domain.BrideInfo;
-import jun.invitation.domain.invitation.domain.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
+import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.Wedding;
-import lombok.Builder;
+import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import lombok.Data;
 
 import java.time.LocalDateTime;

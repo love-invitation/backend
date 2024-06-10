@@ -5,7 +5,7 @@ import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.Wedding;
+import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.invitation.dto.TransportDto;
 import jun.invitation.domain.invitation.service.InvitationService;

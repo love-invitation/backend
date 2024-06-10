@@ -1,7 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
-import jun.invitation.domain.invitation.domain.GroomInfo;
-import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
 import lombok.Data;
 
 @Data

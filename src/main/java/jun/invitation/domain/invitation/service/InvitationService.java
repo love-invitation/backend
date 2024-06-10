@@ -9,8 +9,10 @@ import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.invitation.domain.*;
+import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
+import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.dto.*;
-import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
@@ -36,9 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static jun.invitation.global.utils.SecurityUtils.*;
 
 @Service @Slf4j
 @RequiredArgsConstructor

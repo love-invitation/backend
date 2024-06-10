@@ -1,6 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
-import jun.invitation.domain.invitation.domain.BrideInfo;
+import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
 import lombok.Data;
 
 @Data

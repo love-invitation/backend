@@ -1,9 +1,8 @@
 package jun.invitation.domain.invitation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jun.invitation.domain.invitation.domain.Wedding;
+import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import lombok.Data;
-import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 

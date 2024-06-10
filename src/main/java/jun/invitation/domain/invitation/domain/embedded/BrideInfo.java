@@ -1,4 +1,4 @@
-package jun.invitation.domain.invitation.domain;
+package jun.invitation.domain.invitation.domain.embedded;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
