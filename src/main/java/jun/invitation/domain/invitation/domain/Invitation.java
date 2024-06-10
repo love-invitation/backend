@@ -92,7 +92,5 @@ public class Invitation extends Product {
         this.thumbnailContents = invitationDto.getThumbnailContents();
 
         this.getPriority().update(invitationDto.getPriorityDto());
-
-        this.transport.clear();
     }
 }

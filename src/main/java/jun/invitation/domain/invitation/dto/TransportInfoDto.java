@@ -11,7 +11,8 @@ public class TransportInfoDto {
     private Integer priority;
     private List<TransportDto> transport = new ArrayList<>();
 
-    public TransportInfoDto(List<Transport> transports, Integer priority) {
+    public
+    TransportInfoDto(List<Transport> transports, Integer priority) {
         this.priority = priority;
         toTransportDto(transports);
     }

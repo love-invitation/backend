@@ -21,6 +21,7 @@ import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.domain.product.service.ProductService;
+import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.service.TransportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static jun.invitation.global.utils.SecurityUtils.*;
 
@@ -147,6 +149,14 @@ public class InvitationService {
 
         List<Gallery> currentGalleries = invitation.getGallery();
         galleryService.update(currentGalleries,invitation, newGalleries);
+
+        List<Transport> currentTransports = invitation.getTransport();
+
+        List<TransportDto> newTransportDtos = invitationDto.getTransport();
+
+        log.info("!!여기!!");
+        transportService.update(currentTransports, invitation, newTransportDtos);
+
 
         mainImageUpdate(mainImage, invitation);
         invitation.update(invitationDto);

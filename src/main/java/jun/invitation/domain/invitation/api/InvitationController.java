@@ -2,11 +2,17 @@ package jun.invitation.domain.invitation.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jun.invitation.domain.gallery.Gallery;
+import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.Wedding;
 import jun.invitation.domain.invitation.dto.InvitationDto;
+import jun.invitation.domain.invitation.dto.TransportDto;
 import jun.invitation.domain.invitation.service.InvitationService;
+import jun.invitation.domain.orders.dao.OrderRepository;
+import jun.invitation.domain.orders.domain.Orders;
+import jun.invitation.domain.priority.domain.Priority;
+import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +28,13 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequiredArgsConstructor @Slf4j
+@RequiredArgsConstructor
+@Slf4j
 public class InvitationController {
 
     private final InvitationService invitationService;
     private final InvitationRepository invitationRepository;
+    private final OrderRepository orderRepository;
 
     @GetMapping("/product/invitation/read/{invitationTsid}")
     public ResponseEntity<ResponseDto> getInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
@@ -49,11 +57,11 @@ public class InvitationController {
     @PostMapping("/product/invitation/create")
     public ResponseEntity<ResponseDto> createInvitation(
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
-            @RequestPart(name = "gallery") List<MultipartFile> gallery,
-            @RequestPart(name = "mainImage") MultipartFile mainImage, HttpServletRequest request) throws IOException {
+            @RequestPart(name = "gallery", required = false) List<MultipartFile> gallery,
+            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage, HttpServletRequest request) throws IOException {
+
 
         invitationService.createInvitation(invitationDto, gallery, mainImage);
-
         ResponseDto responseDto = ResponseDto.builder()
                 .status(CREATED.value())
                 .message("create success")
@@ -83,10 +91,11 @@ public class InvitationController {
     public ResponseEntity<ResponseDto> updateInvitation(
             @PathVariable(name = "invitationId") Long invitationId ,
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
-            @RequestPart(name = "gallery") List<MultipartFile> gallery,
-            @RequestPart(name = "mainImage") MultipartFile mainImage
+            @RequestPart(name = "gallery", required = false) List<MultipartFile> gallery,
+            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage
     ) throws IOException {
 
+        log.info("{}",invitationDto.toInvitation());
         invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage);
 
         ResponseDto responseDto = ResponseDto.builder()
@@ -102,15 +111,30 @@ public class InvitationController {
 
     @GetMapping("/test/insert")
     public ResponseEntity<ResponseDto> insert() {
-        Invitation invitation = new Invitation(null, null, null, null, new Wedding(null, null, null, LocalDateTime.now().minusDays(1), null),null,null,null,null);
-        invitation.register(null,null);
+        Invitation invitation = new Invitation(null, null, null, null, new Wedding(null, null, null, LocalDateTime.now().minusDays(1), null),true,null,null,null);
+        Priority priority = new Priority(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        invitation.register(null, null,priority);
 
         for (int i = 0; i < 12 ; i++) {
             Gallery gallery = new Gallery();
             gallery.setInvitation(invitation);
         }
 
+        for (int i = 0; i < 10; i++) {
+            new Guestbook("hong"+i, "1234", "잘살아 " + i, invitation);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            new Transport(new TransportDto("hh" + i, "gg" + i))
+                    .register(invitation);
+        }
+
+
         invitationRepository.save(invitation);
+
+        orderRepository.save(
+                new Orders(null, invitation)
+        );
 
         return ResponseEntity
                 .status(OK)

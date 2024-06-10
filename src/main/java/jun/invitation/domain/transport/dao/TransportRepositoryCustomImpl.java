@@ -26,9 +26,16 @@ public class TransportRepositoryCustomImpl implements TransportRepositoryCustom 
 
     @Override
     public void deleteByInvitationId(Long invitationId) {
-
         queryFactory.delete(transport)
-                .where(transport.invitation.id.in(invitationId))
+                .where(transport.invitation.id.eq(invitationId))
                 .execute();
+    }
+
+    @Override
+    public void deleteByTransports(List<Transport> transports) {
+        queryFactory.delete(transport)
+                .where(transport.in(transports))
+                .execute();
+        em.flush();
     }
 }
