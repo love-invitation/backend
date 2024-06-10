@@ -11,7 +11,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@Entity @NoArgsConstructor
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter @Slf4j
 public class Priority {

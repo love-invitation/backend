@@ -1,6 +1,7 @@
 package jun.invitation.domain.productInfo.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductInfo {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

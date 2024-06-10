@@ -17,7 +17,7 @@ import static jakarta.persistence.FetchType.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "Product_Type")
 @NoArgsConstructor
-public class Product extends BaseEntity {
+public abstract class Product extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")

@@ -19,7 +19,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
@@ -42,11 +43,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         if (userOptional.isPresent()) {
             user = userOptional.get();
-            // user가 존재하면 update 해주기
-            user.setEmail(oAuth2UserInfo.getEmail());
-            userRepository.save(user);
         } else {
-            // user의 패스워드가 null이기 때문에 OAuth 유저는 일반적인 로그인을 할 수 없음.
             user = User.builder()
                     .username(oAuth2UserInfo.getProvider() + "_" + oAuth2UserInfo.getProviderId())
                     .email(oAuth2UserInfo.getEmail())

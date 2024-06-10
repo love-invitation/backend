@@ -7,9 +7,9 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Setter
-@Getter @ToString
-@NoArgsConstructor
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

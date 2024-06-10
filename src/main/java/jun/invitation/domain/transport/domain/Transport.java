@@ -3,11 +3,13 @@ package jun.invitation.domain.transport.domain;
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.dto.TransportDto;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity @Getter
-@NoArgsConstructor
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Transport {
 
     @Id
