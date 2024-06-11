@@ -1,7 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
-import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
-import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import lombok.Data;
 
 @Data
@@ -10,19 +9,19 @@ public class ArticleDto {
     private String title;
     private String contents;
 
-    private GroomInfoDto groomInfo;
-    private BrideInfoDto brideInfo;
+    private FamilyInfoDto groomInfo;
+    private FamilyInfoDto brideInfo;
 
-    public ArticleDto(String title, String contents, GroomInfo groomInfo, BrideInfo brideInfo, Integer priority) {
+    public ArticleDto(String title, String contents, FamilyInfo groomInfo, FamilyInfo brideInfo, Integer priority) {
         this.priority = priority;
         this.title = title;
         this.contents = contents;
 
         if (groomInfo != null) {
-            this.groomInfo = new GroomInfoDto(groomInfo);
+            this.groomInfo = new FamilyInfoDto(groomInfo);
         }
         if (brideInfo != null) {
-            this.brideInfo = new BrideInfoDto(brideInfo);
+            this.brideInfo = new FamilyInfoDto(brideInfo);
         }
     }
 }

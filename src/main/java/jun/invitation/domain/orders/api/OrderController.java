@@ -1,6 +1,5 @@
 package jun.invitation.domain.orders.api;
 
-import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.dto.OrderDto;
 import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.global.dto.ResponseDto;

@@ -1,7 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
-import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
-import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import lombok.Data;
 
 @Data
@@ -14,27 +13,27 @@ public class ContactDto {
     private ContactInfoDto brideContactInfo;
 
 
-    public ContactDto(GroomInfo groomInfo, BrideInfo brideInfo, Integer priority) {
+    public ContactDto(FamilyInfo groomInfo, FamilyInfo brideInfo, Integer priority) {
 
         this.priority = priority;
 
         if (groomInfo != null) {
             this.groomContactInfo = new ContactInfoDto(
-                    groomInfo.getGroomPhone(),
-                    groomInfo.getGroomFatherName(),
-                    groomInfo.getGroomFatherPhone(),
-                    groomInfo.getGroomMotherName(),
-                    groomInfo.getGroomMotherPhone()
+                    groomInfo.getPhone(),
+                    groomInfo.getFatherName(),
+                    groomInfo.getFatherPhone(),
+                    groomInfo.getMotherName(),
+                    groomInfo.getMotherPhone()
             );
         }
 
         if (brideInfo != null) {
             this.brideContactInfo = new ContactInfoDto(
-                    brideInfo.getBridePhone(),
-                    brideInfo.getBrideFatherName(),
-                    brideInfo.getBrideFatherPhone(),
-                    brideInfo.getBrideMotherName(),
-                    brideInfo.getBrideMotherPhone()
+                    brideInfo.getPhone(),
+                    brideInfo.getFatherName(),
+                    brideInfo.getFatherPhone(),
+                    brideInfo.getMotherName(),
+                    brideInfo.getMotherPhone()
             );
         }
 

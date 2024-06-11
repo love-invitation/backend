@@ -1,16 +1,14 @@
 package jun.invitation.domain.product.domain;
 
-import com.github.f4b6a3.tsid.Tsid;
 import com.github.f4b6a3.tsid.TsidCreator;
 import jakarta.persistence.*;
-import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.global.entity.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 
 @Getter
 @Entity

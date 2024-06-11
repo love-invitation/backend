@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Embeddable
 @NoArgsConstructor
-@AllArgsConstructor @Data
+@AllArgsConstructor
+@Data
 public class Wedding {
 
     private String placeName;

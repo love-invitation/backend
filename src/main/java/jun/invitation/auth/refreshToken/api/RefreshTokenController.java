@@ -1,12 +1,12 @@
 package jun.invitation.auth.refreshToken.api;
 
 import jun.invitation.auth.jwt.JwtProperties;
-import jun.invitation.auth.refreshToken.domain.RefreshToken;
 import jun.invitation.auth.jwt.service.TokenService;
+import jun.invitation.auth.refreshToken.domain.RefreshToken;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.domain.user.exception.UserNotFoundException;
-import jun.invitation.global.dto.ResponseDto;
 import jun.invitation.domain.user.service.UserService;
+import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Optional;
 
-import static jakarta.servlet.http.HttpServletResponse.*;
+import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 @Controller
 @RequiredArgsConstructor

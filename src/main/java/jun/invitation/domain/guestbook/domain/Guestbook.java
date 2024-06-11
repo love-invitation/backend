@@ -4,9 +4,8 @@ import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity @Getter
 @NoArgsConstructor

@@ -8,7 +8,6 @@ import jun.invitation.domain.orders.dao.OrderRepository;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.dto.OrderDto;
 import jun.invitation.domain.orders.exception.OrderNotFoundException;
-import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

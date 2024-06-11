@@ -2,10 +2,10 @@ package jun.invitation.domain.user.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.global.entity.BaseEntity;
-import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter

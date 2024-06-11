@@ -3,14 +3,14 @@ package jun.invitation.domain.invitation.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jun.invitation.aws.s3.service.S3UploadService;
+import jun.invitation.domain.gallery.Gallery;
+import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.guestbook.dto.GuestbookListDto;
 import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
-import jun.invitation.domain.gallery.Gallery;
-import jun.invitation.domain.invitation.domain.*;
-import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
-import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
+import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
@@ -19,10 +19,9 @@ import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
-import jun.invitation.domain.gallery.Service.GalleryService;
+import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
-import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.service.TransportService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -196,8 +196,10 @@ public class InvitationService {
 
         Priority priority = invitation.getPriority();
         Wedding wedding = invitation.getWedding();
-        GroomInfo groomInfo = invitation.getGroomInfo();
-        BrideInfo brideInfo = invitation.getBrideInfo();
+//        GroomInfo groomInfo = invitation.getGroomInfo();
+//        BrideInfo brideInfo = invitation.getBrideInfo();
+        FamilyInfo groomInfo = invitation.getGroomInfo();
+        FamilyInfo brideInfo = invitation.getBrideInfo();
 
         Orders orders = orderService.requestFindOrder(invitation.getId());
 

@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-import static jun.invitation.domain.gallery.QGallery.*;
+import static jun.invitation.domain.gallery.QGallery.gallery;
 
 @RequiredArgsConstructor
 @Slf4j

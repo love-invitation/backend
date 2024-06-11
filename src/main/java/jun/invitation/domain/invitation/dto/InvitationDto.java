@@ -1,8 +1,7 @@
 package jun.invitation.domain.invitation.dto;
 
-import jun.invitation.domain.invitation.domain.*;
-import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
-import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
+import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.priority.dto.PriorityDto;
 import lombok.Builder;
@@ -27,10 +26,10 @@ public class InvitationDto {
     private String contents;
 
     /* 신랑 측 */
-    private GroomInfo groomInfo;
+    private FamilyInfo groomInfo;
 
     /* 신부 측 */
-    private BrideInfo brideInfo;
+    private FamilyInfo brideInfo;
 
     /* Wedding */
     private Wedding wedding;
@@ -45,7 +44,7 @@ public class InvitationDto {
 
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbookCheck,
-                         PriorityDto priorityDto, GroomInfo groomInfo, BrideInfo brideInfo, Wedding wedding, String thumbnailContents) {
+                         PriorityDto priorityDto, FamilyInfo groomInfo, FamilyInfo brideInfo, Wedding wedding, String thumbnailContents) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;

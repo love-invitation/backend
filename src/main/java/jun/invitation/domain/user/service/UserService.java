@@ -1,7 +1,7 @@
 package jun.invitation.domain.user.service;
 
-import jun.invitation.domain.user.domain.User;
 import jun.invitation.domain.user.dao.UserRepository;
+import jun.invitation.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

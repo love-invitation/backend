@@ -1,8 +1,8 @@
 package jun.invitation.global.config;
 
 import jun.invitation.auth.jwt.util.JwtAuthorizationFilter;
-import jun.invitation.auth.oauth.handler.OAuthSuccessHandler;
 import jun.invitation.auth.oauth.PrincipalOauth2UserService;
+import jun.invitation.auth.oauth.handler.OAuthSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;

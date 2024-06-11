@@ -1,8 +1,7 @@
 package jun.invitation.domain.invitation.dto;
 
-import jun.invitation.domain.invitation.domain.*;
-import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
-import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
+import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.priority.domain.Priority;
 import lombok.Data;
@@ -37,8 +36,8 @@ public class ResponseInvitationDto {
 
         Priority priority = invitation.getPriority();
         Wedding wedding = invitation.getWedding();
-        GroomInfo groomInfo = invitation.getGroomInfo();
-        BrideInfo brideInfo = invitation.getBrideInfo();
+        FamilyInfo groomInfo = invitation.getGroomInfo();
+        FamilyInfo brideInfo = invitation.getBrideInfo();
 
         this.id = invitation.getId();
 

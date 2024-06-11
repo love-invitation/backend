@@ -1,8 +1,7 @@
 package jun.invitation.domain.invitation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jun.invitation.domain.invitation.domain.embedded.BrideInfo;
-import jun.invitation.domain.invitation.domain.embedded.GroomInfo;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import lombok.Data;
@@ -39,13 +38,13 @@ public class ThumbnailDto {
             this.detail = wedding.getDetail();
         }
 
-        GroomInfo groomInfo = invitation.getGroomInfo();
+        FamilyInfo groomInfo = invitation.getGroomInfo();
         if (groomInfo != null) {
-            this.groomName = groomInfo.getGroomName();
+            this.groomName = groomInfo.getName();
         }
-        BrideInfo brideInfo = invitation.getBrideInfo();
+        FamilyInfo brideInfo = invitation.getBrideInfo();
         if ( brideInfo != null) {
-            this.brideName = brideInfo.getBrideName();
+            this.brideName = brideInfo.getName();
         }
 
         this.thumbnailContents = invitation.getThumbnailContents();
