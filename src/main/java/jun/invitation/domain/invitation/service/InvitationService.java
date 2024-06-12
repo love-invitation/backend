@@ -196,8 +196,6 @@ public class InvitationService {
 
         Priority priority = invitation.getPriority();
         Wedding wedding = invitation.getWedding();
-//        GroomInfo groomInfo = invitation.getGroomInfo();
-//        BrideInfo brideInfo = invitation.getBrideInfo();
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
 
