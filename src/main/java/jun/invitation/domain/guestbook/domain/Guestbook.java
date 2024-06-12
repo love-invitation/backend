@@ -23,11 +23,16 @@ public class Guestbook {
     @JoinColumn(name = "invitation_id")
     private Invitation invitation;
 
-    public Guestbook(String name, String password, String message, Invitation invitation) {
+    public Guestbook(String name, String password, String message) {
         this.name = name;
         this.password = password;
         this.message = message;
+    }
 
+    public void registerInvitation(Invitation invitation) {
+        if (this.invitation != null) {
+            this.invitation.getGuestbook().remove(this);
+        }
         this.invitation = invitation;
         invitation.getGuestbook().add(this);
     }

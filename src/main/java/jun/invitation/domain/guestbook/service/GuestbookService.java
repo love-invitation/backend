@@ -31,9 +31,9 @@ public class GuestbookService {
         Guestbook guestbook = new Guestbook(
                 guestbookDto.getName(),
                 guestbookDto.getPassword(),
-                guestbookDto.getMessage(),
-                invitation
+                guestbookDto.getMessage()
         );
+        guestbook.registerInvitation(invitation);
 
         Guestbook savedGuestbook = guestbookRepository.save(guestbook);
         return savedGuestbook.getId();
