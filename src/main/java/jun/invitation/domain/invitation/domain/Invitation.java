@@ -55,12 +55,6 @@ public class Invitation extends Product {
 
     private Boolean guestbookCheck;
 
-//    @Embedded
-//    private BrideInfo brideInfo;
-//
-//    @Embedded
-//    private GroomInfo groomInfo;
-
     @Embedded
     @AttributeOverrides({
         @AttributeOverride(name = "name", column = @Column( name = "brideName")),
