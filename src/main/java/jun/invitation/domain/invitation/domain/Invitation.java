@@ -49,9 +49,9 @@ public class Invitation extends Product {
     @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     private List<Guestbook> guestbook = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY, cascade = PERSIST)
-    @JoinColumn(name = "priority_id")
-    private Priority priority;
+    @OneToMany(mappedBy = "invitation", cascade = PERSIST)
+    @OrderBy("priority asc")
+    private List<Priority> priority = new ArrayList<>();
 
     private Boolean guestbookCheck;
 
@@ -102,21 +102,15 @@ public class Invitation extends Product {
         this.mainImageUrl = savedFileMap.get("imageUrl");
     }
 
-    public void register(User user, ProductInfo productInfo, Priority priority) {
-        super.register(user, productInfo);
-        this.priority = priority;
-    }
-
     @Builder
     public Invitation(String mainImageUrl, String thumbnailContents, String title, String contents, Wedding wedding, Boolean guestbookCheck,
-                      Priority priority, FamilyInfo brideInfo, FamilyInfo groomInfo ) {
+                      FamilyInfo brideInfo, FamilyInfo groomInfo ) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
         this.wedding = wedding;
         this.brideInfo = brideInfo;
         this.groomInfo = groomInfo;
-        this.priority = priority;
         this.guestbookCheck = guestbookCheck;
         this.thumbnailContents = thumbnailContents;
     }
@@ -131,6 +125,6 @@ public class Invitation extends Product {
         this.guestbookCheck = invitationDto.getGuestbookCheck();
         this.thumbnailContents = invitationDto.getThumbnailContents();
 
-        this.getPriority().update(invitationDto.getPriorityDto());
+//        this.getPriority().update(invitationDto.getPriorityDto());
     }
 }

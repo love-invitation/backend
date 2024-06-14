@@ -2,6 +2,7 @@ package jun.invitation.domain.priority.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.priority.dao.PriorityRepository;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.dto.PriorityDto;
@@ -9,6 +10,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -18,33 +24,25 @@ public class PriorityService {
 
     private final PriorityRepository priorityRepository;
 
-    @PersistenceContext
-    private EntityManager em;
-
-    public Priority savePriority(PriorityDto priorityDto) {
-
-        Priority priority = createPriority(priorityDto);
-
-        priorityRepository.save(priority);
-
-        return priority;
-    }
-
-    private static Priority createPriority(PriorityDto priorityDto) {
-        return Priority.builder()
-                .article(priorityDto.getArticle())
-                .thumbnail(priorityDto.getThumbnail())
-                .contact(priorityDto.getContact())
-                .weddingDate(priorityDto.getWeddingDate())
-                .weddingPlace(priorityDto.getWeddingPlace())
-                .transport(priorityDto.getTransport())
-                .guestbook(priorityDto.getGuestbook())
-                .account(priorityDto.getAccount())
-                .gallery(priorityDto.getGallery())
-                .build();
+    public void savePriority(List<PriorityDto> priorityDtos, Invitation invitation) {
+        priorityDtos.forEach(
+                p -> new Priority(p.getName(), p.getPriority())
+                        .register(invitation)
+        );
     }
 
     public void delete(Priority priority) {
         priorityRepository.delete(priority);
+    }
+
+    public void delete(Long productId){
+        priorityRepository.deleteByProductId(productId);
+    }
+
+    public void update(List<PriorityDto> newPriority, List<Priority> currentPriority) {
+        Map<String, Integer> map = newPriority.stream()
+                .collect(Collectors.toMap(PriorityDto::getName, PriorityDto::getPriority));
+
+        currentPriority.forEach( p -> p.updatePriority(map.get(p.getName())));
     }
 }

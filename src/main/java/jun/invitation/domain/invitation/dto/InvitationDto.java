@@ -40,11 +40,11 @@ public class InvitationDto {
     private Boolean guestbookCheck;
 
     /* 우선 순위 */
-    private PriorityDto priorityDto;
+    private List<PriorityDto> priority;
 
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbookCheck,
-                         PriorityDto priorityDto, FamilyInfo groomInfo, FamilyInfo brideInfo, Wedding wedding, String thumbnailContents) {
+                         List<PriorityDto> priority, FamilyInfo groomInfo, FamilyInfo brideInfo, Wedding wedding, String thumbnailContents) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
@@ -53,7 +53,7 @@ public class InvitationDto {
         this.wedding = wedding;
         this.transport = transport;
         this.guestbookCheck = guestbookCheck;
-        this.priorityDto = priorityDto;
+        this.priority = priority;
         this.thumbnailContents = thumbnailContents;
     }
 

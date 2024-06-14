@@ -17,6 +17,7 @@ import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.domain.Priority;
+import jun.invitation.domain.priority.dto.PriorityDto;
 import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.product.service.ProductService;
@@ -38,6 +39,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -53,9 +56,6 @@ public class InvitationService {
     private final GuestbookService guestbookService;
     private final OrderService orderService;
 
-    @PersistenceContext
-    private EntityManager em;
-
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void removeAfterWedding() {
@@ -66,19 +66,15 @@ public class InvitationService {
     @Transactional
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException  {
 
-        log.info("invitationDto : {}", invitationdto.toString());
-        /* 우선 순위 저장*/
-        Priority priority = priorityService.savePriority(invitationdto.getPriorityDto());
-
         Invitation invitation = invitationdto.toInvitation();
+        priorityService.savePriority(invitationdto.getPriority(), invitation);
 
         ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
 
         invitation.register(
 //                getCurrentUser(),
                 null,
-                productInfo,
-                priority
+                productInfo
                 );
 
         /* 갤러리 저장 */
@@ -130,8 +126,8 @@ public class InvitationService {
         guestbookService.delete(invitationId);
         transportService.delete(invitationId);
         orderService.delete(invitationId);
+        priorityService.delete(invitationId);
         productService.deleteByInvitation(invitation);
-        priorityService.delete(invitation.getPriority());
     }
 
 
@@ -150,12 +146,13 @@ public class InvitationService {
         galleryService.update(currentGalleries,invitation, newGalleries);
 
         List<Transport> currentTransports = invitation.getTransport();
-
         List<TransportDto> newTransportDtos = invitationDto.getTransport();
-
-        log.info("!!여기!!");
         transportService.update(currentTransports, invitation, newTransportDtos);
 
+        List<PriorityDto> newPriority = invitationDto.getPriority();
+        List<Priority> currentPriority = invitation.getPriority();
+
+        priorityService.update(newPriority, currentPriority);
 
         mainImageUpdate(mainImage, invitation);
         invitation.update(invitationDto);
@@ -194,14 +191,12 @@ public class InvitationService {
 
     private LinkedHashMap<String, Object> sortByPriority(Invitation invitation) {
 
-        Priority priority = invitation.getPriority();
+        List<Priority> priorities = invitation.getPriority();
         Wedding wedding = invitation.getWedding();
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
 
         Orders orders = orderService.requestFindOrder(invitation.getId());
-
-        List<String> sortedPriorityList = priority.getSortedPriorityList();
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
@@ -209,55 +204,56 @@ public class InvitationService {
         result.put("isPaid", orders.getIsPaid());
         result.put("thumbnail", new ThumbnailDto( invitation));
 
-        for (int i = 0; i < sortedPriorityList.size(); i++) {
+        for (int i = 0; i < priorities.size(); i++) {
+            Priority priority = priorities.get(i);
+            String name = priority.getName();
 
-            switch (sortedPriorityList.get(i)) {
+            Integer priorityValue = priority.getPriority();
+            switch (name) {
                 case "article" :
                     result.put("article",
                             new ArticleDto(invitation.getTitle(), invitation.getContents(),
-                                    groomInfo, brideInfo, priority.getArticle())
+                                    groomInfo, brideInfo, priorityValue)
                     );
                     break;
                 case "weddingDate":
                     result.put("weddingDate",
-                            new WeddingDateDto(wedding, priority.getWeddingDate())
+                            new WeddingDateDto(wedding, priorityValue)
                     );
                     break;
                 case "weddingPlace":
                     result.put("weddingPlace",
-                            new WeddingPlaceDto(wedding, priority.getWeddingPlace())
+                            new WeddingPlaceDto(wedding, priorityValue)
                     );
                     break;
                 case "transport":
                     result.put("transport",
-                            new TransportInfoDto(invitation.getTransport(), priority.getTransport())
+                            new TransportInfoDto(invitation.getTransport(), priorityValue)
                     );
                     break;
                 case "gallery":
                     result.put("gallery",
-                            new GalleryInfoDto(invitation.getGallery(), priority.getGallery())
+                            new GalleryInfoDto(invitation.getGallery(), priorityValue)
                     );
                     break;
                 case "contact":
                     result.put("contact",
-                            new ContactDto(groomInfo,brideInfo, priority.getContact())
+                            new ContactDto(groomInfo,brideInfo, priorityValue)
                     );
                     break;
                 case "account":
                     result.put("account",
-                            new AccountDto(groomInfo,brideInfo,priority.getAccount())
+                            new AccountDto(groomInfo,brideInfo, priorityValue)
                     );
                     break;
                 case "guestbook":
                     Pageable page = PageRequest.of(0,3);
                     Page<GuestbookResponseDto> guestbookResponseDtoPage = guestbookService.getResponseDtoList(invitation.getId(), page);
                     result.put("guestbook",
-                            new GuestbookListDto(guestbookResponseDtoPage, priority.getGuestbook())
+                            new GuestbookListDto(guestbookResponseDtoPage, priorityValue)
                     );
             }
         }
-
-
         return result;
     }
 

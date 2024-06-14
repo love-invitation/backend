@@ -96,7 +96,6 @@ public class InvitationController {
             @RequestPart(name = "mainImage", required = false) MultipartFile mainImage
     ) throws IOException {
 
-        log.info("{}",invitationDto.toInvitation());
         invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage);
 
         ResponseDto responseDto = ResponseDto.builder()
@@ -112,9 +111,8 @@ public class InvitationController {
 
     @GetMapping("/test/insert")
     public ResponseEntity<ResponseDto> insert() {
-        Invitation invitation = new Invitation(null, null, null, null, new Wedding(null, null, null, LocalDateTime.now().minusDays(1), null),true,null,null,null);
-        Priority priority = new Priority(1, 2, 3, 4, 5, 6, 7, 8, 9);
-        invitation.register(null, null,priority);
+        Invitation invitation = new Invitation(null, null, null, null, new Wedding(null, null, null, LocalDateTime.now().minusDays(1), null),true,null,null);
+        invitation.register(null, null);
 
         for (int i = 0; i < 12 ; i++) {
             Gallery gallery = new Gallery();
@@ -122,7 +120,8 @@ public class InvitationController {
         }
 
         for (int i = 0; i < 10; i++) {
-            new Guestbook("hong"+i, "1234", "잘살아 " + i, invitation);
+            Guestbook guestbook = new Guestbook("hong" + i, "1234", "잘살아 " + i);
+            guestbook.registerInvitation(invitation);
         }
 
         for (int i = 0; i < 3; i++) {

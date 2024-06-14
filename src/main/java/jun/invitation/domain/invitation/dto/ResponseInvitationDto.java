@@ -8,7 +8,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Data @NoArgsConstructor @Slf4j
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+@Data
+@NoArgsConstructor
 public class ResponseInvitationDto {
 
     private Long id;
@@ -30,11 +35,12 @@ public class ResponseInvitationDto {
     private ContactDto contact;
 
     public ResponseInvitationDto(Invitation invitation) {
+        List<Priority> priorities = invitation.getPriority();
 
-        // TODO : priority 값 순서대로 해야함 ..
+        Map<String, Integer> map = invitation.getPriority()
+                .stream()
+                .collect(Collectors.toMap(Priority::getName, Priority::getPriority));
 
-
-        Priority priority = invitation.getPriority();
         Wedding wedding = invitation.getWedding();
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
@@ -43,16 +49,15 @@ public class ResponseInvitationDto {
 
         this.thumbnail = new ThumbnailDto( invitation);
 
-        this.article = new ArticleDto(invitation.getTitle(), invitation.getContents(), groomInfo, brideInfo, priority.getArticle());
+        this.article = new ArticleDto(invitation.getTitle(), invitation.getContents(), groomInfo, brideInfo, map.get("article"));
 
-        this.weddingDate = new WeddingDateDto(wedding, priority.getWeddingDate());
-        this.weddingPlace = new WeddingPlaceDto(wedding, priority.getWeddingPlace());
+        this.weddingDate = new WeddingDateDto(wedding, map.get("weddingDate"));
+        this.weddingPlace = new WeddingPlaceDto(wedding, map.get("weddingPlace"));
 
-        this.transport = new TransportInfoDto(invitation.getTransport(), priority.getTransport());
-        this.gallery = new GalleryInfoDto(invitation.getGallery(), priority.getGallery());
+        this.transport = new TransportInfoDto(invitation.getTransport(), map.get("transport"));
+        this.gallery = new GalleryInfoDto(invitation.getGallery(), map.get("gallery"));
 
-        this.contact = new ContactDto(groomInfo,brideInfo, priority.getContact());
-        this.account = new AccountDto(groomInfo,brideInfo,priority.getAccount());
-
+        this.contact = new ContactDto(groomInfo,brideInfo, map.get("contact"));
+        this.account = new AccountDto(groomInfo,brideInfo, map.get("account"));
     }
 }
