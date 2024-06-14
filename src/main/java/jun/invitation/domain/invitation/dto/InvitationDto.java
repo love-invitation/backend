@@ -4,6 +4,7 @@ import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.priority.dto.PriorityDto;
+import jun.invitation.domain.transport.dto.TransportDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;

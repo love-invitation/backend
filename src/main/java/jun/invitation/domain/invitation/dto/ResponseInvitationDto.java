@@ -1,12 +1,13 @@
 package jun.invitation.domain.invitation.dto;
 
+import jun.invitation.domain.gallery.dto.GalleryInfoDto;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.priority.domain.Priority;
+import jun.invitation.domain.transport.dto.TransportInfoDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;

@@ -2,7 +2,7 @@ package jun.invitation.domain.transport.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.dto.TransportDto;
+import jun.invitation.domain.transport.dto.TransportDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

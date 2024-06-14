@@ -1,7 +1,6 @@
-package jun.invitation.domain.invitation.dto;
+package jun.invitation.domain.gallery.dto;
 
 import jun.invitation.domain.gallery.Gallery;
-import jun.invitation.domain.gallery.dto.GalleryDto;
 import lombok.Data;
 
 import java.util.ArrayList;

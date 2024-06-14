@@ -1,10 +1,9 @@
 package jun.invitation.domain.invitation.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.Service.GalleryService;
+import jun.invitation.domain.gallery.dto.GalleryInfoDto;
 import jun.invitation.domain.guestbook.dto.GuestbookListDto;
 import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
@@ -24,6 +23,8 @@ import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.domain.transport.domain.Transport;
+import jun.invitation.domain.transport.dto.TransportDto;
+import jun.invitation.domain.transport.dto.TransportInfoDto;
 import jun.invitation.domain.transport.service.TransportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +40,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service @Slf4j
 @RequiredArgsConstructor

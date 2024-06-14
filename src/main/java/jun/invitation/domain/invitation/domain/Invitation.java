@@ -125,6 +125,5 @@ public class Invitation extends Product {
         this.guestbookCheck = invitationDto.getGuestbookCheck();
         this.thumbnailContents = invitationDto.getThumbnailContents();
 
-//        this.getPriority().update(invitationDto.getPriorityDto());
     }
 }

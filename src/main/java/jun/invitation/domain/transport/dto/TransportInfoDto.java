@@ -1,4 +1,4 @@
-package jun.invitation.domain.invitation.dto;
+package jun.invitation.domain.transport.dto;
 
 import jun.invitation.domain.transport.domain.Transport;
 import lombok.Data;
