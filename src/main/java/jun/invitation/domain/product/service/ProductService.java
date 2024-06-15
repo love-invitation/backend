@@ -17,7 +17,7 @@ public class ProductService {
         return productRepository.findById(id).orElseGet(null);
     }
 
-    public void deleteByInvitation(Invitation invitation) {
-        productRepository.deleteByInvitation(invitation);
+    public void deleteByInvitation(Long id) {
+        productRepository.deleteById(id);
     }
 }

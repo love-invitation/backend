@@ -23,17 +23,11 @@ public class GalleryService {
     private final S3UploadService s3UploadService;
 
     @Transactional
-    public void delete(List<Gallery> galleries, Invitation invitation) {
+    public void delete(List<Gallery> galleries) {
         galleries.forEach(g -> {
             s3UploadService.delete(g.getStoreFileName());
         });
         galleryRepository.deleteByGalleries(galleries);
-    }
-
-    // TODO : s3 삭제 필요
-    @Transactional
-    public void delete(Long invitationId) {
-        galleryRepository.deleteByInvitationId(invitationId);
     }
 
     public void save(List<MultipartFile> gallery, Invitation invitation) throws IOException {
@@ -63,12 +57,12 @@ public class GalleryService {
     public void update(List<Gallery> currentGalleries, Invitation invitation, List<MultipartFile> newGalleries) throws IOException {
         // 1.
         if (!currentGalleries.isEmpty() && newGalleries != null) {
-            delete(currentGalleries, invitation);
+            delete(currentGalleries);
             invitation.getGallery().clear();
             save(newGalleries, invitation);
         } else if (!currentGalleries.isEmpty() && newGalleries == null){
             // 2.
-            delete(currentGalleries, invitation);
+            delete(currentGalleries);
         } else if (currentGalleries.isEmpty() && newGalleries != null) {
             // 3.
             save(newGalleries, invitation);

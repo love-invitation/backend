@@ -121,12 +121,12 @@ public class InvitationService {
             s3UploadService.delete(invitation.getMainImageStoreFileName());
         }
 
-        galleryService.delete(invitationId);
+        galleryService.delete(invitation.getGallery());
         guestbookService.delete(invitationId);
         transportService.delete(invitationId);
         orderService.delete(invitationId);
         priorityService.delete(invitationId);
-        productService.deleteByInvitation(invitation);
+        productService.deleteByInvitation(invitationId);
     }
 
 
