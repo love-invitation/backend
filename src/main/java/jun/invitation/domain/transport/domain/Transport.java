@@ -22,7 +22,7 @@ public class Transport {
     private String detail;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invitation_id")
+    @JoinColumn(name = "product_id")
     private Invitation invitation;
 
     public Transport(TransportDto transportDto) {

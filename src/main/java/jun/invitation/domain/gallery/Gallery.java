@@ -5,12 +5,15 @@ import jun.invitation.domain.invitation.domain.Invitation;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.GenerationType.*;
+
 @Entity @Getter
 @NoArgsConstructor
 public class Gallery {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "gallery_id")
     private Long id;
 
     private Long priority;
@@ -21,7 +24,7 @@ public class Gallery {
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invitation_id")
+    @JoinColumn(name = "product_id")
     private Invitation invitation;
 
     public Gallery(String originFileName , String storeFileName, Long priority, String imageUrl) {

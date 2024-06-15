@@ -12,7 +12,9 @@ import java.math.BigDecimal;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductInfo {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "productInfo_id")
     private Long id;
 

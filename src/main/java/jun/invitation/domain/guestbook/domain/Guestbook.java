@@ -11,8 +11,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 public class Guestbook {
 
-    @Id @Column(name = "guestbook_id")
+    @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "guestbook_id")
     private Long id;
 
     private String name;
@@ -20,7 +21,7 @@ public class Guestbook {
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invitation_id")
+    @JoinColumn(name = "product_id")
     private Invitation invitation;
 
     public Guestbook(String name, String password, String message) {

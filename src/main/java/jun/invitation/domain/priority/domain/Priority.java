@@ -12,15 +12,17 @@ import java.util.Comparator;
 import java.util.List;
 
 import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @Getter
 public class Priority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "priority_id")
     private Long id;
 
@@ -28,7 +30,7 @@ public class Priority {
     private Integer priority;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "invitation_id")
+    @JoinColumn(name = "product_id")
     private Invitation invitation;
 
     public Priority(String name, Integer priority) {
