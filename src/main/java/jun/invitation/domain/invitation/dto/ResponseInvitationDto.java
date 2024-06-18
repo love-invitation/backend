@@ -19,7 +19,7 @@ public class ResponseInvitationDto {
 
     private Long id;
 
-    private ThumbnailDto thumbnail;
+    private CoverDto thumbnail;
 
     private ArticleDto article;
 
@@ -48,7 +48,7 @@ public class ResponseInvitationDto {
 
         this.id = invitation.getId();
 
-        this.thumbnail = new ThumbnailDto( invitation);
+        this.thumbnail = new CoverDto( invitation);
 
         this.article = new ArticleDto(invitation.getTitle(), invitation.getContents(), groomInfo, brideInfo, map.get("article"));
 

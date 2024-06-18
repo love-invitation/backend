@@ -9,7 +9,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ThumbnailDto {
+public class CoverDto {
 
     private Integer priority;
     private String imageUrl;
@@ -26,7 +26,7 @@ public class ThumbnailDto {
 
     private String thumbnailContents;
 
-    public ThumbnailDto(Invitation invitation) {
+    public CoverDto(Invitation invitation) {
         this.priority = 0;
         this.imageUrl = invitation.getMainImageUrl();
         this.imageOriginName = invitation.getMainImageOriginName();

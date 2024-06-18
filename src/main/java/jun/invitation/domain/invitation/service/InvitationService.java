@@ -201,7 +201,7 @@ public class InvitationService {
 
         result.put("tsid", invitation.getTsid());
         result.put("isPaid", orders.getIsPaid());
-        result.put("thumbnail", new ThumbnailDto( invitation));
+        result.put("cover", new CoverDto( invitation));
 
         for (Priority priority : priorities) {
             String name = priority.getName();
