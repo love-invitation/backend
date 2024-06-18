@@ -22,6 +22,9 @@ import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
+import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
+import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
+import jun.invitation.domain.shareThumbnail.service.ShareThumbnailService;
 import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.domain.transport.dto.TransportInfoDto;
@@ -53,6 +56,7 @@ public class InvitationService {
     private final PriorityService priorityService;
     private final TransportService transportService;
     private final GuestbookService guestbookService;
+    private final ShareThumbnailService shareThumbnailService;
     private final OrderService orderService;
 
     @Scheduled(cron = "0 0 0 * * ?")
@@ -63,12 +67,15 @@ public class InvitationService {
     }
 
     @Transactional
-    public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage) throws IOException  {
+    public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage, MultipartFile shareThumbnailImage) throws IOException  {
 
         Invitation invitation = invitationdto.toInvitation();
         priorityService.savePriority(invitationdto.getPriority(), invitation);
 
         ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
+
+        ShareThumbnail createdThumbnail = shareThumbnailService.create(invitation, shareThumbnailImage, invitationdto.getShareThumbnail());
+        invitation.registerShareThumbnail(createdThumbnail);
 
         invitation.register(
 //                getCurrentUser(),
@@ -93,13 +100,12 @@ public class InvitationService {
         }
 
         Long invitationTsid = saveInvitation(invitation);
-        saveOrders(invitation);
+        saveOrder(invitation);
 
         return invitationTsid;
 
     }
-
-    private void saveOrders(Invitation invitation) {
+    private void saveOrder(Invitation invitation) {
         orderService.requestOrder(invitation);
     }
 
@@ -254,6 +260,13 @@ public class InvitationService {
                     break;
             }
         }
+
+        ShareThumbnail shareThumbnail = invitation.getShareThumbnail();
+        String shareThumbTitle = shareThumbnail.getTitle();
+        String shareThumbContents = shareThumbnail.getContents();
+        String shareThumbImageUrl = shareThumbnail.getImageUrl();
+        result.put("shareThumbnail", new ShareThumbnailResDto(shareThumbTitle,shareThumbContents, shareThumbImageUrl));
+
         return result;
     }
 

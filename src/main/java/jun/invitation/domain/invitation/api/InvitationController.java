@@ -58,10 +58,11 @@ public class InvitationController {
     public ResponseEntity<ResponseDto> createInvitation(
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
             @RequestPart(name = "gallery", required = false) List<MultipartFile> gallery,
-            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage) throws IOException {
+            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage,
+            @RequestPart(name = "shareThumbnail", required = false) MultipartFile shareThumbnail) throws IOException {
 
 
-        invitationService.createInvitation(invitationDto, gallery, mainImage);
+        invitationService.createInvitation(invitationDto, gallery, mainImage, shareThumbnail);
         ResponseDto responseDto = ResponseDto.builder()
                 .status(CREATED.value())
                 .message("create success")

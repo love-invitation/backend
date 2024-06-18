@@ -4,6 +4,7 @@ import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.priority.dto.PriorityDto;
+import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.transport.dto.TransportDto;
 import lombok.Builder;
 import lombok.Data;
@@ -38,6 +39,9 @@ public class InvitationDto {
     /* 교통수단 */
     private List<TransportDto> transport;
 
+    /* share thumbnail */
+    private ShareThumbnailDto shareThumbnail;
+
     private Boolean guestbookCheck;
 
     /* 우선 순위 */
@@ -45,7 +49,7 @@ public class InvitationDto {
 
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbookCheck,
-                         List<PriorityDto> priority, FamilyInfo groomInfo, FamilyInfo brideInfo, Wedding wedding, String coverContents) {
+                         List<PriorityDto> priority, FamilyInfo groomInfo, FamilyInfo brideInfo, Wedding wedding, String coverContents, ShareThumbnailDto shareThumbnail) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
@@ -56,6 +60,7 @@ public class InvitationDto {
         this.guestbookCheck = guestbookCheck;
         this.priority = priority;
         this.coverContents = coverContents;
+        this.shareThumbnail = shareThumbnail;
     }
 
     public Invitation toInvitation(){
