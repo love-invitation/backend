@@ -50,7 +50,7 @@ public class Invitation extends Product {
     private List<Guestbook> guestbook = new ArrayList<>();
 
     @OneToMany(mappedBy = "invitation", cascade = PERSIST)
-    @OrderBy("priority asc")
+    @OrderBy("priority")
     private List<Priority> priority = new ArrayList<>();
 
     private Boolean guestbookCheck;
