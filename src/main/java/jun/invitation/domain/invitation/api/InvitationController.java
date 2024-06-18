@@ -58,7 +58,7 @@ public class InvitationController {
     public ResponseEntity<ResponseDto> createInvitation(
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
             @RequestPart(name = "gallery", required = false) List<MultipartFile> gallery,
-            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage, HttpServletRequest request) throws IOException {
+            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage) throws IOException {
 
 
         invitationService.createInvitation(invitationDto, gallery, mainImage);

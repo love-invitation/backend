@@ -47,7 +47,7 @@ public class CoverDto {
             this.brideName = brideInfo.getName();
         }
 
-        this.thumbnailContents = invitation.getThumbnailContents();
+        this.thumbnailContents = invitation.getCoverContents();
 
     }
 }

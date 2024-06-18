@@ -8,9 +8,7 @@ import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
-import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.transport.domain.Transport;
-import jun.invitation.domain.user.domain.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import static jakarta.persistence.CascadeType.PERSIST;
-import static jakarta.persistence.FetchType.LAZY;
 
 @Entity @Getter
 @DiscriminatorValue("Invitation")
@@ -32,7 +29,7 @@ public class Invitation extends Product {
     private String mainImageOriginName;
     private String mainImageStoreFileName;
 
-    private String thumbnailContents;
+    private String coverContents;
 
     private String title;
     private String contents;
@@ -103,7 +100,7 @@ public class Invitation extends Product {
     }
 
     @Builder
-    public Invitation(String mainImageUrl, String thumbnailContents, String title, String contents, Wedding wedding, Boolean guestbookCheck,
+    public Invitation(String mainImageUrl, String coverContents, String title, String contents, Wedding wedding, Boolean guestbookCheck,
                       FamilyInfo brideInfo, FamilyInfo groomInfo ) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
@@ -112,7 +109,7 @@ public class Invitation extends Product {
         this.brideInfo = brideInfo;
         this.groomInfo = groomInfo;
         this.guestbookCheck = guestbookCheck;
-        this.thumbnailContents = thumbnailContents;
+        this.coverContents = coverContents;
     }
 
     public void update(InvitationDto invitationDto) {
@@ -123,7 +120,7 @@ public class Invitation extends Product {
         this.brideInfo = invitationDto.getBrideInfo();
         this.groomInfo = invitationDto.getGroomInfo();
         this.guestbookCheck = invitationDto.getGuestbookCheck();
-        this.thumbnailContents = invitationDto.getThumbnailContents();
+        this.coverContents = invitationDto.getCoverContents();
 
     }
 }
