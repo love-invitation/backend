@@ -203,13 +203,13 @@ public class InvitationService {
         result.put("isPaid", orders.getIsPaid());
         result.put("thumbnail", new ThumbnailDto( invitation));
 
-        for (int i = 0; i < priorities.size(); i++) {
-            Priority priority = priorities.get(i);
+        for (Priority priority : priorities) {
             String name = priority.getName();
 
             Integer priorityValue = priority.getPriority();
+
             switch (name) {
-                case "article" :
+                case "article":
                     result.put("article",
                             new ArticleDto(invitation.getTitle(), invitation.getContents(),
                                     groomInfo, brideInfo, priorityValue)
@@ -237,20 +237,21 @@ public class InvitationService {
                     break;
                 case "contact":
                     result.put("contact",
-                            new ContactDto(groomInfo,brideInfo, priorityValue)
+                            new ContactDto(groomInfo, brideInfo, priorityValue)
                     );
                     break;
                 case "account":
                     result.put("account",
-                            new AccountDto(groomInfo,brideInfo, priorityValue)
+                            new AccountDto(groomInfo, brideInfo, priorityValue)
                     );
                     break;
                 case "guestbook":
-                    Pageable page = PageRequest.of(0,3);
+                    Pageable page = PageRequest.of(0, 3);
                     Page<GuestbookResponseDto> guestbookResponseDtoPage = guestbookService.getResponseDtoList(invitation.getId(), page);
                     result.put("guestbook",
                             new GuestbookListDto(guestbookResponseDtoPage, priorityValue)
                     );
+                    break;
             }
         }
         return result;
@@ -269,6 +270,7 @@ public class InvitationService {
         return invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
     }
 
+    @Transactional(readOnly = true)
     public Invitation requestFindByTsidInvitation(Long invitationTsid) {
         return invitationRepository.findByTsid(invitationTsid).orElseThrow(InvitationNotFoundException::new);
     }
