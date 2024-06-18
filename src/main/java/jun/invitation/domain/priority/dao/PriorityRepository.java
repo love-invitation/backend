@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface PriorityRepository extends JpaRepository<Priority, Long> {
 
     @Modifying
-    @Query(value = "delete from Priority p where p.invitation_id= :id", nativeQuery = true)
+    @Query(value = "delete from Priority p where p.product_id= :id", nativeQuery = true)
     void deleteByProductId(@Param("id") Long productId);
 }
