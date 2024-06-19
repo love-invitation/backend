@@ -24,7 +24,7 @@ public class CoverDto {
     private String groomName;
     private String brideName;
 
-    private String thumbnailContents;
+    private String coverContents;
 
     public CoverDto(Invitation invitation) {
         this.priority = 0;
@@ -47,7 +47,7 @@ public class CoverDto {
             this.brideName = brideInfo.getName();
         }
 
-        this.thumbnailContents = invitation.getCoverContents();
+        this.coverContents = invitation.getCoverContents();
 
     }
 }
