@@ -21,11 +21,13 @@ public class FamilyInfo {
     private String fatherBankName;
     private String fatherPhone;
     private String fatherAccount;
+    private Boolean fatherIsCondolences;
 
     private String motherName;
     private String motherBankName;
     private String motherPhone;
     private String motherAccount;
+    private Boolean motherIsCondolences;
 
     private String relation;
 }

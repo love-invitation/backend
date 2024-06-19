@@ -70,11 +70,13 @@ public class Invitation extends Product {
         @AttributeOverride(name = "fatherBankName", column = @Column( name = "brideFatherBankName")),
         @AttributeOverride(name = "fatherPhone", column = @Column( name = "brideFatherPhone")),
         @AttributeOverride(name = "fatherAccount", column = @Column( name = "brideFatherAccount")),
+        @AttributeOverride(name = "fatherIsCondolences", column = @Column( name = "brideFatherIsCondolences")),
 
         @AttributeOverride(name = "motherName", column = @Column( name = "brideMotherName")),
         @AttributeOverride(name = "motherBankName", column = @Column( name = "brideMotherBankName")),
         @AttributeOverride(name = "motherPhone", column = @Column( name = "brideMotherPhone")),
         @AttributeOverride(name = "motherAccount", column = @Column( name = "brideMotherAccount")),
+        @AttributeOverride(name = "MotherIsCondolences", column = @Column( name = "brideMotherIsCondolences")),
         @AttributeOverride(name = "relation", column = @Column( name = "brideRelation"))
     })
     private FamilyInfo brideInfo;
@@ -90,11 +92,13 @@ public class Invitation extends Product {
             @AttributeOverride(name = "fatherBankName", column = @Column( name = "groomFatherBankName")),
             @AttributeOverride(name = "fatherPhone", column = @Column( name = "groomFatherPhone")),
             @AttributeOverride(name = "fatherAccount", column = @Column( name = "groomFatherAccount")),
+            @AttributeOverride(name = "fatherIsCondolences", column = @Column( name = "groomFatherIsCondolences")),
 
             @AttributeOverride(name = "motherName", column = @Column( name = "groomMotherName")),
             @AttributeOverride(name = "motherBankName", column = @Column( name = "groomMotherBankName")),
             @AttributeOverride(name = "motherPhone", column = @Column( name = "groomMotherPhone")),
             @AttributeOverride(name = "motherAccount", column = @Column( name = "groomMotherAccount")),
+            @AttributeOverride(name = "motherIsCondolences", column = @Column( name = "groomMotherIsCondolences")),
             @AttributeOverride(name = "relation", column = @Column( name = "groomRelationAccount"))
     })
     private FamilyInfo groomInfo;
