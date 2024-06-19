@@ -48,7 +48,9 @@ public class ShareThumbnailService {
     public void deleteS3Image(ShareThumbnail shareThumbnail) {
         if (shareThumbnail != null) {
             String imageStoreFileName = shareThumbnail.getImageStoreFileName();
-            s3UploadService.delete(imageStoreFileName);
+            if (imageStoreFileName != null) {
+                s3UploadService.delete(imageStoreFileName);
+            }
         }
     }
 
