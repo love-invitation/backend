@@ -13,6 +13,8 @@ import static lombok.AccessLevel.*;
 @NoArgsConstructor(access = PROTECTED)
 public class ShareThumbnail {
 
+    //TODO : Invitation 삭제 시, 같이 삭제되야함
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

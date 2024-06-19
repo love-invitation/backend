@@ -74,7 +74,7 @@ public class InvitationService {
 
         ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
 
-        ShareThumbnail createdThumbnail = shareThumbnailService.create(invitation, shareThumbnailImage, invitationdto.getShareThumbnail());
+        ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getShareThumbnail());
         invitation.registerShareThumbnail(createdThumbnail);
 
         invitation.register(
@@ -132,6 +132,7 @@ public class InvitationService {
         transportService.delete(invitationId);
         orderService.delete(invitationId);
         priorityService.delete(invitationId);
+        shareThumbnailService.deleteS3Image(invitation.getShareThumbnail());
         productService.deleteByInvitation(invitationId);
     }
 

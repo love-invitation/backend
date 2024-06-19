@@ -21,7 +21,7 @@ public class ShareThumbnailService {
     private final ShareThumbnailRepository shareThumbnailRepository;
     private final S3UploadService s3UploadService;
 
-    public ShareThumbnail create(Invitation invitation, MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) throws IOException {
+    public ShareThumbnail create(MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) throws IOException {
 
         String savedUrlPath = null;
         String originFileName = null;
@@ -43,6 +43,13 @@ public class ShareThumbnailService {
         }
 
         return new ShareThumbnail(title, contents, savedUrlPath, originFileName, storeFileName);
+    }
+
+    public void deleteS3Image(ShareThumbnail shareThumbnail) {
+        if (shareThumbnail != null) {
+            String imageStoreFileName = shareThumbnail.getImageStoreFileName();
+            s3UploadService.delete(imageStoreFileName);
+        }
     }
 
 }
