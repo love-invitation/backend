@@ -11,9 +11,11 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Orders, Long> {
     List<Orders> findByUser_id(Long id);
+
     Optional<Orders> findByProduct_id(Long id);
 
+
     @Modifying
-    @Query(value = "delete from Orders o where o.product_id = :id", nativeQuery = true)
+    @Query(value = "delete from Orders o where o.product.id = :id")
     void deleteByProductId(@Param("id") Long id);
 }
