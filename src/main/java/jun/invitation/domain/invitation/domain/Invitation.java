@@ -8,6 +8,7 @@ import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
+import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.transport.domain.Transport;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.FetchType.*;
 
 @Entity @Getter
 @DiscriminatorValue("Invitation")
@@ -49,6 +52,10 @@ public class Invitation extends Product {
     @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     @OrderBy("priority")
     private List<Priority> priority = new ArrayList<>();
+
+    @OneToOne(fetch = LAZY, cascade = {PERSIST, REMOVE})
+    @JoinColumn(name = "share_thumbnail_id")
+    private ShareThumbnail shareThumbnail;
 
     private Boolean guestbookCheck;
 
@@ -99,9 +106,13 @@ public class Invitation extends Product {
         this.mainImageUrl = savedFileMap.get("imageUrl");
     }
 
+    public void registerShareThumbnail(ShareThumbnail shareThumbnail) {
+        this.shareThumbnail = shareThumbnail;
+    }
+
     @Builder
     public Invitation(String mainImageUrl, String coverContents, String title, String contents, Wedding wedding, Boolean guestbookCheck,
-                      FamilyInfo brideInfo, FamilyInfo groomInfo ) {
+                      FamilyInfo brideInfo, FamilyInfo groomInfo) {
         this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
@@ -112,6 +123,10 @@ public class Invitation extends Product {
         this.coverContents = coverContents;
     }
 
+    /**
+     * TODO : shareThumbnail 관련 코드 다시 확인
+     * @param invitationDto
+     */
     public void update(InvitationDto invitationDto) {
 
         this.title = invitationDto.getTitle();
