@@ -93,10 +93,11 @@ public class InvitationController {
             @PathVariable(name = "invitationId") Long invitationId ,
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
             @RequestPart(name = "gallery", required = false) List<MultipartFile> gallery,
-            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage
+            @RequestPart(name = "mainImage", required = false) MultipartFile mainImage,
+            @RequestPart(name = "shareThumbnail", required = false) MultipartFile shareThumbnail
     ) throws IOException {
 
-        invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage);
+        invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage, shareThumbnail);
 
         ResponseDto responseDto = ResponseDto.builder()
                 .status(OK.value())

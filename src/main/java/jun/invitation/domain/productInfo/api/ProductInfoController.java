@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductInfoController {
 
-    private static final Logger log = LoggerFactory.getLogger(ProductInfoController.class);
     private final ProductInfoService productInfoService;
 
     @GetMapping("/api/product/info")

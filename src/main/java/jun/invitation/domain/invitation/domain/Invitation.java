@@ -105,6 +105,15 @@ public class Invitation extends Product {
 
 
     public void registerMainImage(Map<String, String> savedFileMap) {
+
+        if (savedFileMap == null || savedFileMap.isEmpty()) {
+            this.mainImageOriginName = null;
+            this.mainImageStoreFileName = null;
+            this.mainImageUrl = null;
+
+            return;
+        }
+
         this.mainImageOriginName = savedFileMap.get("originFileName");
         this.mainImageStoreFileName = savedFileMap.get("storeFileName");
         this.mainImageUrl = savedFileMap.get("imageUrl");

@@ -23,6 +23,7 @@ import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
+import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
 import jun.invitation.domain.shareThumbnail.service.ShareThumbnailService;
 import jun.invitation.domain.transport.domain.Transport;
@@ -41,6 +42,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -138,7 +140,7 @@ public class InvitationService {
 
 
     @Transactional
-    public void updateInvitation(Long invitationId, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage) throws IOException {
+    public void updateInvitation(Long invitationId, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage, MultipartFile shareThumbnail) throws IOException {
 
         Invitation invitation = invitationRepository.findById(invitationId)
                 .orElseThrow(InvitationNotFoundException::new);
@@ -160,6 +162,11 @@ public class InvitationService {
 
         priorityService.update(newPriority, currentPriority);
 
+        ShareThumbnailDto newShareThumbnail = invitationDto.getShareThumbnail();
+        ShareThumbnail currentShareThumbnail = invitation.getShareThumbnail();
+
+        shareThumbnailService.update(newShareThumbnail, currentShareThumbnail, shareThumbnail);
+
         mainImageUpdate(mainImage, invitation);
         invitation.update(invitationDto);
     }
@@ -179,6 +186,7 @@ public class InvitationService {
             invitation.registerMainImage(s3UploadService.saveFile(mainImage));
         } else if (mainImageStoreFileName != null && mainImage == null) {
             s3UploadService.delete(mainImageStoreFileName);
+            invitation.registerMainImage(null);
         } else if (mainImageStoreFileName == null && mainImage != null){
             invitation.registerMainImage(s3UploadService.saveFile(mainImage));
         }
