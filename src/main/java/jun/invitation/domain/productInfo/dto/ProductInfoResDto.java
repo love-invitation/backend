@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class ProductInfoResDto {
-    private final String title = "우리 결혼합니다.";
     private final String details = "2025.10.20.토요일 오후 2시 \n 메종 드 프라이어 그랜드홀";
     private final String groomName = "도레미";
     private final String brideName = "파솔라";
