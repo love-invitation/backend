@@ -28,8 +28,7 @@ public class Account {
     private String accountNumber;
     private String weddingSide;
 
-    public Account(Invitation invitation, String name, String bankName, String accountNumber, String type) {
-        this.invitation = invitation;
+    public Account(String name, String bankName, String accountNumber, String type) {
         this.name = name;
         this.bankName = bankName;
         this.accountNumber = accountNumber;

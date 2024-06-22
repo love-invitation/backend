@@ -1,7 +1,11 @@
 package jun.invitation.domain.contact.service;
 
+import jun.invitation.domain.account.domain.Account;
+import jun.invitation.domain.account.dto.AccountInfoDto;
+import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.contact.dao.ContactRepository;
 import jun.invitation.domain.contact.domain.Contact;
+import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
 
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
@@ -14,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,7 +32,7 @@ public class ContactService {
             return;
         }
         contactDtos.stream()
-                .map(c -> new Contact(invitation, c.getName(), c.getPhoneNumber(), c.getRelation(), type))
+                .map(c -> new Contact(c.getName(), c.getPhoneNumber(), c.getRelation(), type))
                 .forEach(contact -> contact.register(invitation));
     }
 
@@ -56,5 +61,38 @@ public class ContactService {
 
     public void delete(Long productId) {
         contactRepository.deleteByProductId(productId);
+    }
+
+    public void update(ContactReqDto newContacts, List<Contact> currentContacts, Invitation invitation) {
+
+        if (!currentContacts.isEmpty() || currentContacts != null) {
+            contactRepository.deleteByProductId(invitation.getId());
+        }
+
+        if (newContacts != null) {
+            List<ContactInfoDto> brideContactInfo = newContacts.getBrideContactInfo();
+            List<ContactInfoDto> groomContactInfo = newContacts.getGroomContactInfo();
+
+            if (brideContactInfo != null) {
+                brideContactInfo.stream()
+                        .map(bc -> {
+                            Contact contact = new Contact(bc.getName(), bc.getPhoneNumber(), bc.getRelation(), "Bride");
+                            contact.register(invitation);
+                            return contact;
+                        })
+                        .collect(Collectors.toList());
+            }
+
+            if (groomContactInfo != null) {
+                groomContactInfo.stream()
+                        .map(gc -> {
+                            Contact contact = new Contact(gc.getName(), gc.getPhoneNumber(), gc.getRelation(), "Groom");
+                            contact.register(invitation);
+                            return contact;
+                        })
+                        .collect(Collectors.toList());
+            }
+
+        }
     }
 }

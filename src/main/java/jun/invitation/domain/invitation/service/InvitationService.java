@@ -1,9 +1,11 @@
 package jun.invitation.domain.invitation.service;
 
 import jun.invitation.aws.s3.service.S3UploadService;
+import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.account.dto.AccountResDto;
 import jun.invitation.domain.account.service.AccountService;
+import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.contact.dto.ContactResDto;
 import jun.invitation.domain.contact.service.ContactService;
@@ -190,6 +192,24 @@ public class InvitationService {
 
         priorityService.update(newPriority, currentPriority);
 
+        /**
+         * contact
+         */
+        ContactReqDto newContacts = invitationDto.getContacts();
+        List<Contact> currentContacts = invitation.getContacts();
+        contactService.update(newContacts, currentContacts, invitation);
+
+
+        /**
+         * account
+         */
+        AccountReqDto newAccounts = invitationDto.getAccounts();
+        List<Account> currentAccounts = invitation.getAccounts();
+        accountService.update(newAccounts, currentAccounts, invitation);
+
+        /**
+         * ShareThumbnail
+         */
         ShareThumbnailDto newShareThumbnail = invitationDto.getShareThumbnail();
         ShareThumbnail currentShareThumbnail = invitation.getShareThumbnail();
 

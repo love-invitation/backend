@@ -27,8 +27,7 @@ public class Contact {
     private String relation;
     private String weddingSide;
 
-    public Contact(Invitation invitation, String name, String phoneNumber, String relation, String weddingSide) {
-        this.invitation = invitation;
+    public Contact(String name, String phoneNumber, String relation, String weddingSide) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.relation = relation;
