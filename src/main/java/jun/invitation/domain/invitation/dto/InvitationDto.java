@@ -1,5 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
+import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
@@ -42,6 +43,9 @@ public class InvitationDto {
 
     /* 연락처 */
     private ContactReqDto contacts;
+
+    /* 계좌번호 */
+    private AccountReqDto accounts;
 
     /* share thumbnail */
     private ShareThumbnailDto shareThumbnail;

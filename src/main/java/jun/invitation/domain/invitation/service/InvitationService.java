@@ -1,7 +1,9 @@
 package jun.invitation.domain.invitation.service;
 
 import jun.invitation.aws.s3.service.S3UploadService;
-import jun.invitation.domain.contact.domain.Contact;
+import jun.invitation.domain.account.dto.AccountReqDto;
+import jun.invitation.domain.account.dto.AccountResDto;
+import jun.invitation.domain.account.service.AccountService;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.contact.dto.ContactResDto;
 import jun.invitation.domain.contact.service.ContactService;
@@ -46,7 +48,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,7 @@ public class InvitationService {
     private final ShareThumbnailService shareThumbnailService;
     private final OrderService orderService;
     private final ContactService contactService;
+    private final AccountService accountService;
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -104,21 +106,27 @@ public class InvitationService {
         }
 
         /* 연락처 저장 */
-
-        /**
-         *  TODO :
-         *  ENUM 설정으로 하나의 리스트에 다 때려 넣기
-         *  -> 나중에 조회할 떄 : 쿼리문으로 신랑 / 신부 나눠서 ResDto에 전달
-         */
         ContactReqDto contacts = invitationdto.getContacts();
 
         if (contacts != null) {
-            contactService.save(contacts.getBrideContactInfo(),invitation, "Bride");
+            contactService.save(contacts.getBrideContactInfo(), invitation, "Bride");
         }
 
         if (contacts != null) {
             contactService.save(contacts.getGroomContactInfo(), invitation, "Groom");
         }
+
+        /* 계좌번호 저장 */
+        AccountReqDto accounts = invitationdto.getAccounts();
+
+        if (accounts != null) {
+            accountService.save(accounts.getBrideAccountInfo(), invitation, "Bride");
+        }
+
+        if (accounts != null) {
+            accountService.save(accounts.getGroomAccountInfo(), invitation, "Groom");
+        }
+
 
         /* 메인 이미지 저장 */
         if (mainImage != null) {
@@ -234,8 +242,6 @@ public class InvitationService {
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
 
-        Map<String, List> seperatedMap = contactService.getSeperatedMap(invitation.getGroomInfo(), invitation.getBrideInfo(),invitation.getContacts());
-
         Orders orders = orderService.requestFindOrder(invitation.getId());
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
@@ -277,18 +283,27 @@ public class InvitationService {
                     );
                     break;
                 case "contact":
+
+                    Map<String, List> seperatedContactMap = contactService.getSeperatedMap(invitation.getGroomInfo(), invitation.getBrideInfo(),invitation.getContacts());
+
                     result.put("contact",
                             new ContactResDto(
-                                    seperatedMap.get("groomContact"),
-                                    seperatedMap.get("brideContact"),
+                                    seperatedContactMap.get("groomContact"),
+                                    seperatedContactMap.get("brideContact"),
                                     priorityValue
                             )
                     );
                     break;
                 case "account":
+
+                    Map<String, List> seperatedAccountMap = accountService.getSeperatedMap(invitation.getAccounts());
+
                     result.put("account",
-//                            new AccountDto(groomInfo, brideInfo, priorityValue)
-                            null
+                            new AccountResDto(
+                                    seperatedAccountMap.get("groomAccount"),
+                                    seperatedAccountMap.get("brideAccount"),
+                                    priorityValue
+                            )
                     );
                     break;
                 case "guestbook":

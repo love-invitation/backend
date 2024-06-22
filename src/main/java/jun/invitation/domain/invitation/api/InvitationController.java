@@ -1,13 +1,12 @@
 package jun.invitation.domain.invitation.api;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
-import jun.invitation.domain.invitation.dto.ContactInfoDto;
+import jun.invitation.domain.contact.dto.ContactInfoDto;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.domain.invitation.service.InvitationService;

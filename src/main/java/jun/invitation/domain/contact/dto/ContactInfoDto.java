@@ -1,4 +1,4 @@
-package jun.invitation.domain.invitation.dto;
+package jun.invitation.domain.contact.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

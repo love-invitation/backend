@@ -1,6 +1,5 @@
 package jun.invitation.domain.contact.dto;
 
-import jun.invitation.domain.invitation.dto.ContactInfoDto;
 import lombok.Data;
 
 import java.util.List;

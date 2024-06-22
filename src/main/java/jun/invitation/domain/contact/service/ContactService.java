@@ -4,7 +4,7 @@ import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.invitation.domain.Invitation;
 
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
-import jun.invitation.domain.invitation.dto.ContactInfoDto;
+import jun.invitation.domain.contact.dto.ContactInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

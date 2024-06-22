@@ -1,6 +1,7 @@
 package jun.invitation.domain.invitation.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.guestbook.domain.Guestbook;
@@ -52,6 +53,9 @@ public class Invitation extends Product {
 
     @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     private List<Contact> contacts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "invitation", cascade = PERSIST)
+    private List<Account> accounts = new ArrayList<>();
 
     @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     @OrderBy("priority")
