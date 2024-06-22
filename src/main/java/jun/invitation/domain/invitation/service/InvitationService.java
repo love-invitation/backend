@@ -1,6 +1,10 @@
 package jun.invitation.domain.invitation.service;
 
 import jun.invitation.aws.s3.service.S3UploadService;
+import jun.invitation.domain.contact.domain.Contact;
+import jun.invitation.domain.contact.dto.ContactReqDto;
+import jun.invitation.domain.contact.dto.ContactResDto;
+import jun.invitation.domain.contact.service.ContactService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.gallery.dto.GalleryInfoDto;
@@ -45,6 +49,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -60,6 +65,7 @@ public class InvitationService {
     private final GuestbookService guestbookService;
     private final ShareThumbnailService shareThumbnailService;
     private final OrderService orderService;
+    private final ContactService contactService;
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -89,11 +95,29 @@ public class InvitationService {
         if (gallery != null) {
             galleryService.save(gallery, invitation);
         }
-        List<TransportDto> transportDtos = invitationdto.getTransport();
 
         /* 교통수단 저장 */
+        List<TransportDto> transportDtos = invitationdto.getTransport();
+
         if (transportDtos != null) {
             transportService.save(transportDtos, invitation);
+        }
+
+        /* 연락처 저장 */
+
+        /**
+         *  TODO :
+         *  ENUM 설정으로 하나의 리스트에 다 때려 넣기
+         *  -> 나중에 조회할 떄 : 쿼리문으로 신랑 / 신부 나눠서 ResDto에 전달
+         */
+        ContactReqDto contacts = invitationdto.getContacts();
+
+        if (contacts != null) {
+            contactService.save(contacts.getBrideContactInfo(),invitation, "Bride");
+        }
+
+        if (contacts != null) {
+            contactService.save(contacts.getGroomContactInfo(), invitation, "Groom");
         }
 
         /* 메인 이미지 저장 */
@@ -210,6 +234,8 @@ public class InvitationService {
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
 
+        Map<String, List> seperatedMap = contactService.getSeperatedMap(invitation.getGroomInfo(), invitation.getBrideInfo(),invitation.getContacts());
+
         Orders orders = orderService.requestFindOrder(invitation.getId());
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
@@ -252,12 +278,17 @@ public class InvitationService {
                     break;
                 case "contact":
                     result.put("contact",
-                            new ContactDto(groomInfo, brideInfo, priorityValue)
+                            new ContactResDto(
+                                    seperatedMap.get("groomContact"),
+                                    seperatedMap.get("brideContact"),
+                                    priorityValue
+                            )
                     );
                     break;
                 case "account":
                     result.put("account",
-                            new AccountDto(groomInfo, brideInfo, priorityValue)
+//                            new AccountDto(groomInfo, brideInfo, priorityValue)
+                            null
                     );
                     break;
                 case "guestbook":

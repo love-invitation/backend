@@ -11,22 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FamilyInfo {
 
-
     private String name;
     private String phone;
-    private String bankName;
-    private String account;
 
     private String fatherName;
-    private String fatherBankName;
-    private String fatherPhone;
-    private String fatherAccount;
     private Boolean fatherIsCondolences;
 
     private String motherName;
-    private String motherBankName;
-    private String motherPhone;
-    private String motherAccount;
     private Boolean motherIsCondolences;
 
     private String relation;

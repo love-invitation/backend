@@ -1,11 +1,13 @@
 package jun.invitation.domain.invitation.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
+import jun.invitation.domain.invitation.dto.ContactInfoDto;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.domain.invitation.service.InvitationService;
@@ -61,6 +63,32 @@ public class InvitationController {
             @RequestPart(name = "mainImage", required = false) MultipartFile mainImage,
             @RequestPart(name = "shareThumbnail", required = false) MultipartFile shareThumbnail) throws IOException {
 
+        ContactReqDto contacts = invitationDto.getContacts();
+
+        if (contacts != null) {
+            List<ContactInfoDto> brideContactInfo = contacts.getBrideContactInfo();
+            List<ContactInfoDto> groomContactInfo = contacts.getGroomContactInfo();
+
+            if (brideContactInfo != null) {
+                for (ContactInfoDto b : brideContactInfo) {
+                    log.info(b.getName());
+                    log.info(b.getRelation());
+                    log.info(b.getPhoneNumber());
+                }
+            } else {
+                log.info("empty");
+            }
+
+            if (groomContactInfo != null) {
+                for (ContactInfoDto g : groomContactInfo) {
+                    log.info(g.getName());
+                    log.info(g.getRelation());
+                    log.info(g.getPhoneNumber());
+                }
+            } else {
+                log.info("empty");
+            }
+        }
 
         invitationService.createInvitation(invitationDto, gallery, mainImage, shareThumbnail);
         ResponseDto responseDto = ResponseDto.builder()

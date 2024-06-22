@@ -1,13 +1,12 @@
-package jun.invitation.domain.invitation.dto;
+package jun.invitation.domain.contact.dto;
 
-import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
+import jun.invitation.domain.invitation.dto.ContactInfoDto;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class ContactDto {
-
+public class ContactResDto {
     private Integer priority;
 
     private List<ContactInfoDto> groomContactInfo;
@@ -15,7 +14,7 @@ public class ContactDto {
     private List<ContactInfoDto> brideContactInfo;
 
 
-    public ContactDto(List<ContactInfoDto> groomContactInfo, List<ContactInfoDto> brideContactInfo, Integer priority) {
+    public ContactResDto(List<ContactInfoDto> groomContactInfo, List<ContactInfoDto> brideContactInfo, Integer priority) {
 
         this.priority = priority;
 

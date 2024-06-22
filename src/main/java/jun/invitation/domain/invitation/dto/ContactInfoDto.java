@@ -1,22 +1,21 @@
 package jun.invitation.domain.invitation.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ContactInfoDto {
-    private String phone;
 
-    private String fatherName;
-    private String fatherPhone;
+    private String name;
 
-    private String motherName;
-    private String motherPhone;
+    private String phoneNumber;
 
-    public ContactInfoDto(String phone, String fatherName, String fatherPhone, String motherName, String motherPhone) {
-        this.phone = phone;
-        this.fatherName = fatherName;
-        this.fatherPhone = fatherPhone;
-        this.motherName = motherName;
-        this.motherPhone = motherPhone;
+    private String relation;
+
+    public ContactInfoDto(String phoneNumber, String name, String relation) {
+        this.phoneNumber = phoneNumber;
+        this.name = name;
+        this.relation = relation;
     }
 }

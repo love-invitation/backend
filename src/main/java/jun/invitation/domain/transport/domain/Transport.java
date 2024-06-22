@@ -31,6 +31,11 @@ public class Transport {
     }
 
     public void register(Invitation invitation) {
+
+        if (this.invitation != null) {
+            this.invitation.getTransport().remove(this);
+        }
+
         this.invitation = invitation;
         invitation.getTransport().add(this);
     }

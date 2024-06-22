@@ -1,6 +1,7 @@
 package jun.invitation.domain.invitation.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
@@ -50,6 +51,9 @@ public class Invitation extends Product {
     private List<Guestbook> guestbook = new ArrayList<>();
 
     @OneToMany(mappedBy = "invitation", cascade = PERSIST)
+    private List<Contact> contacts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "invitation", cascade = PERSIST)
     @OrderBy("priority")
     private List<Priority> priority = new ArrayList<>();
 
@@ -63,20 +67,13 @@ public class Invitation extends Product {
     @AttributeOverrides({
         @AttributeOverride(name = "name", column = @Column( name = "brideName")),
         @AttributeOverride(name = "phone", column = @Column( name = "bridePhone")),
-        @AttributeOverride(name = "bankName", column = @Column( name = "brideBankName")),
-        @AttributeOverride(name = "account", column = @Column( name = "brideAccount")),
 
         @AttributeOverride(name = "fatherName", column = @Column( name = "brideFatherName")),
-        @AttributeOverride(name = "fatherBankName", column = @Column( name = "brideFatherBankName")),
-        @AttributeOverride(name = "fatherPhone", column = @Column( name = "brideFatherPhone")),
-        @AttributeOverride(name = "fatherAccount", column = @Column( name = "brideFatherAccount")),
         @AttributeOverride(name = "fatherIsCondolences", column = @Column( name = "brideFatherIsCondolences")),
 
         @AttributeOverride(name = "motherName", column = @Column( name = "brideMotherName")),
-        @AttributeOverride(name = "motherBankName", column = @Column( name = "brideMotherBankName")),
-        @AttributeOverride(name = "motherPhone", column = @Column( name = "brideMotherPhone")),
-        @AttributeOverride(name = "motherAccount", column = @Column( name = "brideMotherAccount")),
         @AttributeOverride(name = "MotherIsCondolences", column = @Column( name = "brideMotherIsCondolences")),
+
         @AttributeOverride(name = "relation", column = @Column( name = "brideRelation"))
     })
     private FamilyInfo brideInfo;
@@ -85,20 +82,13 @@ public class Invitation extends Product {
     @AttributeOverrides({
             @AttributeOverride(name = "name", column = @Column( name = "groomName")),
             @AttributeOverride(name = "phone", column = @Column( name = "groomPhone")),
-            @AttributeOverride(name = "bankName", column = @Column( name = "groomBankName")),
-            @AttributeOverride(name = "account", column = @Column( name = "groomAccount")),
 
             @AttributeOverride(name = "fatherName", column = @Column( name = "groomFatherName")),
-            @AttributeOverride(name = "fatherBankName", column = @Column( name = "groomFatherBankName")),
-            @AttributeOverride(name = "fatherPhone", column = @Column( name = "groomFatherPhone")),
-            @AttributeOverride(name = "fatherAccount", column = @Column( name = "groomFatherAccount")),
             @AttributeOverride(name = "fatherIsCondolences", column = @Column( name = "groomFatherIsCondolences")),
 
             @AttributeOverride(name = "motherName", column = @Column( name = "groomMotherName")),
-            @AttributeOverride(name = "motherBankName", column = @Column( name = "groomMotherBankName")),
-            @AttributeOverride(name = "motherPhone", column = @Column( name = "groomMotherPhone")),
-            @AttributeOverride(name = "motherAccount", column = @Column( name = "groomMotherAccount")),
             @AttributeOverride(name = "motherIsCondolences", column = @Column( name = "groomMotherIsCondolences")),
+
             @AttributeOverride(name = "relation", column = @Column( name = "groomRelationAccount"))
     })
     private FamilyInfo groomInfo;
