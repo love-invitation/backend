@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class FamilyInfo {
 
     private String name;
-    private String phone;
 
     private String fatherName;
     private Boolean fatherIsCondolences;

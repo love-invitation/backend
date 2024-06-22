@@ -28,18 +28,10 @@ public class ContactService {
                 .forEach(contact -> contact.register(invitation));
     }
 
-    public Map<String, List> getSeperatedMap(FamilyInfo groomInfo, FamilyInfo brideInfo, List<Contact> contacts) {
+    public Map<String, List> getSeperatedMap(List<Contact> contacts) {
 
         List<ContactInfoDto> groomContact = new ArrayList<>();
-        groomContact.add(
-                new ContactInfoDto(groomInfo.getPhone(), groomInfo.getName(), "신랑")
-        );
-
         List<ContactInfoDto> brideContact = new ArrayList<>();
-        brideContact.add(
-                new ContactInfoDto(brideInfo.getPhone(),brideInfo.getName(), "신부")
-        );
-
 
         contacts.forEach(contact -> {
             if (contact.getWeddingSide().equals("Bride"))

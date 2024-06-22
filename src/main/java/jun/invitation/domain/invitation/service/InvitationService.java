@@ -110,9 +110,6 @@ public class InvitationService {
 
         if (contacts != null) {
             contactService.save(contacts.getBrideContactInfo(), invitation, "Bride");
-        }
-
-        if (contacts != null) {
             contactService.save(contacts.getGroomContactInfo(), invitation, "Groom");
         }
 
@@ -121,9 +118,6 @@ public class InvitationService {
 
         if (accounts != null) {
             accountService.save(accounts.getBrideAccountInfo(), invitation, "Bride");
-        }
-
-        if (accounts != null) {
             accountService.save(accounts.getGroomAccountInfo(), invitation, "Groom");
         }
 
@@ -284,7 +278,7 @@ public class InvitationService {
                     break;
                 case "contact":
 
-                    Map<String, List> seperatedContactMap = contactService.getSeperatedMap(invitation.getGroomInfo(), invitation.getBrideInfo(),invitation.getContacts());
+                    Map<String, List> seperatedContactMap = contactService.getSeperatedMap(invitation.getContacts());
 
                     result.put("contact",
                             new ContactResDto(
