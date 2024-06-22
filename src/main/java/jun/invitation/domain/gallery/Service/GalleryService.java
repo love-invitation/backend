@@ -24,6 +24,9 @@ public class GalleryService {
 
     @Transactional
     public void delete(List<Gallery> galleries) {
+        if (galleries.isEmpty()) {
+            return;
+        }
         galleries.forEach(g -> {
             s3UploadService.delete(g.getStoreFileName());
         });

@@ -158,6 +158,8 @@ public class InvitationService {
         galleryService.delete(invitation.getGallery());
         guestbookService.delete(invitationId);
         transportService.delete(invitationId);
+        contactService.delete(invitationId);
+        accountService.delete(invitationId);
         orderService.delete(invitationId);
         priorityService.delete(invitationId);
         shareThumbnailService.deleteS3Image(invitation.getShareThumbnail());

@@ -1,5 +1,6 @@
 package jun.invitation.domain.contact.service;
 
+import jun.invitation.domain.contact.dao.ContactRepository;
 import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.invitation.domain.Invitation;
 
@@ -18,6 +19,8 @@ import java.util.Map;
 @Transactional
 @RequiredArgsConstructor
 public class ContactService {
+
+    private final ContactRepository contactRepository;
 
     public void save(List<ContactInfoDto> contactDtos, Invitation invitation, String type) {
         if (contactDtos == null) {
@@ -49,5 +52,9 @@ public class ContactService {
         seperatedMap.put("groomContact", groomContact);
         return seperatedMap;
 
+    }
+
+    public void delete(Long productId) {
+        contactRepository.deleteByProductId(productId);
     }
 }

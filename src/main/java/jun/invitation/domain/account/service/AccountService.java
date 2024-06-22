@@ -1,5 +1,6 @@
 package jun.invitation.domain.account.service;
 
+import jun.invitation.domain.account.dao.AccountRepository;
 import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.account.dto.AccountInfoDto;
@@ -16,6 +17,8 @@ import java.util.Map;
 @Transactional
 @RequiredArgsConstructor
 public class AccountService {
+
+    private final AccountRepository accountRepository;
 
     public void save(List<AccountInfoDto> accountInfoDtos, Invitation invitation, String type) {
 
@@ -55,5 +58,9 @@ public class AccountService {
         seperatedMap.put("groomAccount", groomAccount);
         return seperatedMap;
 
+    }
+
+    public void delete(Long productId) {
+        accountRepository.deleteByProductId(productId);
     }
 }
