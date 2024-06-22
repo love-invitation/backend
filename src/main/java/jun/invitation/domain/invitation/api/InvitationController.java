@@ -62,37 +62,10 @@ public class InvitationController {
             @RequestPart(name = "mainImage", required = false) MultipartFile mainImage,
             @RequestPart(name = "shareThumbnail", required = false) MultipartFile shareThumbnail) throws IOException {
 
-        ContactReqDto contacts = invitationDto.getContacts();
-
-        if (contacts != null) {
-            List<ContactInfoDto> brideContactInfo = contacts.getBrideContactInfo();
-            List<ContactInfoDto> groomContactInfo = contacts.getGroomContactInfo();
-
-            if (brideContactInfo != null) {
-                for (ContactInfoDto b : brideContactInfo) {
-                    log.info(b.getName());
-                    log.info(b.getRelation());
-                    log.info(b.getPhoneNumber());
-                }
-            } else {
-                log.info("empty");
-            }
-
-            if (groomContactInfo != null) {
-                for (ContactInfoDto g : groomContactInfo) {
-                    log.info(g.getName());
-                    log.info(g.getRelation());
-                    log.info(g.getPhoneNumber());
-                }
-            } else {
-                log.info("empty");
-            }
-        }
-
-        invitationService.createInvitation(invitationDto, gallery, mainImage, shareThumbnail);
+        Long invitationTsid = invitationService.createInvitation(invitationDto, gallery, mainImage, shareThumbnail);
         ResponseDto responseDto = ResponseDto.builder()
                 .status(CREATED.value())
-                .message("create success")
+                .message("create success. Invitation tsid : " + invitationTsid)
                 .build();
 
         return ResponseEntity
