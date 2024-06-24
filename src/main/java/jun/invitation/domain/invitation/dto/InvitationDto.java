@@ -36,7 +36,7 @@ public class InvitationDto {
     private FamilyInfo brideInfo;
 
     /* Wedding */
-    private Wedding wedding;
+    private WeddingDto wedding;
 
     /* 교통수단 */
     private List<TransportDto> transport;
@@ -57,7 +57,7 @@ public class InvitationDto {
 
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbookCheck,
-                         List<PriorityDto> priority, FamilyInfo groomInfo, FamilyInfo brideInfo, Wedding wedding, String coverContents, ShareThumbnailDto shareThumbnail, ContactReqDto contacts) {
+                         List<PriorityDto> priority, FamilyInfo groomInfo, FamilyInfo brideInfo, WeddingDto wedding, String coverContents, ShareThumbnailDto shareThumbnail, AccountReqDto accounts, ContactReqDto contacts) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
@@ -70,13 +70,24 @@ public class InvitationDto {
         this.coverContents = coverContents;
         this.shareThumbnail = shareThumbnail;
         this.contacts = contacts;
+        this.accounts = accounts;
     }
 
-    public Invitation toInvitation(){
+    public Invitation toInvitation() {
         return Invitation.builder()
                 .title(title)
                 .contents(contents)
-                .wedding(wedding)
+                .wedding(
+                        new Wedding(
+                                wedding.getPlaceName(),
+                                wedding.getDetail(),
+                                wedding.getPlaceAddress(),
+                                wedding.getLatitude(),
+                                wedding.getLongitude(),
+                                wedding.getDate(),
+                                wedding.getDateType()
+                        )
+                )
                 .groomInfo(groomInfo)
                 .brideInfo(brideInfo)
                 .guestbookCheck(guestbookCheck)

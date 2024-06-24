@@ -138,7 +138,15 @@ public class Invitation extends Product {
 
         this.title = invitationDto.getTitle();
         this.contents = invitationDto.getContents();
-        this.wedding = invitationDto.getWedding();
+        this.wedding = new Wedding(
+                invitationDto.getWedding().getPlaceName(),
+                invitationDto.getWedding().getDetail(),
+                invitationDto.getWedding().getPlaceAddress(),
+                invitationDto.getWedding().getLatitude(),
+                invitationDto.getWedding().getLongitude(),
+                invitationDto.getWedding().getDate(),
+                invitationDto.getWedding().getDateType()
+        );
         this.brideInfo = invitationDto.getBrideInfo();
         this.groomInfo = invitationDto.getGroomInfo();
         this.guestbookCheck = invitationDto.getGuestbookCheck();
