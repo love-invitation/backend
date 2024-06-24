@@ -322,13 +322,6 @@ public class InvitationService {
                             )
                     );
                     break;
-                case "guestbook":
-                    Pageable page = PageRequest.of(0, 3);
-                    Page<GuestbookResponseDto> guestbookResponseDtoPage = guestbookService.getResponseDtoList(invitation.getId(), page);
-                    result.put("guestbook",
-                            new GuestbookListDto(guestbookResponseDtoPage, priorityValue)
-                    );
-                    break;
             }
         }
 
