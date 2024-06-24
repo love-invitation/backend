@@ -1,5 +1,6 @@
 package jun.invitation.domain.invitation.dto;
 
+import jun.invitation.domain.invitation.domain.embedded.WeddingType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,9 +17,9 @@ public class WeddingDto {
     private Double longitude;
 
     private LocalDateTime date;
-    private String dateType;
+    private WeddingType dateType;
 
-    public WeddingDto(String placeName, String detail, String placeAddress, Double latitude, Double longitude, LocalDateTime date, String dateType) {
+    public WeddingDto(String placeName, String detail, String placeAddress, Double latitude, Double longitude, LocalDateTime date, WeddingType dateType) {
         this.placeName = placeName;
         this.detail = detail;
         this.placeAddress = placeAddress;

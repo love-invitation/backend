@@ -11,6 +11,8 @@ import org.locationtech.jts.geom.Point;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.EnumType.*;
+
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,5 +27,7 @@ public class Wedding {
     private Double longitude;
 
     private LocalDateTime date;
-    private String dateType;
+
+    @Enumerated(value = STRING)
+    private WeddingType dateType;
 }
