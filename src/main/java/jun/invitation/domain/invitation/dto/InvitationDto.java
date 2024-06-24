@@ -8,13 +8,11 @@ import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.priority.dto.PriorityDto;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.transport.dto.TransportDto;
+import jun.invitation.global.utils.PointUtils;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 
 import java.util.List;
 
@@ -77,14 +75,7 @@ public class InvitationDto {
     }
 
     public Invitation toInvitation() {
-        Point point = null;
-        try {
-            String pointWKT = String.format("POINT(%s %s)", wedding.getLongitude(), wedding.getLatitude());
-            point = (Point) new WKTReader().read(pointWKT);
-        } catch (ParseException e) {
-            log.info("[message : WKTReader().read(pointWKT) 수행 중 ParseException] 발생, point = null 후 정상 흐름으로 이어가겠습니다.");
-            point = null;
-        }
+
         return Invitation.builder()
                 .title(title)
                 .contents(contents)
@@ -93,7 +84,10 @@ public class InvitationDto {
                                 wedding.getPlaceName(),
                                 wedding.getDetail(),
                                 wedding.getPlaceAddress(),
-                                point,
+                                PointUtils.PointConvert(
+                                        wedding.getLongitude(),
+                                        wedding.getLatitude()
+                                ),
                                 wedding.getDate(),
                                 wedding.getDateType()
                         )

@@ -12,14 +12,12 @@ import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.transport.domain.Transport;
+import jun.invitation.global.utils.PointUtils;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,32 +134,27 @@ public class Invitation extends Product {
         this.coverContents = coverContents;
     }
 
-    /**
-     * TODO : shareThumbnail 관련 코드 다시 확인
-     * @param invitationDto
-     */
     public void update(InvitationDto invitationDto) {
-
-        // WKTReader를 통해 WKT -> 실제 타입으로 변환
-        Point point = null;
-        try {
-            String pointWKT = String.format("POINT(%s %s)", invitationDto.getWedding().getLongitude(), invitationDto.getWedding().getLatitude());
-            point = (Point) new WKTReader().read(pointWKT);
-        } catch (ParseException e) {
-            log.info("[message : WKTReader().read(pointWKT) 수행 중 ParseException] 발생, point = null 후 정상 흐름으로 이어가겠습니다.");
-            point = null;
-        }
 
         this.title = invitationDto.getTitle();
         this.contents = invitationDto.getContents();
-        this.wedding = new Wedding(
-                invitationDto.getWedding().getPlaceName(),
-                invitationDto.getWedding().getDetail(),
-                invitationDto.getWedding().getPlaceAddress(),
-                point,
-                invitationDto.getWedding().getDate(),
-                invitationDto.getWedding().getDateType()
-        );
+
+        if (invitationDto.getWedding() != null) {
+            this.wedding = new Wedding(
+                    invitationDto.getWedding().getPlaceName(),
+                    invitationDto.getWedding().getDetail(),
+                    invitationDto.getWedding().getPlaceAddress(),
+                    PointUtils.PointConvert(
+                            invitationDto.getWedding().getLongitude(),
+                            invitationDto.getWedding().getLatitude()
+                    ),
+                    invitationDto.getWedding().getDate(),
+                    invitationDto.getWedding().getDateType()
+            );
+        } else {
+            this.wedding = null;
+        }
+
         this.brideInfo = invitationDto.getBrideInfo();
         this.groomInfo = invitationDto.getGroomInfo();
         this.guestbookCheck = invitationDto.getGuestbookCheck();
