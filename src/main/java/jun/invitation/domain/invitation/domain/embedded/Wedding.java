@@ -23,8 +23,8 @@ public class Wedding {
     private String detail;
     private String placeAddress;
 
-    private Double latitude;
-    private Double longitude;
+    @Column(columnDefinition = "GEOMETRY")
+    private Point geography;
 
     private LocalDateTime date;
 

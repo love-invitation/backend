@@ -16,6 +16,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +29,11 @@ import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.*;
 
-@Entity @Getter
+@Entity
+@Getter
 @DiscriminatorValue("Invitation")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Slf4j
 public class Invitation extends Product {
 
     private String mainImageUrl;
@@ -136,14 +142,23 @@ public class Invitation extends Product {
      */
     public void update(InvitationDto invitationDto) {
 
+        // WKTReader를 통해 WKT -> 실제 타입으로 변환
+        Point point = null;
+        try {
+            String pointWKT = String.format("POINT(%s %s)", invitationDto.getWedding().getLongitude(), invitationDto.getWedding().getLatitude());
+            point = (Point) new WKTReader().read(pointWKT);
+        } catch (ParseException e) {
+            log.info("[message : WKTReader().read(pointWKT) 수행 중 ParseException] 발생, point = null 후 정상 흐름으로 이어가겠습니다.");
+            point = null;
+        }
+
         this.title = invitationDto.getTitle();
         this.contents = invitationDto.getContents();
         this.wedding = new Wedding(
                 invitationDto.getWedding().getPlaceName(),
                 invitationDto.getWedding().getDetail(),
                 invitationDto.getWedding().getPlaceAddress(),
-                invitationDto.getWedding().getLatitude(),
-                invitationDto.getWedding().getLongitude(),
+                point,
                 invitationDto.getWedding().getDate(),
                 invitationDto.getWedding().getDateType()
         );

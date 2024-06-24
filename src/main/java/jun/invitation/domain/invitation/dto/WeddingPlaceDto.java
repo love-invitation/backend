@@ -10,8 +10,8 @@ public class WeddingPlaceDto {
     private String detail;
     private String placeAddress;
 
-    private Double latitude;
     private Double longitude;
+    private Double latitude;
 
     public WeddingPlaceDto(Wedding wedding, Integer priority) {
 
@@ -21,8 +21,10 @@ public class WeddingPlaceDto {
             this.placeName = wedding.getPlaceName();
             this.detail = wedding.getDetail();
             this.placeAddress = wedding.getPlaceAddress();
-            this.latitude = wedding.getLatitude();
-            this.longitude = wedding.getLongitude();
+            if (wedding.getGeography() != null) {
+                this.longitude = wedding.getGeography().getX();
+                this.latitude = wedding.getGeography().getY();
+            }
         }
     }
 }
