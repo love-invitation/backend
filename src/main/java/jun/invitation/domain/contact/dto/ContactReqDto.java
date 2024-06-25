@@ -7,8 +7,8 @@ import java.util.List;
 @Data
 public class ContactReqDto {
 
-    private List<ContactInfoDto> groomContactInfo;
+    private List<ContactInfoDto> groom;
 
-    private List<ContactInfoDto> brideContactInfo;
+    private List<ContactInfoDto> bride;
 
 }

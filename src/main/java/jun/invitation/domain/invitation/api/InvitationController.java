@@ -110,36 +110,4 @@ public class InvitationController {
 
     }
 
-    @GetMapping("/test/insert")
-    public ResponseEntity<ResponseDto> insert() {
-        Invitation invitation = new Invitation(null, null, null, null, new Wedding(null, null, null, LocalDateTime.now().minusDays(1), null),true,null,null);
-        invitation.register(null, null);
-
-        for (int i = 0; i < 12 ; i++) {
-            Gallery gallery = new Gallery();
-            gallery.setInvitation(invitation);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            Guestbook guestbook = new Guestbook("hong" + i, "1234", "잘살아 " + i);
-            guestbook.registerInvitation(invitation);
-        }
-
-        for (int i = 0; i < 3; i++) {
-            new Transport(new TransportDto("hh" + i, "gg" + i))
-                    .register(invitation);
-        }
-
-
-        invitationRepository.save(invitation);
-
-        orderRepository.save(
-                new Orders(null, invitation)
-        );
-
-        return ResponseEntity
-                .status(OK)
-                .build();
-    }
-
 }

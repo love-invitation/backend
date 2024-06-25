@@ -8,16 +8,16 @@ import java.util.List;
 public class ContactResDto {
     private Integer priority;
 
-    private List<ContactInfoDto> groomContactInfo;
+    private List<ContactInfoDto> groom;
 
-    private List<ContactInfoDto> brideContactInfo;
+    private List<ContactInfoDto> bride;
 
 
     public ContactResDto(List<ContactInfoDto> groomContactInfo, List<ContactInfoDto> brideContactInfo, Integer priority) {
 
         this.priority = priority;
 
-        this.groomContactInfo = groomContactInfo;
-        this.brideContactInfo = brideContactInfo;
+        this.groom = groomContactInfo;
+        this.bride = brideContactInfo;
     }
 }

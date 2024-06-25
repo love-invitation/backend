@@ -8,6 +8,8 @@ import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.dto.InvitationDto;
+import jun.invitation.domain.invitation.dto.WeddingDateReqDto;
+import jun.invitation.domain.invitation.dto.WeddingPlaceReqDto;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
@@ -139,24 +141,30 @@ public class Invitation extends Product {
         this.title = invitationDto.getTitle();
         this.contents = invitationDto.getContents();
 
-        if (invitationDto.getWedding() != null) {
-            this.wedding = new Wedding(
-                    invitationDto.getWedding().getPlaceName(),
-                    invitationDto.getWedding().getDetail(),
-                    invitationDto.getWedding().getPlaceAddress(),
-                    PointUtils.PointConvert(
-                            invitationDto.getWedding().getLongitude(),
-                            invitationDto.getWedding().getLatitude()
-                    ),
-                    invitationDto.getWedding().getDate(),
-                    invitationDto.getWedding().getDateType()
+        WeddingDateReqDto booking = invitationDto.getBooking();
+        WeddingPlaceReqDto place = invitationDto.getPlace();
+
+        if (booking != null) {
+            wedding.updateBooking(
+                    booking.getDate(),
+                    booking.getDateType()
             );
-        } else {
-            this.wedding = null;
         }
 
-        this.brideInfo = invitationDto.getBrideInfo();
-        this.groomInfo = invitationDto.getGroomInfo();
+        if (place != null) {
+            wedding.updatePlace(
+                    place.getName(),
+                    place.getDetail(),
+                    place.getAddress(),
+                    PointUtils.PointConvert(
+                            place.getLongitude(),
+                            place.getLongitude()
+                    )
+            );
+        }
+
+        this.brideInfo = invitationDto.getBride();
+        this.groomInfo = invitationDto.getGroom();
         this.guestbookCheck = invitationDto.getGuestbookCheck();
         this.coverContents = invitationDto.getCoverContents();
 

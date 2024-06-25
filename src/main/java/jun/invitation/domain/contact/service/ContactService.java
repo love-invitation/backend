@@ -1,14 +1,10 @@
 package jun.invitation.domain.contact.service;
 
-import jun.invitation.domain.account.domain.Account;
-import jun.invitation.domain.account.dto.AccountInfoDto;
-import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.contact.dao.ContactRepository;
 import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
 
-import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.contact.dto.ContactInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -53,8 +49,8 @@ public class ContactService {
         });
 
         Map<String, List> seperatedMap = new HashMap<>();
-        seperatedMap.put("brideContact", brideContact);
-        seperatedMap.put("groomContact", groomContact);
+        seperatedMap.put("bride", brideContact);
+        seperatedMap.put("groom", groomContact);
         return seperatedMap;
 
     }
@@ -70,8 +66,8 @@ public class ContactService {
         }
 
         if (newContacts != null) {
-            List<ContactInfoDto> brideContactInfo = newContacts.getBrideContactInfo();
-            List<ContactInfoDto> groomContactInfo = newContacts.getGroomContactInfo();
+            List<ContactInfoDto> brideContactInfo = newContacts.getBride();
+            List<ContactInfoDto> groomContactInfo = newContacts.getGroom();
 
             if (brideContactInfo != null) {
                 brideContactInfo.stream()

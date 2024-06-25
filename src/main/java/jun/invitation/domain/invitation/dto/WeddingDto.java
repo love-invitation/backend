@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class WeddingDto {
+    /**
+     * booking : date, date type,
+     * place : name, detail, address, latitude, longitude;
+     */
     private String placeName;
     private String detail;
     private String placeAddress;

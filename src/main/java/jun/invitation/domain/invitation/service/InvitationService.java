@@ -111,16 +111,16 @@ public class InvitationService {
         ContactReqDto contacts = invitationdto.getContacts();
 
         if (contacts != null) {
-            contactService.save(contacts.getBrideContactInfo(), invitation, "Bride");
-            contactService.save(contacts.getGroomContactInfo(), invitation, "Groom");
+            contactService.save(contacts.getGroom(), invitation, "Bride");
+            contactService.save(contacts.getBride(), invitation, "Groom");
         }
 
         /* 계좌번호 저장 */
         AccountReqDto accounts = invitationdto.getAccounts();
 
         if (accounts != null) {
-            accountService.save(accounts.getBrideAccountInfo(), invitation, "Bride");
-            accountService.save(accounts.getGroomAccountInfo(), invitation, "Groom");
+            accountService.save(accounts.getGroom(), invitation, "Groom");
+            accountService.save(accounts.getBride(), invitation, "Bride");
         }
 
 
@@ -279,12 +279,12 @@ public class InvitationService {
                     );
                     break;
                 case "weddingDate":
-                    result.put("weddingDate",
+                    result.put("booking",
                             new WeddingDateDto(wedding, priorityValue)
                     );
                     break;
                 case "weddingPlace":
-                    result.put("weddingPlace",
+                    result.put("place",
                             new WeddingPlaceDto(wedding, priorityValue)
                     );
                     break;
@@ -304,8 +304,8 @@ public class InvitationService {
 
                     result.put("contact",
                             new ContactResDto(
-                                    seperatedContactMap.get("groomContact"),
-                                    seperatedContactMap.get("brideContact"),
+                                    seperatedContactMap.get("groom"),
+                                    seperatedContactMap.get("bride"),
                                     priorityValue
                             )
                     );
@@ -316,8 +316,8 @@ public class InvitationService {
 
                     result.put("account",
                             new AccountResDto(
-                                    seperatedAccountMap.get("groomAccount"),
-                                    seperatedAccountMap.get("brideAccount"),
+                                    seperatedAccountMap.get("groom"),
+                                    seperatedAccountMap.get("bride"),
                                     priorityValue
                             )
                     );
@@ -329,7 +329,7 @@ public class InvitationService {
         String shareThumbTitle = shareThumbnail.getTitle();
         String shareThumbContents = shareThumbnail.getContents();
         String shareThumbImageUrl = shareThumbnail.getImageUrl();
-        result.put("shareThumbnail", new ShareThumbnailResDto(shareThumbTitle,shareThumbContents, shareThumbImageUrl));
+        result.put("thumbnail", new ShareThumbnailResDto(shareThumbTitle,shareThumbContents, shareThumbImageUrl));
 
         return result;
     }

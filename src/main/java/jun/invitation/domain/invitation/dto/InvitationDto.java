@@ -31,13 +31,20 @@ public class InvitationDto {
     private String contents;
 
     /* 신랑 측 */
-    private FamilyInfo groomInfo;
+    private FamilyInfo groom;
 
     /* 신부 측 */
-    private FamilyInfo brideInfo;
+    private FamilyInfo bride;
 
     /* Wedding */
-    private WeddingDto wedding;
+    // todo : 0625
+    // wedding 삭제 -> ok.
+    // 대신 booking, place로 분할해주기
+//    private WeddingDto wedding;
+
+    private WeddingPlaceReqDto place;
+    private WeddingDateReqDto booking;
+
 
     /* 교통수단 */
     private List<TransportDto> transport;
@@ -58,13 +65,15 @@ public class InvitationDto {
 
     @Builder
     public InvitationDto(Long productInfoId, String title, String contents, List<TransportDto> transport, Boolean guestbookCheck,
-                         List<PriorityDto> priority, FamilyInfo groomInfo, FamilyInfo brideInfo, WeddingDto wedding, String coverContents, ShareThumbnailDto shareThumbnail, AccountReqDto accounts, ContactReqDto contacts) {
+                         List<PriorityDto> priority, FamilyInfo groom, FamilyInfo bride, String coverContents, ShareThumbnailDto shareThumbnail,
+                         AccountReqDto accounts, ContactReqDto contacts, WeddingDateReqDto booking, WeddingPlaceReqDto place) {
         this.productInfoId = productInfoId;
         this.title = title;
         this.contents = contents;
-        this.groomInfo = groomInfo;
-        this.brideInfo = brideInfo;
-        this.wedding = wedding;
+        this.groom = groom;
+        this.bride = bride;
+        this.place = place;
+        this.booking = booking;
         this.transport = transport;
         this.guestbookCheck = guestbookCheck;
         this.priority = priority;
@@ -81,19 +90,19 @@ public class InvitationDto {
                 .contents(contents)
                 .wedding(
                         new Wedding(
-                                wedding.getPlaceName(),
-                                wedding.getDetail(),
-                                wedding.getPlaceAddress(),
+                                place.getName(),
+                                place.getDetail(),
+                                place.getAddress(),
                                 PointUtils.PointConvert(
-                                        wedding.getLongitude(),
-                                        wedding.getLatitude()
+                                        place.getLongitude(),
+                                        place.getLatitude()
                                 ),
-                                wedding.getDate(),
-                                wedding.getDateType()
+                                booking.getDate(),
+                                booking.getDateType()
                         )
                 )
-                .groomInfo(groomInfo)
-                .brideInfo(brideInfo)
+                .groomInfo(groom)
+                .brideInfo(bride)
                 .guestbookCheck(guestbookCheck)
                 .coverContents(coverContents)
                 .build();

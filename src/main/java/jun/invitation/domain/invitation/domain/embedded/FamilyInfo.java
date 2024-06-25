@@ -13,6 +13,7 @@ public class FamilyInfo {
 
     private String name;
 
+    // todo : person : name, deceased 로 묶기
     private String fatherName;
     private Boolean fatherIsCondolences;
 

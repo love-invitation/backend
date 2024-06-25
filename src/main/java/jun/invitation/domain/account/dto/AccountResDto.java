@@ -9,15 +9,15 @@ public class AccountResDto {
 
     private Integer priority;
 
-    private List<AccountInfoDto> groomAccountInfo;
-    private List<AccountInfoDto> brideAccountInfo;
+    private List<AccountInfoDto> groom;
+    private List<AccountInfoDto> bride;
 
     public AccountResDto(List<AccountInfoDto> groomAccountInfo, List<AccountInfoDto> brideAccountInfo, Integer priority) {
 
         this.priority = priority;
 
-        this.groomAccountInfo = groomAccountInfo;
-        this.brideAccountInfo = brideAccountInfo;
+        this.groom = groomAccountInfo;
+        this.bride = brideAccountInfo;
 
     }
 }

@@ -3,9 +3,6 @@ package jun.invitation.domain.account.service;
 import jun.invitation.domain.account.dao.AccountRepository;
 import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.account.dto.AccountReqDto;
-import jun.invitation.domain.contact.domain.Contact;
-import jun.invitation.domain.contact.dto.ContactInfoDto;
-import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.account.dto.AccountInfoDto;
 import lombok.RequiredArgsConstructor;
@@ -36,19 +33,20 @@ public class AccountService {
 
     public Map<String, List> getSeperatedMap(List<Account> accounts) {
 
-        List<AccountInfoDto> groomAccount = new ArrayList<>();
-        List<AccountInfoDto> brideAccount = new ArrayList<>();
+        List<AccountInfoDto> groom = new ArrayList<>();
+        List<AccountInfoDto> bride = new ArrayList<>();
 
         accounts.forEach(account -> {
             if (account.getWeddingSide().equals("Bride"))
-                brideAccount.add(new AccountInfoDto(
+                bride.add(
+                        new AccountInfoDto(
                                 account.getName(),
                                 account.getAccountNumber(),
                                 account.getBankName()
                         )
                 );
             else if (account.getWeddingSide().equals("Groom"))
-                groomAccount.add(
+                groom.add(
                         new AccountInfoDto(
                                 account.getName(),
                                 account.getAccountNumber(),
@@ -58,8 +56,8 @@ public class AccountService {
         });
 
         Map<String, List> seperatedMap = new HashMap<>();
-        seperatedMap.put("brideAccount", brideAccount );
-        seperatedMap.put("groomAccount", groomAccount);
+        seperatedMap.put("bride", bride );
+        seperatedMap.put("groom", groom);
         return seperatedMap;
 
     }
@@ -77,8 +75,8 @@ public class AccountService {
 
         if (newAccounts != null) {
             log.info("newAccounts != null 진입");
-            List<AccountInfoDto> brideAccountInfo = newAccounts.getBrideAccountInfo();
-            List<AccountInfoDto> groomAccountInfo = newAccounts.getGroomAccountInfo();
+            List<AccountInfoDto> brideAccountInfo = newAccounts.getBride();
+            List<AccountInfoDto> groomAccountInfo = newAccounts.getGroom();
 
             if (brideAccountInfo != null) {
                 log.info("brideAccountInfo != null");

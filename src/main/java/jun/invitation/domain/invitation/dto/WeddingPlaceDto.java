@@ -7,9 +7,9 @@ import org.locationtech.jts.geom.Point;
 @Data
 public class WeddingPlaceDto {
     private Integer priority;
-    private String placeName;
+    private String name;
     private String detail;
-    private String placeAddress;
+    private String address;
 
     private Double longitude;
     private Double latitude;
@@ -19,9 +19,9 @@ public class WeddingPlaceDto {
         this.priority = priority;
 
         if (wedding != null){
-            this.placeName = wedding.getPlaceName();
+            this.name = wedding.getPlaceName();
             this.detail = wedding.getDetail();
-            this.placeAddress = wedding.getPlaceAddress();
+            this.address = wedding.getPlaceAddress();
 
             Point geography = wedding.getGeography();
             if (geography != null) {

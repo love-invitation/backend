@@ -30,4 +30,17 @@ public class Wedding {
 
     @Enumerated(value = STRING)
     private WeddingType dateType;
+
+    public void updatePlace(String placeName, String detail, String placeAddress, Point geography) {
+        this.placeName = placeName;
+        this.detail = detail;
+        this.placeAddress = placeAddress;
+        this.geography = geography;
+    }
+
+    public void updateBooking(LocalDateTime date, WeddingType dateType) {
+        this.date = date;
+        this.dateType = dateType;
+    }
+
 }
