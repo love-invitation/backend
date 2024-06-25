@@ -351,4 +351,16 @@ public class InvitationService {
     public Invitation requestFindByTsidInvitation(Long invitationTsid) {
         return invitationRepository.findByTsid(invitationTsid).orElseThrow(InvitationNotFoundException::new);
     }
+
+    @Transactional(readOnly = true)
+    public ShareThumbnailResDto readShareThumbnail(Long productId) {
+
+        ShareThumbnail shareThumbnail = invitationRepository.findShareThumbnailByProductId(productId);
+
+        return new ShareThumbnailResDto(
+                shareThumbnail.getTitle(),
+                shareThumbnail.getContents(),
+                shareThumbnail.getImageUrl()
+        );
+    }
 }
