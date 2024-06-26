@@ -9,19 +9,19 @@ public class ArticleDto {
     private String title;
     private String contents;
 
-    private FamilyInfoDto groomInfo;
-    private FamilyInfoDto brideInfo;
+    private FamilyInfoDto groom;
+    private FamilyInfoDto bride;
 
-    public ArticleDto(String title, String contents, FamilyInfo groomInfo, FamilyInfo brideInfo, Integer priority) {
+    public ArticleDto(String title, String contents, FamilyInfo groom, FamilyInfo bride, Integer priority) {
         this.priority = priority;
         this.title = title;
         this.contents = contents;
 
-        if (groomInfo != null) {
-            this.groomInfo = new FamilyInfoDto(groomInfo);
+        if (groom != null) {
+            this.groom = new FamilyInfoDto(groom);
         }
-        if (brideInfo != null) {
-            this.brideInfo = new FamilyInfoDto(brideInfo);
+        if (bride != null) {
+            this.bride = new FamilyInfoDto(bride);
         }
     }
 }

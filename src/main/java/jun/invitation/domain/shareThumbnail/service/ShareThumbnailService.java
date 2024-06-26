@@ -2,7 +2,6 @@ package jun.invitation.domain.shareThumbnail.service;
 
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
-import jun.invitation.domain.shareThumbnail.dao.ShareThumbnailRepository;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ShareThumbnailService {
 
-    private final ShareThumbnailRepository shareThumbnailRepository;
     private final S3UploadService s3UploadService;
 
     @Transactional
@@ -37,8 +35,8 @@ public class ShareThumbnailService {
         }
 
         if (shareThumbnailDto != null){
-            title = shareThumbnailDto.getShareTitle();
-            contents = shareThumbnailDto.getShareContents();
+            title = shareThumbnailDto.getTitle();
+            contents = shareThumbnailDto.getContents();
         }
 
         return new ShareThumbnail(title, contents, savedUrlPath, originFileName, storeFileName);
@@ -59,8 +57,8 @@ public class ShareThumbnailService {
     public void update(ShareThumbnailDto newShareThumbnail, ShareThumbnail currentShareThumbnail, MultipartFile newShareThumbnailImage) throws IOException {
 
         currentShareThumbnail.updateTextValue(
-                newShareThumbnail.getShareTitle(),
-                newShareThumbnail.getShareContents()
+                newShareThumbnail.getTitle(),
+                newShareThumbnail.getContents()
                 );
 
         String storeFileName = currentShareThumbnail.getImageStoreFileName();

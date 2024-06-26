@@ -56,7 +56,7 @@ public class InvitationDto {
     private AccountReqDto accounts;
 
     /* share thumbnail */
-    private ShareThumbnailDto shareThumbnail;
+    private ShareThumbnailDto thumbnail;
 
     private Boolean guestbookCheck;
 
@@ -78,7 +78,7 @@ public class InvitationDto {
         this.guestbookCheck = guestbookCheck;
         this.priority = priority;
         this.coverContents = coverContents;
-        this.shareThumbnail = shareThumbnail;
+        this.thumbnail = shareThumbnail;
         this.contacts = contacts;
         this.accounts = accounts;
     }

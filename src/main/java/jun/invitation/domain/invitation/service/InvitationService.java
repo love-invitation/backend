@@ -86,7 +86,7 @@ public class InvitationService {
 
         ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
 
-        ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getShareThumbnail());
+        ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getThumbnail());
         invitation.registerShareThumbnail(createdThumbnail);
 
         invitation.register(
@@ -210,7 +210,7 @@ public class InvitationService {
         /**
          * ShareThumbnail
          */
-        ShareThumbnailDto newShareThumbnail = invitationDto.getShareThumbnail();
+        ShareThumbnailDto newShareThumbnail = invitationDto.getThumbnail();
         ShareThumbnail currentShareThumbnail = invitation.getShareThumbnail();
 
         shareThumbnailService.update(newShareThumbnail, currentShareThumbnail, shareThumbnail);

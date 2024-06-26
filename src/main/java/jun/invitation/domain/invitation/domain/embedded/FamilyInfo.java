@@ -1,6 +1,7 @@
 package jun.invitation.domain.invitation.domain.embedded;
 
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +15,11 @@ public class FamilyInfo {
     private String name;
 
     // todo : person : name, deceased 로 묶기
-    private String fatherName;
-    private Boolean fatherIsCondolences;
+    @Embedded
+    private ParentDto father;
 
-    private String motherName;
-    private Boolean motherIsCondolences;
+    @Embedded
+    private ParentDto mother;
 
     private String relation;
 }

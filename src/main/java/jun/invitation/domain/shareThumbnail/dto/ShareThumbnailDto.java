@@ -11,6 +11,6 @@ import static lombok.AccessLevel.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class ShareThumbnailDto {
-    private String shareTitle;
-    private String shareContents;
+    private String title;
+    private String contents;
 }
