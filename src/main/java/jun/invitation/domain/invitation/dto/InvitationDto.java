@@ -36,15 +36,8 @@ public class InvitationDto {
     /* 신부 측 */
     private FamilyInfo bride;
 
-    /* Wedding */
-    // todo : 0625
-    // wedding 삭제 -> ok.
-    // 대신 booking, place로 분할해주기
-//    private WeddingDto wedding;
-
     private WeddingPlaceReqDto place;
     private WeddingDateReqDto booking;
-
 
     /* 교통수단 */
     private List<TransportDto> transport;
