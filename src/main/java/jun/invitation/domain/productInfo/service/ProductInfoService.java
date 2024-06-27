@@ -18,10 +18,9 @@ public class ProductInfoService {
 
     public void save(ProductInfo productInfo) {
         productInfoRepository.save(productInfo);
-        return;
     }
 
-    public List<ProductInfoDto> requestAllProductInfos() {
+    public List<ProductInfoDto> readAllProductInfos() {
         List<ProductInfo> productInfoList = productInfoRepository.findAll();
 
         return productInfoList.stream()
@@ -29,11 +28,13 @@ public class ProductInfoService {
                 .collect(Collectors.toList());
     }
 
-    public ProductInfo findById(Long id) {
-        return productInfoRepository.findById(id).orElseThrow(ProductInfoNotFoundException::new);
+    public ProductInfo read(Long id) {
+        return productInfoRepository
+                .findById(id)
+                .orElseThrow(ProductInfoNotFoundException::new);
     }
 
-    public List<ProductInfoDto> requestBestProductInfos() {
+    public List<ProductInfoDto> readBestProductInfos() {
 
         List<ProductInfo> productInfoByBest = productInfoRepository.findByBestTrue();
 

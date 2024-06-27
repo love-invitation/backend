@@ -6,8 +6,6 @@ import jun.invitation.domain.productInfo.dto.ProductInfoResDto;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +23,7 @@ public class ProductInfoController {
     @GetMapping("/api/product/info")
     public ResponseEntity<ResponseDto> getProductByProductInfo() {
 
-        List<ProductInfoDto> productInfoDtos = productInfoService.requestAllProductInfos();
+        List<ProductInfoDto> productInfoDtos = productInfoService.readAllProductInfos();
 
         ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos, null);
 
@@ -42,7 +40,7 @@ public class ProductInfoController {
 
     @GetMapping("/api/product/info/best")
     public ResponseEntity<ResponseDto> handleBestProductInfos() {
-        List<ProductInfoDto> productInfoDtos = productInfoService.requestBestProductInfos();
+        List<ProductInfoDto> productInfoDtos = productInfoService.readBestProductInfos();
 
         ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos, null);
 
@@ -60,7 +58,7 @@ public class ProductInfoController {
     @GetMapping("/api/product/info/{productInfoId}")
     public ResponseEntity<ResponseDto> handleProductInfo(@PathVariable(name = "productInfoId") Long productInfoId) {
 
-        ProductInfo byId = productInfoService.findById(productInfoId);
+        ProductInfo byId = productInfoService.read(productInfoId);
 
         ProductInfoDto productInfoDto = new ProductInfoDto(byId);
 

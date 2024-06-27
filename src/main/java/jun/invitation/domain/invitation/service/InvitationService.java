@@ -12,8 +12,6 @@ import jun.invitation.domain.contact.service.ContactService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.gallery.dto.GalleryInfoDto;
-import jun.invitation.domain.guestbook.dto.GuestbookListDto;
-import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
@@ -40,9 +38,6 @@ import jun.invitation.domain.transport.dto.TransportInfoDto;
 import jun.invitation.domain.transport.service.TransportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,7 +79,7 @@ public class InvitationService {
         Invitation invitation = invitationdto.toInvitation();
         priorityService.savePriority(invitationdto.getPriority(), invitation);
 
-        ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
+        ProductInfo productInfo = productInfoService.read(invitationdto.getProductInfoId());
 
         ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getThumbnail());
         invitation.registerShareThumbnail(createdThumbnail);
