@@ -6,6 +6,8 @@ import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
 
 import jun.invitation.domain.contact.dto.ContactInfoDto;
+import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.priority.PriorityName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
+import static jun.invitation.domain.priority.PriorityName.*;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -23,7 +29,7 @@ public class ContactService {
 
     private final ContactRepository contactRepository;
 
-    public void save(List<ContactInfoDto> contactDtos, Invitation invitation, String type) {
+    public void save(List<ContactInfoDto> contactDtos, Invitation invitation, WeddingSide type) {
         if (contactDtos == null) {
             return;
         }
@@ -38,19 +44,19 @@ public class ContactService {
         List<ContactInfoDto> brideContact = new ArrayList<>();
 
         contacts.forEach(contact -> {
-            if (contact.getWeddingSide().equals("Bride"))
+            if (contact.getWeddingSide().equals(BRIDE))
                 brideContact.add(new ContactInfoDto(
                         contact.getPhoneNumber(), contact.getName(), contact.getRelation())
                 );
-            else if (contact.getWeddingSide().equals("Groom"))
+            else if (contact.getWeddingSide().equals(GROOM))
                 groomContact.add(new ContactInfoDto(
                     contact.getPhoneNumber(), contact.getName(), contact.getRelation())
             );
         });
 
         Map<String, List> seperatedMap = new HashMap<>();
-        seperatedMap.put("bride", brideContact);
-        seperatedMap.put("groom", groomContact);
+        seperatedMap.put(BRIDE.getSide(), brideContact);
+        seperatedMap.put(GROOM.getSide(), groomContact);
         return seperatedMap;
 
     }
@@ -72,7 +78,7 @@ public class ContactService {
             if (brideContactInfo != null) {
                 brideContactInfo.stream()
                         .map(bc -> {
-                            Contact contact = new Contact(bc.getName(), bc.getPhoneNumber(), bc.getRelation(), "Bride");
+                            Contact contact = new Contact(bc.getName(), bc.getPhoneNumber(), bc.getRelation(), BRIDE);
                             contact.register(invitation);
                             return contact;
                         })
@@ -82,7 +88,7 @@ public class ContactService {
             if (groomContactInfo != null) {
                 groomContactInfo.stream()
                         .map(gc -> {
-                            Contact contact = new Contact(gc.getName(), gc.getPhoneNumber(), gc.getRelation(), "Groom");
+                            Contact contact = new Contact(gc.getName(), gc.getPhoneNumber(), gc.getRelation(), GROOM);
                             contact.register(invitation);
                             return contact;
                         })

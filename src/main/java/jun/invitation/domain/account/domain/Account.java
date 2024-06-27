@@ -2,10 +2,13 @@ package jun.invitation.domain.account.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.priority.PriorityName;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -26,9 +29,11 @@ public class Account {
     private String name;
     private String bankName;
     private String accountNumber;
-    private String weddingSide;
 
-    public Account(String name, String bankName, String accountNumber, String type) {
+    @Enumerated(STRING)
+    private WeddingSide weddingSide;
+
+    public Account(String name, String bankName, String accountNumber, WeddingSide type) {
         this.name = name;
         this.bankName = bankName;
         this.accountNumber = accountNumber;

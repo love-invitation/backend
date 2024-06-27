@@ -1,8 +1,6 @@
 package jun.invitation.domain.priority;
 
 public enum PriorityName {
-    BRIDE("bride"),
-    GROOM("groom"),
     THUMBNAIL("thumbnail"),
     GALLERY("gallery"),
     CONTACT("contact"),

@@ -50,6 +50,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 import static jun.invitation.domain.priority.PriorityName.*;
 
 @Service @Slf4j
@@ -109,16 +111,16 @@ public class InvitationService {
         ContactReqDto contacts = invitationdto.getContacts();
 
         if (contacts != null) {
-            contactService.save(contacts.getGroom(), invitation, BRIDE.getPriorityName());
-            contactService.save(contacts.getBride(), invitation, GROOM.getPriorityName());
+            contactService.save(contacts.getGroom(), invitation, BRIDE);
+            contactService.save(contacts.getBride(), invitation, GROOM);
         }
 
         /* 계좌번호 저장 */
         AccountReqDto accounts = invitationdto.getAccounts();
 
         if (accounts != null) {
-            accountService.save(accounts.getBride(), invitation, BRIDE.getPriorityName());
-            accountService.save(accounts.getGroom(), invitation, GROOM.getPriorityName());
+            accountService.save(accounts.getBride(), invitation, BRIDE);
+            accountService.save(accounts.getGroom(), invitation, GROOM);
         }
 
 
@@ -301,8 +303,8 @@ public class InvitationService {
 
                     result.put(CONTACT.getPriorityName(),
                             new ContactResDto(
-                                    seperatedContactMap.get(GROOM.getPriorityName()),
-                                    seperatedContactMap.get(BRIDE.getPriorityName()),
+                                    seperatedContactMap.get(GROOM.getSide()),
+                                    seperatedContactMap.get(BRIDE.getSide()),
                                     priorityValue
                             )
                     );
@@ -313,8 +315,8 @@ public class InvitationService {
 
                     result.put(ACCOUNT.getPriorityName(),
                             new AccountResDto(
-                                    seperatedAccountMap.get(GROOM.getPriorityName()),
-                                    seperatedAccountMap.get(BRIDE.getPriorityName()),
+                                    seperatedAccountMap.get(GROOM.getSide()),
+                                    seperatedAccountMap.get(BRIDE.getSide()),
                                     priorityValue
                             )
                     );

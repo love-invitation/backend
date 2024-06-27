@@ -5,6 +5,8 @@ import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.account.dto.AccountInfoDto;
+import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.priority.PriorityName;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.*;
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
+import static jun.invitation.domain.priority.PriorityName.*;
 
 @Service
 @Transactional
@@ -21,13 +28,13 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public void save(List<AccountInfoDto> accountInfoDtos, Invitation invitation, String type) {
+    public void save(List<AccountInfoDto> accountInfoDtos, Invitation invitation, WeddingSide side) {
 
         if (accountInfoDtos == null) {
             return;
         }
         accountInfoDtos.stream()
-                .map(a -> new Account(a.getName(), a.getBankName(), a.getAccountNumber(), type))
+                .map(a -> new Account(a.getName(), a.getBankName(), a.getAccountNumber(), side))
                 .forEach(account -> account.register(invitation));
     }
 
@@ -37,15 +44,15 @@ public class AccountService {
         List<AccountInfoDto> bride = new ArrayList<>();
 
         accounts.forEach(account -> {
-            if (account.getWeddingSide().equals("Bride"))
+            if (account.getWeddingSide().equals(BRIDE))
                 bride.add(
-                        new AccountInfoDto(
-                                account.getName(),
-                                account.getAccountNumber(),
-                                account.getBankName()
-                        )
-                );
-            else if (account.getWeddingSide().equals("Groom"))
+                    new AccountInfoDto(
+                            account.getName(),
+                            account.getAccountNumber(),
+                            account.getBankName()
+                    )
+            );
+            else if (account.getWeddingSide().equals(GROOM))
                 groom.add(
                         new AccountInfoDto(
                                 account.getName(),
@@ -56,8 +63,8 @@ public class AccountService {
         });
 
         Map<String, List> seperatedMap = new HashMap<>();
-        seperatedMap.put("bride", bride );
-        seperatedMap.put("groom", groom);
+        seperatedMap.put(BRIDE.getSide(), bride );
+        seperatedMap.put(GROOM.getSide(), groom);
         return seperatedMap;
 
     }
@@ -69,29 +76,25 @@ public class AccountService {
     public void update(AccountReqDto newAccounts, List<Account> currentAccounts, Invitation invitation) {
 
         if (!currentAccounts.isEmpty() || currentAccounts != null) {
-            log.info("!currentAccounts.isEmpty() || currentAccounts != null 진입");
             accountRepository.deleteByProductId(invitation.getId());
         }
 
         if (newAccounts != null) {
-            log.info("newAccounts != null 진입");
             List<AccountInfoDto> brideAccountInfo = newAccounts.getBride();
             List<AccountInfoDto> groomAccountInfo = newAccounts.getGroom();
 
             if (brideAccountInfo != null) {
-                log.info("brideAccountInfo != null");
                 brideAccountInfo.stream()
                         .map(ba -> {
-                            Account account = new Account(ba.getName(), ba.getBankName(), ba.getAccountNumber(), "Bride");
+                            Account account = new Account(ba.getName(), ba.getBankName(), ba.getAccountNumber(), BRIDE);
                             account.register(invitation);
                             return account;
                         });
             }
             if (groomAccountInfo != null) {
-                log.info("groomAccountInfo != null");
                 groomAccountInfo.stream()
                         .map(gc -> {
-                            Account account = new Account(gc.getName(), gc.getBankName(), gc.getAccountNumber(), "Groom");
+                            Account account = new Account(gc.getName(), gc.getBankName(), gc.getAccountNumber(), GROOM);
                             account.register(invitation);
                             return account;
                         }).collect(Collectors.toList());
