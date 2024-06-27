@@ -1,4 +1,8 @@
 
+![Gradle](https://img.shields.io/badge/Gradle-8.5-blue)
+![Java](https://img.shields.io/badge/Java-17-blue)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.1-brightgreen)
+
 ## System Architecture
 ![invitation_architecture drawio](https://github.com/love-invitation/backend/assets/81946918/84a12fa8-d6fc-4ca7-b57f-7cfc9b10c166)
 
