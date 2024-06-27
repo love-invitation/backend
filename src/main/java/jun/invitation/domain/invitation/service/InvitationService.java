@@ -13,6 +13,7 @@ import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.gallery.dto.GalleryInfoDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
+import jun.invitation.domain.priority.PriorityName;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
@@ -48,6 +49,8 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import static jun.invitation.domain.priority.PriorityName.*;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -106,16 +109,16 @@ public class InvitationService {
         ContactReqDto contacts = invitationdto.getContacts();
 
         if (contacts != null) {
-            contactService.save(contacts.getGroom(), invitation, "Bride");
-            contactService.save(contacts.getBride(), invitation, "Groom");
+            contactService.save(contacts.getGroom(), invitation, BRIDE.getPriorityName());
+            contactService.save(contacts.getBride(), invitation, GROOM.getPriorityName());
         }
 
         /* 계좌번호 저장 */
         AccountReqDto accounts = invitationdto.getAccounts();
 
         if (accounts != null) {
-            accountService.save(accounts.getGroom(), invitation, "Groom");
-            accountService.save(accounts.getBride(), invitation, "Bride");
+            accountService.save(accounts.getBride(), invitation, BRIDE.getPriorityName());
+            accountService.save(accounts.getGroom(), invitation, GROOM.getPriorityName());
         }
 
 
@@ -257,62 +260,61 @@ public class InvitationService {
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
-        result.put("tsid", invitation.getTsid());
-        result.put("isPaid", orders.getIsPaid());
-        result.put("cover", new CoverDto( invitation));
+        result.put(TSID.getPriorityName(), invitation.getTsid());
+        result.put(ISPAID.getPriorityName(), orders.getIsPaid());
+        result.put(COVER.getPriorityName(), new CoverDto( invitation));
 
         for (Priority priority : priorities) {
-            String name = priority.getName();
-
+            PriorityName name = fromPriorityName(priority.getName());
             Integer priorityValue = priority.getPriority();
 
             switch (name) {
-                case "article":
-                    result.put("article",
+                case ARTICLE:
+                    result.put(ARTICLE.getPriorityName(),
                             new ArticleDto(invitation.getTitle(), invitation.getContents(),
                                     groomInfo, brideInfo, priorityValue)
                     );
                     break;
-                case "weddingDate":
-                    result.put("booking",
+                case BOOKING:
+                    result.put(BOOKING.getPriorityName(),
                             new WeddingDateDto(wedding, priorityValue)
                     );
                     break;
-                case "weddingPlace":
-                    result.put("place",
+                case PLACE:
+                    result.put(PLACE.getPriorityName(),
                             new WeddingPlaceDto(wedding, priorityValue)
                     );
                     break;
-                case "transport":
-                    result.put("transport",
+                case TRANSPORT:
+                    result.put(TRANSPORT.getPriorityName(),
                             new TransportInfoDto(invitation.getTransport(), priorityValue)
                     );
                     break;
-                case "gallery":
-                    result.put("gallery",
+                case GALLERY:
+                    result.put(GALLERY.getPriorityName(),
                             new GalleryInfoDto(invitation.getGallery(), priorityValue)
                     );
                     break;
-                case "contact":
+                case CONTACT:
 
                     Map<String, List> seperatedContactMap = contactService.getSeperatedMap(invitation.getContacts());
 
-                    result.put("contact",
+                    result.put(CONTACT.getPriorityName(),
                             new ContactResDto(
-                                    seperatedContactMap.get("groom"),
-                                    seperatedContactMap.get("bride"),
+                                    seperatedContactMap.get(GROOM.getPriorityName()),
+                                    seperatedContactMap.get(BRIDE.getPriorityName()),
                                     priorityValue
                             )
                     );
                     break;
-                case "account":
+                case ACCOUNT:
 
                     Map<String, List> seperatedAccountMap = accountService.getSeperatedMap(invitation.getAccounts());
 
-                    result.put("account",
+                    result.put(ACCOUNT.getPriorityName(),
                             new AccountResDto(
-                                    seperatedAccountMap.get("groom"),
-                                    seperatedAccountMap.get("bride"),
+                                    seperatedAccountMap.get(GROOM.getPriorityName()),
+                                    seperatedAccountMap.get(BRIDE.getPriorityName()),
                                     priorityValue
                             )
                     );
@@ -324,7 +326,7 @@ public class InvitationService {
         String shareThumbTitle = shareThumbnail.getTitle();
         String shareThumbContents = shareThumbnail.getContents();
         String shareThumbImageUrl = shareThumbnail.getImageUrl();
-        result.put("thumbnail", new ShareThumbnailResDto(shareThumbTitle,shareThumbContents, shareThumbImageUrl));
+        result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(shareThumbTitle,shareThumbContents, shareThumbImageUrl));
 
         return result;
     }
@@ -338,13 +340,17 @@ public class InvitationService {
             return false;
     }
 
-    public Invitation requestFindInvitation(Long invitationId) {
-        return invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
+    public Invitation findByInvitationId(Long invitationId) {
+        return invitationRepository
+                .findById(invitationId)
+                .orElseThrow(InvitationNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
-    public Invitation requestFindByTsidInvitation(Long invitationTsid) {
-        return invitationRepository.findByTsid(invitationTsid).orElseThrow(InvitationNotFoundException::new);
+    public Invitation findByTsid(Long invitationTsid) {
+        return invitationRepository
+                .findByTsid(invitationTsid)
+                .orElseThrow(InvitationNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
