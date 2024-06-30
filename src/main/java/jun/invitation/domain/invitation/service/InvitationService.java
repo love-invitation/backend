@@ -49,6 +49,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
@@ -82,7 +83,7 @@ public class InvitationService {
     public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage, MultipartFile shareThumbnailImage) throws IOException  {
 
         Invitation invitation = invitationdto.toInvitation();
-        priorityService.savePriority(invitationdto.getPriority(), invitation);
+        priorityService.create(invitationdto.getPriority(), invitation);
 
         ProductInfo productInfo = productInfoService.read(invitationdto.getProductInfoId());
 
@@ -126,7 +127,8 @@ public class InvitationService {
 
         /* 메인 이미지 저장 */
         if (mainImage != null) {
-            invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+            Map<String, String> map = s3UploadService.saveFile(mainImage);
+            invitation.registerMainImage(map);
         }
 
         Long invitationTsid = saveInvitation(invitation);
@@ -225,18 +227,22 @@ public class InvitationService {
      *  기존 x, main Image O : 기존 삭제 x, 메인 이미지 저장 o
      *  기존 x, main Image x : 아무 행동 x
      */
-    private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws IOException {
+    private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws IOException, RuntimeException {
         String mainImageStoreFileName = invitation.getMainImageStoreFileName();
-
+        CompletableFuture<Map<String, String>> future;
         // 기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
         if (mainImageStoreFileName != null && mainImage != null) {
             s3UploadService.delete(mainImageStoreFileName);
-            invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+            future = s3UploadService.saveFileAsync(mainImage);
+
+            invitation.registerMainImage(future.join());
+
         } else if (mainImageStoreFileName != null && mainImage == null) {
             s3UploadService.delete(mainImageStoreFileName);
             invitation.registerMainImage(null);
         } else if (mainImageStoreFileName == null && mainImage != null){
-            invitation.registerMainImage(s3UploadService.saveFile(mainImage));
+            future = s3UploadService.saveFileAsync(mainImage);
+            invitation.registerMainImage(future.join());
         }
     }
 

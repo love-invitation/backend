@@ -52,7 +52,6 @@ public class ShareThumbnailService {
         }
     }
 
-    // TODO : shareThumbnail O -> shareThumbnail = null 로 보낼 시,
     @Transactional
     public void update(ShareThumbnailDto newShareThumbnail, ShareThumbnail currentShareThumbnail, MultipartFile newShareThumbnailImage) throws IOException {
 
@@ -68,12 +67,12 @@ public class ShareThumbnailService {
 
         if (newShareThumbnailImage != null) {
 
-            Map<String, String> result = s3UploadService.saveFile(newShareThumbnailImage);
+            Map<String, String> savedFileMap = s3UploadService.saveFile(newShareThumbnailImage);
 
             currentShareThumbnail.updateImageValue(
-                    result.get("originFileName"),
-                    result.get("storeFileName"),
-                    result.get("imageUrl")
+                    savedFileMap.get("originFileName"),
+                    savedFileMap.get("storeFileName"),
+                    savedFileMap.get("imageUrl")
             );
         } else {
             currentShareThumbnail.updateImageValue(

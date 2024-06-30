@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 @Service @Slf4j
@@ -26,11 +28,11 @@ public class S3UploadService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    @Async("imageUploadExecutor")
     @Transactional
-    public Map<String,String> saveFile(MultipartFile multipartFile) throws IOException {
-        // TODO 원본 이미지 이름 -> UUID로 변경하고 S3에는 랜덤 값 저장, Gallery 에는 원본 이미지도 저장해야함
+    public CompletableFuture<Map<String,String>> saveFileAsync(MultipartFile multipartFile) {
 
-        Map<String, String> map = new HashMap<>();
+        CompletableFuture<Map<String, String>> future = new CompletableFuture<>();
 
         String fileName = createFileName(multipartFile.getOriginalFilename());
 
@@ -38,7 +40,38 @@ public class S3UploadService {
         metadata.setContentLength(multipartFile.getSize());
         metadata.setContentType(multipartFile.getContentType());
 
-        amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
+        try {
+            amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("storeFileName", fileName);
+        map.put("originFileName", multipartFile.getOriginalFilename());
+        map.put("imageUrl", amazonS3.getUrl(bucket, fileName).toString());
+
+        future.complete(map);
+
+        return future;
+    }
+
+    @Transactional
+    public Map<String,String> saveFile(MultipartFile multipartFile) {
+
+        String fileName = createFileName(multipartFile.getOriginalFilename());
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(multipartFile.getSize());
+        metadata.setContentType(multipartFile.getContentType());
+
+        try {
+            amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        HashMap<String, String> map = new HashMap<>();
 
         map.put("storeFileName", fileName);
         map.put("originFileName", multipartFile.getOriginalFilename());
@@ -46,6 +79,7 @@ public class S3UploadService {
 
         return map;
     }
+
     @Transactional
     public void delete(String fileName) {
         try {

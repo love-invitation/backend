@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -37,15 +39,20 @@ public class GalleryService {
 
         Long sequence = 1L;
 
-        for (MultipartFile file : gallery) {
-            Map<String, String> savedFileMap = s3UploadService.saveFile(file);
+        List<CompletableFuture<Map<String, String>>> futures = new ArrayList<>();
 
+        for (MultipartFile file : gallery) {
+            futures.add(s3UploadService.saveFileAsync(file));
+        }
+
+        for (CompletableFuture<Map<String, String>> future : futures) {
+            Map<String, String> savedFileMap = future.join();
             if (savedFileMap != null) {
                 String originFileName = savedFileMap.get("originFileName");
                 String storeFileName = savedFileMap.get("storeFileName");
                 String savedUrlPath = savedFileMap.get("imageUrl");
 
-                Gallery newGallery = new Gallery(originFileName,storeFileName,sequence++,savedUrlPath);
+                Gallery newGallery = new Gallery(originFileName, storeFileName, sequence++, savedUrlPath);
                 newGallery.setInvitation(invitation);
             }
         }

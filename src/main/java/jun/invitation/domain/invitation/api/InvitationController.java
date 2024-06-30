@@ -65,7 +65,8 @@ public class InvitationController {
         Long invitationTsid = invitationService.createInvitation(invitationDto, gallery, mainImage, shareThumbnail);
         ResponseDto responseDto = ResponseDto.builder()
                 .status(CREATED.value())
-                .message("create success. Invitation tsid : " + invitationTsid)
+                .message("create success.")
+                .result(invitationTsid)
                 .build();
 
         return ResponseEntity
