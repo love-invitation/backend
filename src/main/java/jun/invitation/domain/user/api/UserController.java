@@ -18,7 +18,7 @@ public class UserController {
 
     private TokenService tokenService;
 
-    @GetMapping("/user/info")
+    @GetMapping("/api/v1/user")
     public ResponseEntity<ResponseDto> receiveUserInfoReq() {
 
         User currentUser = SecurityUtils.getCurrentUser();

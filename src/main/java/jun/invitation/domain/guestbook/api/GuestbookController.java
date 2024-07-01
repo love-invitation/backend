@@ -7,7 +7,6 @@ import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +20,13 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("/api/v1/products/invitations")
 public class GuestbookController {
 
     private final InvitationService invitationService;
     private final GuestbookService guestbookService;
 
-    @GetMapping("/product/invitation/{invitationId}/guestbook/read")
+    @GetMapping("/{invitationId}/guestbooks")
     public ResponseEntity<ResponseDto> readGuestbook(@PathVariable(name = "invitationId") Long invitationId,
             @RequestParam(value = "page", defaultValue = "0") int page) {
 
@@ -47,13 +46,13 @@ public class GuestbookController {
     }
 
     // Create
-    @PostMapping("/product/invitation/{invitationId}/guestbook/create")
+    @PostMapping("/{invitationId}/guestbooks")
     public ResponseEntity<ResponseDto> createGuestbook(
             @PathVariable(name = "invitationId") Long invitationId,
             @RequestBody GuestbookDto guestbookDto
             ) {
 
-        Invitation invitation = invitationService.requestFindInvitation(invitationId);
+        Invitation invitation = invitationService.findByInvitationId(invitationId);
 
         guestbookService.requestCreate(guestbookDto, invitation);
 
@@ -67,14 +66,14 @@ public class GuestbookController {
     }
 
     // Delete
-    @DeleteMapping("/product/invitation/{invitationId}/guestbook/{guestbookId}/delete")
+    @DeleteMapping("/{invitationId}/guestbooks/{guestbookId}")
     public ResponseEntity<ResponseDto> deleteGuestbook(
             @PathVariable(name = "invitationId") Long invitationId,
             @PathVariable(name = "guestbookId") Long guestbookId,
             @RequestBody(required = false) Map<String, String> password
     ) {
 
-        Invitation invitation = invitationService.requestFindInvitation(invitationId);
+        Invitation invitation = invitationService.findByInvitationId(invitationId);
 
         if (password == null) {
             guestbookService.delete(invitation, guestbookId);

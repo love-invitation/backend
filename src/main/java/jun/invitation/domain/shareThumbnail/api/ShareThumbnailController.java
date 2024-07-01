@@ -10,14 +10,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/products/invitations")
 public class ShareThumbnailController {
 
     private final InvitationService invitationService;
 
-    @GetMapping("/api/product/invitation/{tsid}/shareThumbnail")
+    @GetMapping("/{tsid}/shareThumbnail")
     public ResponseEntity<ResponseDto> read(@PathVariable(name = "tsid") Long productId) {
         ShareThumbnailResDto shareThumbnail = invitationService.readShareThumbnail(productId);
 
