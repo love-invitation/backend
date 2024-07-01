@@ -1,5 +1,6 @@
 package jun.invitation.domain.shareThumbnail.service;
 
+import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
@@ -10,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+
+import static jun.invitation.aws.s3.ImageUploadKey.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,11 +30,11 @@ public class ShareThumbnailService {
         String contents = null;
 
         if (shareThumbImage != null) {
-            Map<String, String> savedFileMap = s3UploadService.saveFile(shareThumbImage);
+            Map<ImageUploadKey, String> savedFileMap = s3UploadService.saveFile(shareThumbImage);
 
-            originFileName = savedFileMap.get("originFileName");
-            storeFileName = savedFileMap.get("storeFileName");
-            savedUrlPath = savedFileMap.get("imageUrl");
+            originFileName = savedFileMap.get(ORIGIN_FILE_NAME);
+            storeFileName = savedFileMap.get(STORE_FILE_NAME);
+            savedUrlPath = savedFileMap.get(IMAGE_URL);
         }
 
         if (shareThumbnailDto != null){
@@ -67,12 +70,12 @@ public class ShareThumbnailService {
 
         if (newShareThumbnailImage != null) {
 
-            Map<String, String> savedFileMap = s3UploadService.saveFile(newShareThumbnailImage);
+            Map<ImageUploadKey, String> savedFileMap = s3UploadService.saveFile(newShareThumbnailImage);
 
             currentShareThumbnail.updateImageValue(
-                    savedFileMap.get("originFileName"),
-                    savedFileMap.get("storeFileName"),
-                    savedFileMap.get("imageUrl")
+                    savedFileMap.get(ORIGIN_FILE_NAME),
+                    savedFileMap.get(STORE_FILE_NAME),
+                    savedFileMap.get(IMAGE_URL)
             );
         } else {
             currentShareThumbnail.updateImageValue(

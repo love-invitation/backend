@@ -3,6 +3,7 @@ package jun.invitation.aws.s3.service;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import jun.invitation.aws.s3.ImageUploadKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static jun.invitation.aws.s3.ImageUploadKey.*;
+
 @RequiredArgsConstructor
 @Service @Slf4j
 public class S3UploadService {
@@ -30,9 +33,9 @@ public class S3UploadService {
 
     @Async("imageUploadExecutor")
     @Transactional
-    public CompletableFuture<Map<String,String>> saveFileAsync(MultipartFile multipartFile) {
+    public CompletableFuture<Map<ImageUploadKey,String>> saveFileAsync(MultipartFile multipartFile) {
 
-        CompletableFuture<Map<String, String>> future = new CompletableFuture<>();
+        CompletableFuture<Map<ImageUploadKey, String>> future = new CompletableFuture<>();
 
         future.complete(this.saveFile(multipartFile));
 
@@ -40,7 +43,7 @@ public class S3UploadService {
     }
 
     @Transactional
-    public Map<String,String> saveFile(MultipartFile multipartFile) {
+    public Map<ImageUploadKey,String> saveFile(MultipartFile multipartFile) {
 
         String fileName = createFileName(multipartFile.getOriginalFilename());
 
@@ -54,11 +57,11 @@ public class S3UploadService {
             throw new RuntimeException(e);
         }
 
-        HashMap<String, String> map = new HashMap<>();
+        HashMap<ImageUploadKey, String> map = new HashMap<>();
 
-        map.put("storeFileName", fileName);
-        map.put("originFileName", multipartFile.getOriginalFilename());
-        map.put("imageUrl", amazonS3.getUrl(bucket, fileName).toString());
+        map.put(STORE_FILE_NAME, fileName);
+        map.put(ORIGIN_FILE_NAME, multipartFile.getOriginalFilename());
+        map.put(IMAGE_URL, amazonS3.getUrl(bucket, fileName).toString());
 
         return map;
     }
