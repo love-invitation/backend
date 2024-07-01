@@ -1,6 +1,7 @@
 package jun.invitation.domain.invitation.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.gallery.Gallery;
@@ -28,6 +29,7 @@ import java.util.Map;
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.*;
+import static jun.invitation.aws.s3.ImageUploadKey.*;
 
 @Entity
 @Getter
@@ -104,7 +106,7 @@ public class Invitation extends Product {
     private FamilyInfo groomInfo;
 
 
-    public void registerMainImage(Map<String, String> savedFileMap) {
+    public void registerMainImage(Map<ImageUploadKey, String> savedFileMap) {
 
         if (savedFileMap == null || savedFileMap.isEmpty()) {
             this.mainImageOriginName = null;
@@ -114,9 +116,9 @@ public class Invitation extends Product {
             return;
         }
 
-        this.mainImageOriginName = savedFileMap.get("originFileName");
-        this.mainImageStoreFileName = savedFileMap.get("storeFileName");
-        this.mainImageUrl = savedFileMap.get("imageUrl");
+        this.mainImageOriginName = savedFileMap.get(ORIGIN_FILE_NAME);
+        this.mainImageStoreFileName = savedFileMap.get(STORE_FILE_NAME);
+        this.mainImageUrl = savedFileMap.get(IMAGE_URL);
     }
 
     public void registerShareThumbnail(ShareThumbnail shareThumbnail) {

@@ -1,5 +1,6 @@
 package jun.invitation.domain.invitation.service;
 
+import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.account.dto.AccountReqDto;
@@ -87,6 +88,11 @@ public class InvitationService {
 
         ProductInfo productInfo = productInfoService.read(invitationdto.getProductInfoId());
 
+        /* 갤러리 저장 */
+        if (gallery != null) {
+            galleryService.save(gallery, invitation);
+        }
+
         ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getThumbnail());
         invitation.registerShareThumbnail(createdThumbnail);
 
@@ -95,11 +101,6 @@ public class InvitationService {
                 null,
                 productInfo
                 );
-
-        /* 갤러리 저장 */
-        if (gallery != null) {
-            galleryService.save(gallery, invitation);
-        }
 
         /* 교통수단 저장 */
         List<TransportDto> transportDtos = invitationdto.getTransport();
@@ -127,7 +128,7 @@ public class InvitationService {
 
         /* 메인 이미지 저장 */
         if (mainImage != null) {
-            Map<String, String> map = s3UploadService.saveFile(mainImage);
+            Map<ImageUploadKey, String> map = s3UploadService.saveFile(mainImage);
             invitation.registerMainImage(map);
         }
 
@@ -229,7 +230,7 @@ public class InvitationService {
      */
     private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws IOException, RuntimeException {
         String mainImageStoreFileName = invitation.getMainImageStoreFileName();
-        CompletableFuture<Map<String, String>> future;
+        CompletableFuture<Map<ImageUploadKey, String>> future;
         // 기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
         if (mainImageStoreFileName != null && mainImage != null) {
             s3UploadService.delete(mainImageStoreFileName);

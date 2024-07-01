@@ -1,5 +1,6 @@
 package jun.invitation.domain.gallery.Service;
 
+import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.service.S3UploadService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dao.GalleryRepository;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+
+import static jun.invitation.aws.s3.ImageUploadKey.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,16 +42,16 @@ public class GalleryService {
 
         Long sequence = 1L;
 
-        List<CompletableFuture<Map<String, String>>> futures = gallery.stream()
+        List<CompletableFuture<Map<ImageUploadKey, String>>> futures = gallery.stream()
                 .map(s3UploadService::saveFileAsync)
                 .toList();
 
-        for (CompletableFuture<Map<String, String>> future : futures) {
-            Map<String, String> savedFileMap = future.join();
+        for (CompletableFuture<Map<ImageUploadKey, String>> future : futures) {
+            Map<ImageUploadKey, String> savedFileMap = future.join();
             if (savedFileMap != null) {
-                String originFileName = savedFileMap.get("originFileName");
-                String storeFileName = savedFileMap.get("storeFileName");
-                String savedUrlPath = savedFileMap.get("imageUrl");
+                String originFileName = savedFileMap.get(ORIGIN_FILE_NAME);
+                String storeFileName = savedFileMap.get(STORE_FILE_NAME);
+                String savedUrlPath = savedFileMap.get(IMAGE_URL);
 
                 Gallery newGallery = new Gallery(originFileName, storeFileName, sequence++, savedUrlPath);
                 newGallery.setInvitation(invitation);
