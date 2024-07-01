@@ -39,11 +39,9 @@ public class GalleryService {
 
         Long sequence = 1L;
 
-        List<CompletableFuture<Map<String, String>>> futures = new ArrayList<>();
-
-        for (MultipartFile file : gallery) {
-            futures.add(s3UploadService.saveFileAsync(file));
-        }
+        List<CompletableFuture<Map<String, String>>> futures = gallery.stream()
+                .map(s3UploadService::saveFileAsync)
+                .toList();
 
         for (CompletableFuture<Map<String, String>> future : futures) {
             Map<String, String> savedFileMap = future.join();

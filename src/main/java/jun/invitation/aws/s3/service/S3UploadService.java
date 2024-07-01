@@ -34,24 +34,7 @@ public class S3UploadService {
 
         CompletableFuture<Map<String, String>> future = new CompletableFuture<>();
 
-        String fileName = createFileName(multipartFile.getOriginalFilename());
-
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(multipartFile.getSize());
-        metadata.setContentType(multipartFile.getContentType());
-
-        try {
-            amazonS3.putObject(bucket, fileName, multipartFile.getInputStream(), metadata);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        HashMap<String, String> map = new HashMap<>();
-        map.put("storeFileName", fileName);
-        map.put("originFileName", multipartFile.getOriginalFilename());
-        map.put("imageUrl", amazonS3.getUrl(bucket, fileName).toString());
-
-        future.complete(map);
+        future.complete(this.saveFile(multipartFile));
 
         return future;
     }
