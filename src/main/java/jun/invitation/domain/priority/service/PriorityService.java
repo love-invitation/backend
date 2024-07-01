@@ -1,7 +1,5 @@
 package jun.invitation.domain.priority.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.priority.dao.PriorityRepository;
 import jun.invitation.domain.priority.domain.Priority;
@@ -11,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +21,7 @@ public class PriorityService {
 
     private final PriorityRepository priorityRepository;
 
-    public void savePriority(List<PriorityDto> priorityDtos, Invitation invitation) {
+    public void create(List<PriorityDto> priorityDtos, Invitation invitation) {
         priorityDtos.forEach(
                 p -> new Priority(p.getName(), p.getPriority())
                         .register(invitation)
