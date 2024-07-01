@@ -30,32 +30,12 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("/api/v1/products/invitations")
 public class InvitationController {
 
     private final InvitationService invitationService;
-    private final InvitationRepository invitationRepository;
-    private final OrderRepository orderRepository;
 
-    @GetMapping("/product/invitation/read/{invitationTsid}")
-    public ResponseEntity<ResponseDto> getInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
-
-        LinkedHashMap<String, Object> result = invitationService.readInvitation(invitationTsid);
-
-
-        ResponseDto<Object> responseDto = ResponseDto.builder()
-                .status(OK.value())
-                .message("read success")
-                .result(result)
-                .build();
-
-        return ResponseEntity
-                .status(OK)
-                .body(responseDto);
-
-    }
-
-    @PostMapping("/product/invitation/create")
+    @PostMapping
     public ResponseEntity<ResponseDto> createInvitation(
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
             @RequestPart(name = "gallery", required = false) List<MultipartFile> gallery,
@@ -74,22 +54,25 @@ public class InvitationController {
                 .body(responseDto);
     }
 
-    @DeleteMapping("/product/invitation/delete/{invitationId}")
-    public ResponseEntity<ResponseDto> deleteInvitation(@PathVariable(name = "invitationId") Long invitationId) throws Exception {
+    @GetMapping("/{invitationTsid}")
+    public ResponseEntity<ResponseDto> getInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
 
-        invitationService.deleteInvitation(invitationId);
+        LinkedHashMap<String, Object> result = invitationService.readInvitation(invitationTsid);
 
-        ResponseDto responseDto = ResponseDto.builder()
+
+        ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(OK.value())
-                .message("Invitation[ID : "+ invitationId+"] successfully deleted.")
+                .message("read success")
+                .result(result)
                 .build();
 
         return ResponseEntity
                 .status(OK)
                 .body(responseDto);
+
     }
 
-    @PutMapping("/product/invitation/update/{invitationId}")
+    @PutMapping("/{invitationId}")
     public ResponseEntity<ResponseDto> updateInvitation(
             @PathVariable(name = "invitationId") Long invitationId ,
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
@@ -109,6 +92,21 @@ public class InvitationController {
                 .status(OK)
                 .body(responseDto);
 
+    }
+
+    @DeleteMapping("/{invitationId}")
+    public ResponseEntity<ResponseDto> deleteInvitation(@PathVariable(name = "invitationId") Long invitationId) throws Exception {
+
+        invitationService.deleteInvitation(invitationId);
+
+        ResponseDto responseDto = ResponseDto.builder()
+                .status(OK.value())
+                .message("Invitation[ID : "+ invitationId+" ] successfully deleted.")
+                .build();
+
+        return ResponseEntity
+                .status(OK)
+                .body(responseDto);
     }
 
 }
