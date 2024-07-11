@@ -1,7 +1,7 @@
 package jun.invitation.domain.shareThumbnail.service;
 
 import jun.invitation.aws.s3.ImageUploadKey;
-import jun.invitation.aws.s3.service.S3UploadService;
+import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import static jun.invitation.aws.s3.ImageUploadKey.*;
 @RequiredArgsConstructor
 public class ShareThumbnailService {
 
-    private final S3UploadService s3UploadService;
+    private final ImageUploader imageUploader;
 
     @Transactional
     public ShareThumbnail create(MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) throws IOException {
@@ -30,7 +30,7 @@ public class ShareThumbnailService {
         String contents = null;
 
         if (shareThumbImage != null) {
-            Map<ImageUploadKey, String> savedFileMap = s3UploadService.saveFile(shareThumbImage);
+            Map<ImageUploadKey, String> savedFileMap = imageUploader.upload(shareThumbImage);
 
             originFileName = savedFileMap.get(ORIGIN_FILE_NAME);
             storeFileName = savedFileMap.get(STORE_FILE_NAME);
@@ -50,7 +50,7 @@ public class ShareThumbnailService {
         if (shareThumbnail != null) {
             String imageStoreFileName = shareThumbnail.getImageStoreFileName();
             if (imageStoreFileName != null) {
-                s3UploadService.delete(imageStoreFileName);
+                imageUploader.delete(imageStoreFileName);
             }
         }
     }
@@ -65,12 +65,12 @@ public class ShareThumbnailService {
 
         String storeFileName = currentShareThumbnail.getImageStoreFileName();
         if (currentShareThumbnail.getImageStoreFileName() != null) {
-            s3UploadService.delete(storeFileName);
+            imageUploader.delete(storeFileName);
         }
 
         if (newShareThumbnailImage != null) {
 
-            Map<ImageUploadKey, String> savedFileMap = s3UploadService.saveFile(newShareThumbnailImage);
+            Map<ImageUploadKey, String> savedFileMap = imageUploader.upload(newShareThumbnailImage);
 
             currentShareThumbnail.updateImageValue(
                     savedFileMap.get(ORIGIN_FILE_NAME),
