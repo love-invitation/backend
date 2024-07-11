@@ -9,4 +9,5 @@
 ## 개선
 
 ### Invitatoin
-- [JPA] Delete 기능 개선](https://alluring-timpani-4cb.notion.site/JPA-Delete-2-4d7e23435dbe4d9c8c2c7c00746743bb?pvs=4)
+- [[JPA] Delete 기능 개선](https://alluring-timpani-4cb.notion.site/JPA-Delete-2-4d7e23435dbe4d9c8c2c7c00746743bb?pvs=4)
+- [[Spring] POST 기능 개선 : 이미지 비동기 처리](https://alluring-timpani-4cb.notion.site/JPA-Delete-2-4d7e23435dbe4d9c8c2c7c00746743bb?pvs=4)
