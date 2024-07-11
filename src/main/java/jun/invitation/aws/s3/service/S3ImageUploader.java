@@ -4,6 +4,8 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import jun.invitation.aws.s3.ImageUploadKey;
+import jun.invitation.aws.s3.ImageUploader;
+import jun.invitation.global.service.port.UuidHolder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,27 +25,19 @@ import java.util.concurrent.CompletableFuture;
 import static jun.invitation.aws.s3.ImageUploadKey.*;
 
 @RequiredArgsConstructor
-@Service @Slf4j
-public class S3UploadService {
+@Service
+@Slf4j
+public class S3ImageUploader implements ImageUploader {
 
     private final AmazonS3 amazonS3;
+    private final UuidHolder uuidHolder;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Async("imageUploadExecutor")
     @Transactional
-    public CompletableFuture<Map<ImageUploadKey,String>> saveFileAsync(MultipartFile multipartFile) {
-
-        CompletableFuture<Map<ImageUploadKey, String>> future = new CompletableFuture<>();
-
-        future.complete(this.saveFile(multipartFile));
-
-        return future;
-    }
-
-    @Transactional
-    public Map<ImageUploadKey,String> saveFile(MultipartFile multipartFile) {
+    @Override
+    public Map<ImageUploadKey,String> upload(MultipartFile multipartFile) {
 
         String fileName = createFileName(multipartFile.getOriginalFilename());
 
@@ -67,6 +61,7 @@ public class S3UploadService {
     }
 
     @Transactional
+    @Override
     public void delete(String fileName) {
         try {
             amazonS3.deleteObject(bucket, fileName);
@@ -75,8 +70,20 @@ public class S3UploadService {
         }
     }
 
+    @Async("imageUploadExecutor")
+    @Transactional
+    @Override
+    public CompletableFuture<Map<ImageUploadKey,String>> uploadAsync(MultipartFile multipartFile) {
+
+        CompletableFuture<Map<ImageUploadKey, String>> future = new CompletableFuture<>();
+
+        future.complete(this.upload(multipartFile));
+
+        return future;
+    }
+
     private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
+        return uuidHolder.random().concat(getFileExtension(fileName));
     }
 
     private String getFileExtension(String fileName) {

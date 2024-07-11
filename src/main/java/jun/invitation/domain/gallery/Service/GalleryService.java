@@ -1,7 +1,7 @@
 package jun.invitation.domain.gallery.Service;
 
 import jun.invitation.aws.s3.ImageUploadKey;
-import jun.invitation.aws.s3.service.S3UploadService;
+import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dao.GalleryRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -25,7 +24,7 @@ import static jun.invitation.aws.s3.ImageUploadKey.*;
 public class GalleryService {
 
     private final GalleryRepository galleryRepository;
-    private final S3UploadService s3UploadService;
+    private final ImageUploader imageUploader;
 
     @Transactional
     public void delete(List<Gallery> galleries) {
@@ -33,17 +32,18 @@ public class GalleryService {
             return;
         }
         galleries.forEach(g -> {
-            s3UploadService.delete(g.getStoreFileName());
+            imageUploader.delete(g.getStoreFileName());
         });
         galleryRepository.deleteByGalleries(galleries);
     }
 
+    @Transactional
     public void save(List<MultipartFile> gallery, Invitation invitation) throws IOException {
 
         Long sequence = 1L;
 
         List<CompletableFuture<Map<ImageUploadKey, String>>> futures = gallery.stream()
-                .map(s3UploadService::saveFileAsync)
+                .map(imageUploader::uploadAsync)
                 .toList();
 
         for (CompletableFuture<Map<ImageUploadKey, String>> future : futures) {

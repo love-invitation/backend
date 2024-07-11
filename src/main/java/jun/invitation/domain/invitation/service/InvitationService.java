@@ -1,7 +1,7 @@
 package jun.invitation.domain.invitation.service;
 
 import jun.invitation.aws.s3.ImageUploadKey;
-import jun.invitation.aws.s3.service.S3UploadService;
+import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.account.dto.AccountResDto;
@@ -60,7 +60,7 @@ import static jun.invitation.domain.priority.PriorityName.*;
 @RequiredArgsConstructor
 public class InvitationService {
 
-    private final S3UploadService s3UploadService;
+    private final ImageUploader imageUploader;
     private final InvitationRepository invitationRepository;
     private final GalleryService galleryService;
     private final ProductInfoService productInfoService;
@@ -128,7 +128,7 @@ public class InvitationService {
 
         /* 메인 이미지 저장 */
         if (mainImage != null) {
-            Map<ImageUploadKey, String> map = s3UploadService.saveFile(mainImage);
+            Map<ImageUploadKey, String> map = imageUploader.upload(mainImage);
             invitation.registerMainImage(map);
         }
 
@@ -157,7 +157,7 @@ public class InvitationService {
 //        }
 
         if (invitation.getMainImageStoreFileName() != null) {
-            s3UploadService.delete(invitation.getMainImageStoreFileName());
+            imageUploader.delete(invitation.getMainImageStoreFileName());
         }
 
         galleryService.delete(invitation.getGallery());
@@ -233,16 +233,16 @@ public class InvitationService {
         CompletableFuture<Map<ImageUploadKey, String>> future;
         // 기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
         if (mainImageStoreFileName != null && mainImage != null) {
-            s3UploadService.delete(mainImageStoreFileName);
-            future = s3UploadService.saveFileAsync(mainImage);
+            imageUploader.delete(mainImageStoreFileName);
+            future = imageUploader.uploadAsync(mainImage);
 
             invitation.registerMainImage(future.join());
 
         } else if (mainImageStoreFileName != null && mainImage == null) {
-            s3UploadService.delete(mainImageStoreFileName);
+            imageUploader.delete(mainImageStoreFileName);
             invitation.registerMainImage(null);
         } else if (mainImageStoreFileName == null && mainImage != null){
-            future = s3UploadService.saveFileAsync(mainImage);
+            future = imageUploader.uploadAsync(mainImage);
             invitation.registerMainImage(future.join());
         }
     }
