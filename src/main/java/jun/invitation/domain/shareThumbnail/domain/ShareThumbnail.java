@@ -1,6 +1,7 @@
 package jun.invitation.domain.shareThumbnail.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +26,7 @@ public class ShareThumbnail {
     private String imageOriginName;
     private String imageStoreFileName;
 
+    @Builder
     public ShareThumbnail(String title, String contents, String imageUrl,
                           String imageOriginName, String imageStoreFileName) {
         this.title = title;
