@@ -46,7 +46,7 @@ public class ShareThumbnailService {
     }
 
     @Transactional
-    public void deleteS3Image(ShareThumbnail shareThumbnail) {
+    public void deleteImage(ShareThumbnail shareThumbnail) {
         if (shareThumbnail != null) {
             String imageStoreFileName = shareThumbnail.getImageStoreFileName();
             if (imageStoreFileName != null) {
@@ -73,10 +73,10 @@ public class ShareThumbnailService {
             Map<ImageUploadKey, String> savedFileMap = imageUploader.upload(newShareThumbnailImage);
 
             currentShareThumbnail.updateImageValue(
+                    savedFileMap.get(IMAGE_URL),
                     savedFileMap.get(ORIGIN_FILE_NAME),
-                    savedFileMap.get(STORE_FILE_NAME),
-                    savedFileMap.get(IMAGE_URL)
-            );
+                    savedFileMap.get(STORE_FILE_NAME)
+                    );
         } else {
             currentShareThumbnail.updateImageValue(
                     null,
