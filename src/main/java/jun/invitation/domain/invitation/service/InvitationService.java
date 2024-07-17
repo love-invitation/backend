@@ -1,5 +1,6 @@
 package jun.invitation.domain.invitation.service;
 
+import com.github.f4b6a3.tsid.TsidCreator;
 import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.account.domain.Account;
@@ -38,6 +39,7 @@ import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.domain.transport.dto.TransportInfoDto;
 import jun.invitation.domain.transport.service.TransportService;
+import jun.invitation.global.service.port.IdentifierGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -73,6 +75,8 @@ public class InvitationService {
     private final ContactService contactService;
     private final AccountService accountService;
 
+    private final IdentifierGenerator identifierGenerator;
+
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void removeAfterWedding() {
@@ -99,6 +103,7 @@ public class InvitationService {
         invitation.register(
 //                getCurrentUser(),
                 null,
+                identifierGenerator.generate(),
                 productInfo
                 );
 
@@ -167,7 +172,7 @@ public class InvitationService {
         accountService.delete(invitationId);
         orderService.delete(invitationId);
         priorityService.delete(invitationId);
-        shareThumbnailService.deleteS3Image(invitation.getShareThumbnail());
+        shareThumbnailService.deleteImage(invitation.getShareThumbnail());
         productService.deleteByInvitation(invitationId);
     }
 

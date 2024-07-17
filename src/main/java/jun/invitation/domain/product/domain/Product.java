@@ -1,6 +1,5 @@
 package jun.invitation.domain.product.domain;
 
-import com.github.f4b6a3.tsid.TsidCreator;
 import jakarta.persistence.*;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.user.domain.User;
@@ -34,9 +33,9 @@ public abstract class Product extends BaseEntity {
     private User user;
 
 
-    public void register(User user, ProductInfo productInfo) {
+    public void register(User user, Long identifier, ProductInfo productInfo) {
         this.user = user;
-        this.tsid = TsidCreator.getTsid().toLong();
+        this.tsid = identifier;
         this.productInfo = productInfo;
     }
 }
