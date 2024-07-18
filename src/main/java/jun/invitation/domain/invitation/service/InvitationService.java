@@ -57,8 +57,10 @@ import java.util.concurrent.CompletableFuture;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 import static jun.invitation.domain.priority.PriorityName.*;
+import static jun.invitation.global.utils.SecurityUtils.getCurrentUser;
 
-@Service @Slf4j
+@Service
+@Slf4j
 @RequiredArgsConstructor
 public class InvitationService {
 
@@ -80,6 +82,7 @@ public class InvitationService {
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void removeAfterWedding() {
+        // todo : 다른 Entity들도 삭제해야함
         LocalDateTime now = LocalDateTime.now();
         invitationRepository.deleteByWedding_DateBefore(now);
     }
@@ -118,16 +121,16 @@ public class InvitationService {
         ContactReqDto contacts = invitationdto.getContacts();
 
         if (contacts != null) {
-            contactService.save(contacts.getGroom(), invitation, BRIDE);
-            contactService.save(contacts.getBride(), invitation, GROOM);
+            contactService.save(contacts.getGroom(), invitation, GROOM);
+            contactService.save(contacts.getBride(), invitation, BRIDE);
         }
 
         /* 계좌번호 저장 */
         AccountReqDto accounts = invitationdto.getAccounts();
 
         if (accounts != null) {
-            accountService.save(accounts.getBride(), invitation, BRIDE);
             accountService.save(accounts.getGroom(), invitation, GROOM);
+            accountService.save(accounts.getBride(), invitation, BRIDE);
         }
 
 
