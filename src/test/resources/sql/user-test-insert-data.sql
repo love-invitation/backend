@@ -1,0 +1,1 @@
+insert into users (created_at,email,provider,provider_id,role,updated_at,username,user_id) values ('2024-07-17T17:44:31.898','pinkcotton@naver.com',NULL,NULL,'ROLE_USER','2024-07-17T17:44:31.898','naver_EnVqUWVnYTsFDwMMCybh9r6OOGUyZGjZNRcS52Ao_uE',1);

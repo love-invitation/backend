@@ -1,0 +1,12 @@
+delete from `priority` where 1;
+delete from `account` where 1;
+delete from `contact` where 1;
+delete from `gallery` where 1;
+delete from `guestbook` where 1;
+delete from `transport` where 1;
+delete from `orders` where 1;
+delete from `invitation` where 1;
+delete from `product` where 1;
+delete from `product_info` where 1;
+delete from `share_thumbnail` where 1;
+delete from `users` where 1;
