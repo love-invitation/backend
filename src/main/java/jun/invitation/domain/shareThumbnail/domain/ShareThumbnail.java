@@ -1,12 +1,14 @@
 package jun.invitation.domain.shareThumbnail.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.image.domain.Image;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.GenerationType.*;
-import static lombok.AccessLevel.*;
+import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -20,18 +22,15 @@ public class ShareThumbnail {
     private String title;
     private String contents;
 
-    private String imageUrl;
-    private String imageOriginName;
-    private String imageStoreFileName;
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @Builder
-    public ShareThumbnail(String title, String contents, String imageUrl,
-                          String imageOriginName, String imageStoreFileName) {
+    public ShareThumbnail(String title, String contents, Image image) {
         this.title = title;
         this.contents = contents;
-        this.imageUrl = imageUrl;
-        this.imageOriginName = imageOriginName;
-        this.imageStoreFileName = imageStoreFileName;
+        this.image = image;
     }
 
     public void updateTextValue(String title, String contents) {
@@ -39,9 +38,7 @@ public class ShareThumbnail {
         this.contents = contents;
     }
 
-    public void updateImageValue(String imageUrl, String imageOriginName, String imageStoreFileName) {
-        this.imageUrl = imageUrl;
-        this.imageOriginName = imageOriginName;
-        this.imageStoreFileName = imageStoreFileName;
+    public void updateImageValue(Image image) {
+        this.image = image;
     }
 }

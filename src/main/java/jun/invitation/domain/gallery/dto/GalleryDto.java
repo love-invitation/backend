@@ -14,7 +14,7 @@ public class GalleryDto {
 
     public GalleryDto(Gallery gallery) {
         this.priority = gallery.getPriority();
-        this.originFileName = gallery.getOriginFileName();
-        this.imageUrl = gallery.getImageUrl();
+        this.originFileName = gallery.getImage().getOriginName();
+        this.imageUrl = gallery.getImage().getUrl();
     }
 }

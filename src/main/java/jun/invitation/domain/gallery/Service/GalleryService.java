@@ -5,6 +5,8 @@ import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dao.GalleryRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.image.domain.Image;
+import jun.invitation.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,8 @@ import static jun.invitation.aws.s3.ImageUploadKey.*;
 public class GalleryService {
 
     private final GalleryRepository galleryRepository;
+    private final ImageService imageService;
+
     private final ImageUploader imageUploader;
 
     @Transactional
@@ -32,7 +36,7 @@ public class GalleryService {
             return;
         }
         galleries.forEach(g -> {
-            imageUploader.delete(g.getStoreFileName());
+            imageUploader.delete(g.getImage().getStoreFileName());
         });
         galleryRepository.deleteByGalleries(galleries);
     }
@@ -47,13 +51,16 @@ public class GalleryService {
                 .toList();
 
         for (CompletableFuture<Map<ImageUploadKey, String>> future : futures) {
-            Map<ImageUploadKey, String> savedFileMap = future.join();
-            if (savedFileMap != null) {
-                String originFileName = savedFileMap.get(ORIGIN_FILE_NAME);
-                String storeFileName = savedFileMap.get(STORE_FILE_NAME);
-                String savedUrlPath = savedFileMap.get(IMAGE_URL);
+            Map<ImageUploadKey, String> map = future.join();
+            if (map != null) {
+                Image image = Image.builder()
+                        .url(map.get(IMAGE_URL))
+                        .originName(map.get(ORIGIN_FILE_NAME))
+                        .storeFileName(map.get(STORE_FILE_NAME))
+                        .build();
 
-                Gallery newGallery = new Gallery(originFileName, storeFileName, sequence++, savedUrlPath);
+                imageService.save(image);
+                Gallery newGallery = new Gallery(sequence++, image);
                 newGallery.setInvitation(invitation);
             }
         }

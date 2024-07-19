@@ -2,8 +2,10 @@ package jun.invitation.domain.shareThumbnail.service;
 
 import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.ImageUploader;
-import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
+import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
+import jun.invitation.image.domain.Image;
+import jun.invitation.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,22 +21,25 @@ import static jun.invitation.aws.s3.ImageUploadKey.*;
 public class ShareThumbnailService {
 
     private final ImageUploader imageUploader;
+    private final ImageService imageService;
 
     @Transactional
     public ShareThumbnail create(MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) throws IOException {
 
-        String savedUrlPath = null;
-        String originFileName = null;
-        String storeFileName = null;
+        Image image = null;
         String title = null;
         String contents = null;
 
         if (shareThumbImage != null) {
-            Map<ImageUploadKey, String> savedFileMap = imageUploader.upload(shareThumbImage);
+            Map<ImageUploadKey, String> map = imageUploader.upload(shareThumbImage);
 
-            originFileName = savedFileMap.get(ORIGIN_FILE_NAME);
-            storeFileName = savedFileMap.get(STORE_FILE_NAME);
-            savedUrlPath = savedFileMap.get(IMAGE_URL);
+            image = Image.builder()
+                    .url(map.get(IMAGE_URL))
+                    .originName(map.get(ORIGIN_FILE_NAME))
+                    .storeFileName(map.get(STORE_FILE_NAME))
+                    .build();
+
+            imageService.save(image);
         }
 
         if (shareThumbnailDto != null){
@@ -42,13 +47,13 @@ public class ShareThumbnailService {
             contents = shareThumbnailDto.getContents();
         }
 
-        return new ShareThumbnail(title, contents, savedUrlPath, originFileName, storeFileName);
+        return new ShareThumbnail(title, contents, image);
     }
 
     @Transactional
     public void deleteImage(ShareThumbnail shareThumbnail) {
         if (shareThumbnail != null) {
-            String imageStoreFileName = shareThumbnail.getImageStoreFileName();
+            String imageStoreFileName = shareThumbnail.getImage().getStoreFileName();
             if (imageStoreFileName != null) {
                 imageUploader.delete(imageStoreFileName);
             }
@@ -63,8 +68,8 @@ public class ShareThumbnailService {
                 newShareThumbnail.getContents()
                 );
 
-        String storeFileName = currentShareThumbnail.getImageStoreFileName();
-        if (currentShareThumbnail.getImageStoreFileName() != null) {
+        String storeFileName = currentShareThumbnail.getImage() == null ? null : currentShareThumbnail.getImage().getStoreFileName();
+        if (storeFileName != null) {
             imageUploader.delete(storeFileName);
         }
 
@@ -72,17 +77,17 @@ public class ShareThumbnailService {
 
             Map<ImageUploadKey, String> savedFileMap = imageUploader.upload(newShareThumbnailImage);
 
-            currentShareThumbnail.updateImageValue(
-                    savedFileMap.get(IMAGE_URL),
-                    savedFileMap.get(ORIGIN_FILE_NAME),
-                    savedFileMap.get(STORE_FILE_NAME)
-                    );
+            Image image = Image.builder()
+                    .url(savedFileMap.get(IMAGE_URL))
+                    .originName(savedFileMap.get(ORIGIN_FILE_NAME))
+                    .storeFileName(savedFileMap.get(STORE_FILE_NAME))
+                    .build();
+
+            imageService.save(image);
+
+            currentShareThumbnail.updateImageValue(image);
         } else {
-            currentShareThumbnail.updateImageValue(
-                    null,
-                    null,
-                    null
-            );
+            currentShareThumbnail.updateImageValue(null);
         }
     }
 }

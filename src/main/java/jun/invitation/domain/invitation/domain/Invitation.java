@@ -16,6 +16,7 @@ import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.global.utils.PointUtils;
+import jun.invitation.image.domain.Image;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +29,7 @@ import java.util.Map;
 
 import static jakarta.persistence.CascadeType.PERSIST;
 import static jakarta.persistence.CascadeType.REMOVE;
-import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.FetchType.LAZY;
 import static jun.invitation.aws.s3.ImageUploadKey.*;
 
 @Entity
@@ -38,9 +39,9 @@ import static jun.invitation.aws.s3.ImageUploadKey.*;
 @Slf4j
 public class Invitation extends Product {
 
-    private String mainImageUrl;
-    private String mainImageOriginName;
-    private String mainImageStoreFileName;
+    @OneToOne(fetch = LAZY)
+    @JoinColumn(name = "image_id")
+    private Image mainImage;
 
     private String coverContents;
 
@@ -106,19 +107,8 @@ public class Invitation extends Product {
     private FamilyInfo groomInfo;
 
 
-    public void registerMainImage(Map<ImageUploadKey, String> savedFileMap) {
-
-        if (savedFileMap == null || savedFileMap.isEmpty()) {
-            this.mainImageOriginName = null;
-            this.mainImageStoreFileName = null;
-            this.mainImageUrl = null;
-
-            return;
-        }
-
-        this.mainImageOriginName = savedFileMap.get(ORIGIN_FILE_NAME);
-        this.mainImageStoreFileName = savedFileMap.get(STORE_FILE_NAME);
-        this.mainImageUrl = savedFileMap.get(IMAGE_URL);
+    public void registerMainImage(Image image) {
+        this.mainImage = image;
     }
 
     public void registerShareThumbnail(ShareThumbnail shareThumbnail) {
@@ -126,9 +116,8 @@ public class Invitation extends Product {
     }
 
     @Builder
-    public Invitation(String mainImageUrl, String coverContents, String title, String contents, Wedding wedding, Boolean guestbookCheck,
+    public Invitation(String coverContents, String title, String contents, Wedding wedding, Boolean guestbookCheck,
                       FamilyInfo brideInfo, FamilyInfo groomInfo) {
-        this.mainImageUrl = mainImageUrl;
         this.title = title;
         this.contents = contents;
         this.wedding = wedding;

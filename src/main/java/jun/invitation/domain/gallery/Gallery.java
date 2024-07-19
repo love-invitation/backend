@@ -2,10 +2,12 @@ package jun.invitation.domain.gallery;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.image.domain.Image;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity @Getter
 @NoArgsConstructor
@@ -18,20 +20,17 @@ public class Gallery {
 
     private Long priority;
 
-    private String originFileName;
-    private String storeFileName;
-
-    private String imageUrl;
-
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id")
     private Invitation invitation;
 
-    public Gallery(String originFileName , String storeFileName, Long priority, String imageUrl) {
-        this.originFileName = originFileName;
-        this.storeFileName = storeFileName;
+    @OneToOne(fetch = LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "image_id")
+    private Image image;
+
+    public Gallery(Long priority, Image image) {
+        this.image = image;
         this.priority = priority;
-        this.imageUrl = imageUrl;
     }
 
     public void setInvitation(Invitation invitation) {
