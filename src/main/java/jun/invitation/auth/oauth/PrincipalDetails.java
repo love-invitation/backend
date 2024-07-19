@@ -1,4 +1,4 @@
-package jun.invitation.auth;
+package jun.invitation.auth.oauth;
 
 import jun.invitation.domain.user.domain.User;
 import lombok.Data;

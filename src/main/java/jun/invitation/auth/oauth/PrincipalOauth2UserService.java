@@ -1,6 +1,5 @@
 package jun.invitation.auth.oauth;
 
-import jun.invitation.auth.PrincipalDetails;
 import jun.invitation.auth.oauth.userInfo.GoogleUserInfo;
 import jun.invitation.auth.oauth.userInfo.KakaoUserInfo;
 import jun.invitation.auth.oauth.userInfo.NaverUserInfo;
