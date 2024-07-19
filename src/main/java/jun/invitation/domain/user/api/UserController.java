@@ -1,6 +1,6 @@
 package jun.invitation.domain.user.api;
 
-import jun.invitation.auth.jwt.service.TokenService;
+import jun.invitation.auth.jwt.service.JwtService;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.domain.user.dto.UserDto;
 import jun.invitation.global.dto.ResponseDto;
@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class UserController {
 
-    private TokenService tokenService;
+    private JwtService jwtService;
 
     @GetMapping("/api/v1/user")
     public ResponseEntity<ResponseDto> receiveUserInfoReq() {

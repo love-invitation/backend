@@ -31,31 +31,32 @@ public class JwtService {
                 .withClaim("id", user.getId())
                 .withClaim("username", user.getUsername())
                 .sign(Algorithm.HMAC512(SECRET));
-
     }
 
     public String extractToken(Cookie[] cookies) throws UnsupportedEncodingException {
 
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (HEADER_STRING.equals(cookie.getName())) {
-                    String header = cookie.getValue();
-                    return URLDecoder.decode(header, StandardCharsets.UTF_8.name())
-                            .replaceAll("%20", " ");
-                }
-            }
+        if (cookies == null) {
+            return null;
         }
-        return null;
+
+        Cookie cookie = findJWTCookie(cookies);
+
+        return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8.name())
+                .replaceAll("%20", " ");
+    }
+
+    private Cookie findJWTCookie(Cookie[] cookies) {
+
+        return Arrays.stream(cookies)
+                .filter(c -> c.getName().equals(HEADER_STRING))
+                .findFirst().orElseThrow(NoTokenException::new);
     }
 
     public Cookie logout(Cookie[] cookies) {
 
-        Cookie target = Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals(HEADER_STRING))
-                .findFirst()
-                .orElseThrow(NoTokenException::new);
-
+        Cookie target = findJWTCookie(cookies);
         target.setMaxAge(0);
+
         return target;
     }
 }
