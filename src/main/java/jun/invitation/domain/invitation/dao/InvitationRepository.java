@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface InvitationRepository extends JpaRepository<Invitation, Long> {
+public interface InvitationRepository extends JpaRepository<Invitation, Long>, CustomInvitationRepository {
     Optional<Invitation> findByTsid(Long tsid);
     void deleteByWedding_DateBefore(LocalDateTime now);
 
