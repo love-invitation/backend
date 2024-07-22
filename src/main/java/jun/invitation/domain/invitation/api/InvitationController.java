@@ -1,27 +1,14 @@
 package jun.invitation.domain.invitation.api;
 
-import jun.invitation.domain.contact.dto.ContactReqDto;
-import jun.invitation.domain.gallery.Gallery;
-import jun.invitation.domain.guestbook.domain.Guestbook;
-import jun.invitation.domain.invitation.dao.InvitationRepository;
-import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.embedded.Wedding;
-import jun.invitation.domain.contact.dto.ContactInfoDto;
 import jun.invitation.domain.invitation.dto.InvitationDto;
-import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.domain.invitation.service.InvitationService;
-import jun.invitation.domain.orders.dao.OrderRepository;
-import jun.invitation.domain.orders.domain.Orders;
-import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -42,7 +29,7 @@ public class InvitationController {
             @RequestPart(name = "mainImage", required = false) MultipartFile mainImage,
             @RequestPart(name = "shareThumbnail", required = false) MultipartFile shareThumbnail) throws IOException {
 
-        Long invitationTsid = invitationService.createInvitation(invitationDto, gallery, mainImage, shareThumbnail);
+        Long invitationTsid = invitationService.create(invitationDto, gallery, mainImage, shareThumbnail);
         ResponseDto responseDto = ResponseDto.builder()
                 .status(CREATED.value())
                 .message("create success.")
@@ -57,7 +44,7 @@ public class InvitationController {
     @GetMapping("/{invitationTsid}")
     public ResponseEntity<ResponseDto> getInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) {
 
-        LinkedHashMap<String, Object> result = invitationService.readInvitation(invitationTsid);
+        LinkedHashMap<String, Object> result = invitationService.read(invitationTsid);
 
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
@@ -108,5 +95,4 @@ public class InvitationController {
                 .status(OK)
                 .body(responseDto);
     }
-
 }

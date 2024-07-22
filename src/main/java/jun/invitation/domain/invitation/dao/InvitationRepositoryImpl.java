@@ -5,6 +5,8 @@ import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.image.domain.QImage;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Optional;
+
 import static jun.invitation.domain.gallery.QGallery.*;
 import static jun.invitation.domain.invitation.domain.QInvitation.*;
 import static jun.invitation.domain.productInfo.domain.QProductInfo.*;
@@ -17,9 +19,9 @@ public class InvitationRepositoryImpl implements CustomInvitationRepository{
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Invitation findByIdWithALL(Long productId) {
+    public Optional<Invitation> findByTsidIdWithALL(Long tsid) {
 
-        return queryFactory
+        return Optional.ofNullable(queryFactory
                 .selectFrom(invitation)
                 .join(invitation.shareThumbnail, shareThumbnail).fetchJoin()
                 .join(invitation.shareThumbnail.image, new QImage("shareThumbnailImage")).fetchJoin()
@@ -27,7 +29,7 @@ public class InvitationRepositoryImpl implements CustomInvitationRepository{
                 .join(invitation.productInfo, productInfo).fetchJoin()
                 .join(invitation.gallery, gallery).fetchJoin()
                 .join(gallery.image, image).fetchJoin()
-                .where(invitation.id.eq(productId))
-                .fetchFirst();
+                .where(invitation.tsid.eq(tsid))
+                .fetchFirst());
     }
 }

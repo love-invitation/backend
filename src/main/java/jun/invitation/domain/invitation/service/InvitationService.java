@@ -1,6 +1,7 @@
 package jun.invitation.domain.invitation.service;
 
-import com.github.f4b6a3.tsid.TsidCreator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.account.domain.Account;
@@ -15,15 +16,15 @@ import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.gallery.dto.GalleryInfoDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
-import jun.invitation.domain.priority.PriorityName;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
-import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
+import jun.invitation.domain.priority.PriorityName;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.dto.PriorityDto;
 import jun.invitation.domain.priority.service.PriorityService;
@@ -40,6 +41,8 @@ import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.domain.transport.dto.TransportInfoDto;
 import jun.invitation.domain.transport.service.TransportService;
 import jun.invitation.global.service.port.IdentifierGenerator;
+import jun.invitation.image.domain.Image;
+import jun.invitation.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -49,15 +52,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
+import static jun.invitation.aws.s3.ImageUploadKey.*;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 import static jun.invitation.domain.priority.PriorityName.*;
-import static jun.invitation.global.utils.SecurityUtils.getCurrentUser;
 
 @Service
 @Slf4j
@@ -76,8 +81,12 @@ public class InvitationService {
     private final OrderService orderService;
     private final ContactService contactService;
     private final AccountService accountService;
+    private final ImageService imageService;
 
     private final IdentifierGenerator identifierGenerator;
+
+    @PersistenceContext
+    private final EntityManager em;
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -88,7 +97,7 @@ public class InvitationService {
     }
 
     @Transactional
-    public Long createInvitation(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage, MultipartFile shareThumbnailImage) throws IOException  {
+    public Long create(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage, MultipartFile shareThumbnailImage) throws IOException  {
 
         Invitation invitation = invitationdto.toInvitation();
         priorityService.create(invitationdto.getPriority(), invitation);
@@ -136,8 +145,18 @@ public class InvitationService {
 
         /* 메인 이미지 저장 */
         if (mainImage != null) {
+
             Map<ImageUploadKey, String> map = imageUploader.upload(mainImage);
-            invitation.registerMainImage(map);
+
+            Image image = imageService.save(Image.builder()
+                    .url(map.get(IMAGE_URL))
+                    .originName(map.get(ORIGIN_FILE_NAME))
+                    .storeFileName(map.get(STORE_FILE_NAME))
+                    .build());
+
+            image = imageService.save(image);
+
+            invitation.registerMainImage(image);
         }
 
         Long invitationTsid = saveInvitation(invitation);
@@ -164,9 +183,20 @@ public class InvitationService {
 //            throw new InvitationAccessDeniedException();
 //        }
 
-        if (invitation.getMainImageStoreFileName() != null) {
-            imageUploader.delete(invitation.getMainImageStoreFileName());
+        if (invitation.getMainImage().getStoreFileName() != null) {
+            imageUploader.delete(invitation.getMainImage().getStoreFileName());
         }
+
+        List<Image> images = invitation.getGallery()
+                .stream().map(Gallery::getImage)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        if (invitation.getShareThumbnail().getImage() != null) {
+            images.add(invitation.getShareThumbnail().getImage());
+        }
+
+        if (invitation.getMainImage() != null)
+            images.add(invitation.getMainImage());
 
         galleryService.delete(invitation.getGallery());
         guestbookService.delete(invitationId);
@@ -176,7 +206,10 @@ public class InvitationService {
         orderService.delete(invitationId);
         priorityService.delete(invitationId);
         shareThumbnailService.deleteImage(invitation.getShareThumbnail());
-        productService.deleteByInvitation(invitationId);
+        productService.delete(invitationId);
+        em.flush();
+        em.clear();
+        imageService.delete(images);
     }
 
 
@@ -237,32 +270,42 @@ public class InvitationService {
      *  기존 x, main Image x : 아무 행동 x
      */
     private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws IOException, RuntimeException {
-        String mainImageStoreFileName = invitation.getMainImageStoreFileName();
+        String mainImageStoreFileName = invitation.getMainImage() == null ? null : invitation.getMainImage().getStoreFileName();
         CompletableFuture<Map<ImageUploadKey, String>> future;
         // 기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
         if (mainImageStoreFileName != null && mainImage != null) {
             imageUploader.delete(mainImageStoreFileName);
             future = imageUploader.uploadAsync(mainImage);
-
-            invitation.registerMainImage(future.join());
+            registImage(invitation, future.join());
 
         } else if (mainImageStoreFileName != null && mainImage == null) {
             imageUploader.delete(mainImageStoreFileName);
             invitation.registerMainImage(null);
         } else if (mainImageStoreFileName == null && mainImage != null){
             future = imageUploader.uploadAsync(mainImage);
-            invitation.registerMainImage(future.join());
+            registImage(invitation, future.join());
         }
     }
 
+    private void registImage(Invitation invitation, Map<ImageUploadKey, String> map) {
+
+        Image image = Image.builder()
+                .url(map.get(IMAGE_URL))
+                .originName(map.get(ORIGIN_FILE_NAME))
+                .storeFileName(map.get(STORE_FILE_NAME))
+                .build();
+
+        imageService.save(image);
+        invitation.registerMainImage(image);
+    }
+
     @Transactional(readOnly = true)
-    public LinkedHashMap<String, Object> readInvitation(Long invitationTsid) {
+    public LinkedHashMap<String, Object> read(Long invitationTsid) {
 
-        Invitation invitation = invitationRepository.findByTsid(invitationTsid).orElseThrow(InvitationNotFoundException::new);
+        Invitation invitation = invitationRepository.findByTsidIdWithALL(invitationTsid)
+                .orElseThrow(InvitationNotFoundException::new);
 
-        LinkedHashMap<String, Object> stringObjectLinkedHashMap = sortByPriority(invitation);
-
-        return stringObjectLinkedHashMap;
+        return sortByPriority(invitation);
     }
 
 
@@ -342,7 +385,7 @@ public class InvitationService {
         ShareThumbnail shareThumbnail = invitation.getShareThumbnail();
         String shareThumbTitle = shareThumbnail.getTitle();
         String shareThumbContents = shareThumbnail.getContents();
-        String shareThumbImageUrl = shareThumbnail.getImageUrl();
+        String shareThumbImageUrl = shareThumbnail.getImage() == null ? null : shareThumbnail.getImage().getUrl();
         result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(shareThumbTitle,shareThumbContents, shareThumbImageUrl));
 
         return result;
@@ -363,12 +406,6 @@ public class InvitationService {
                 .orElseThrow(InvitationNotFoundException::new);
     }
 
-    @Transactional(readOnly = true)
-    public Invitation findByTsid(Long invitationTsid) {
-        return invitationRepository
-                .findByTsid(invitationTsid)
-                .orElseThrow(InvitationNotFoundException::new);
-    }
 
     @Transactional(readOnly = true)
     public ShareThumbnailResDto readShareThumbnail(Long productId) {
@@ -378,7 +415,7 @@ public class InvitationService {
         return new ShareThumbnailResDto(
                 shareThumbnail.getTitle(),
                 shareThumbnail.getContents(),
-                shareThumbnail.getImageUrl()
+                shareThumbnail.getImage().getUrl()
         );
     }
 }
