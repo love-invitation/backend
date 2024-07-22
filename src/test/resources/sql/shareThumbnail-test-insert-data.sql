@@ -1,1 +1,1 @@
-insert into `share_thumbnail` (`contents`,`image_origin_name`,`image_store_file_name`,`image_url`,`title`,`id`) values ('1월 18일 목요일 오후 1시 30분','one.jpeg','e0ea51b5-0daf-43b7-bd2a-a406bca93517.jpeg','https://test.com/e0ea51b5-0daf-43b7-bd2a-a406bca93517.jpeg','(하트) 결혼합니다',1);
+insert into share_thumbnail (contents,image_id,title,id) values ('1월 18일 목요일 오후 1시 30분',1,'(하트) 결혼합니다',1);

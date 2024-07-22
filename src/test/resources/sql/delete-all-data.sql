@@ -9,4 +9,5 @@ delete from `invitation` where 1;
 delete from `product` where 1;
 delete from `product_info` where 1;
 delete from `share_thumbnail` where 1;
+delete from `image` where 1;
 delete from `users` where 1;

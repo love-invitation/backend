@@ -1,1 +1,1 @@
-insert into `gallery` (`image_url`,`product_id`,`origin_file_name`,`priority`,`store_file_name`,`gallery_id`) values ('https://invitation-bucket.s3.ap-northeast-2.amazonaws.com/629cced6-5bd3-4a7a-b320-2856c1d54096.jpeg',1,'one.jpeg',1,'629cced6-5bd3-4a7a-b320-2856c1d54096.jpeg',1);
+insert into gallery (image_id,product_id,priority,gallery_id) values (3,1,1,1);
