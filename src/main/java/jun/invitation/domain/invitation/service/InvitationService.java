@@ -45,6 +45,9 @@ import jun.invitation.image.domain.Image;
 import jun.invitation.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -214,9 +217,10 @@ public class InvitationService {
 
 
     @Transactional
-    public void updateInvitation(Long invitationId, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage, MultipartFile shareThumbnail) throws IOException {
+    @CacheEvict(value = "Products", key = "#tsid", cacheManager = "cacheManager")
+    public void update(Long tsid, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage, MultipartFile shareThumbnail) throws IOException {
 
-        Invitation invitation = invitationRepository.findById(invitationId)
+        Invitation invitation = invitationRepository.findByTsid(tsid)
                 .orElseThrow(InvitationNotFoundException::new);
 
         // 유효성 check
@@ -300,9 +304,10 @@ public class InvitationService {
     }
 
     @Transactional(readOnly = true)
-    public LinkedHashMap<String, Object> read(Long invitationTsid) {
+    @Cacheable(value = "Products", key = "#tsid", cacheManager = "cacheManager")
+    public LinkedHashMap<String, Object> read(Long tsid) {
 
-        Invitation invitation = invitationRepository.findByTsidIdWithALL(invitationTsid)
+        Invitation invitation = invitationRepository.findByTsidIdWithALL(tsid)
                 .orElseThrow(InvitationNotFoundException::new);
 
         return sortByPriority(invitation);
@@ -405,7 +410,6 @@ public class InvitationService {
                 .findById(invitationId)
                 .orElseThrow(InvitationNotFoundException::new);
     }
-
 
     @Transactional(readOnly = true)
     public ShareThumbnailResDto readShareThumbnail(Long productId) {
