@@ -2,9 +2,11 @@ package jun.invitation.domain.invitation.dto;
 
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
 @Data
+@RequiredArgsConstructor
 public class WeddingPlaceDto {
     private Integer priority;
     private String name;

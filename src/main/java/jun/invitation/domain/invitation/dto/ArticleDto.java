@@ -2,8 +2,10 @@ package jun.invitation.domain.invitation.dto;
 
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class ArticleDto {
     private Integer priority;
     private String title;

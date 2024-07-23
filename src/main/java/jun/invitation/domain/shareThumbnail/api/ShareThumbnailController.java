@@ -2,7 +2,6 @@ package jun.invitation.domain.shareThumbnail.api;
 
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
-import jun.invitation.domain.shareThumbnail.service.ShareThumbnailService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

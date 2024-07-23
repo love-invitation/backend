@@ -2,8 +2,10 @@ package jun.invitation.domain.gallery.dto;
 
 import jun.invitation.domain.gallery.Gallery;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class GalleryDto {
 
     private Long priority;

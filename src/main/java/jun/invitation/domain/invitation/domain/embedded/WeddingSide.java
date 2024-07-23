@@ -1,7 +1,5 @@
 package jun.invitation.domain.invitation.domain.embedded;
 
-import jun.invitation.domain.priority.PriorityName;
-
 public enum WeddingSide {
     BRIDE("bride"),
     GROOM("groom");

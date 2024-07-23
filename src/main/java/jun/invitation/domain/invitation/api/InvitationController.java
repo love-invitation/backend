@@ -59,20 +59,20 @@ public class InvitationController {
 
     }
 
-    @PutMapping("/{invitationId}")
+    @PutMapping("/{invitationTsid}")
     public ResponseEntity<ResponseDto> updateInvitation(
-            @PathVariable(name = "invitationId") Long invitationId ,
+            @PathVariable(name = "invitationTsid") Long invitationTsid ,
             @RequestPart(name = "invitationDto") InvitationDto invitationDto,
             @RequestPart(name = "gallery", required = false) List<MultipartFile> gallery,
             @RequestPart(name = "mainImage", required = false) MultipartFile mainImage,
             @RequestPart(name = "shareThumbnail", required = false) MultipartFile shareThumbnail
     ) throws IOException {
 
-        invitationService.updateInvitation(invitationId, invitationDto, gallery, mainImage, shareThumbnail);
+        invitationService.update(invitationTsid, invitationDto, gallery, mainImage, shareThumbnail);
 
         ResponseDto responseDto = ResponseDto.builder()
                 .status(OK.value())
-                .message("Invitation[ID : "+ invitationId+"] successfully updated.")
+                .message("Invitation[ID : "+ invitationTsid+"] successfully updated.")
                 .build();
 
         return ResponseEntity

@@ -1,10 +1,13 @@
 package jun.invitation.domain.account.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class AccountResDto {
 
     private Integer priority;

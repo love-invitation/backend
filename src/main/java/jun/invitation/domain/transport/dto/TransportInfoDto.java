@@ -2,11 +2,13 @@ package jun.invitation.domain.transport.dto;
 
 import jun.invitation.domain.transport.domain.Transport;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 public class TransportInfoDto {
     private Integer priority;
     private List<TransportDto> transport = new ArrayList<>();

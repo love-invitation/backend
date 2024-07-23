@@ -3,7 +3,6 @@ package jun.invitation.global.error;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import jun.invitation.auth.jwt.exception.InvalidTokenException;
 import jun.invitation.auth.jwt.exception.NoTokenException;
-import jun.invitation.auth.refreshToken.execption.RefreshTokenNotFoundException;
 import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
@@ -45,13 +44,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     public ResponseEntity<ErrorResponse> handlerInvalidException() {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.WRONG_TOKEN);
-        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
-    }
-
-    /* REFRESH TOKEN ERROR*/
-    @ExceptionHandler(RefreshTokenNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerRefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
-        final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.MISMATCH_PASSWORD);
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 

@@ -3,8 +3,10 @@ package jun.invitation.domain.invitation.dto;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.embedded.ParentDto;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class FamilyInfoDto {
 
     private String name;

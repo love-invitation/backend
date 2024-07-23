@@ -4,18 +4,18 @@ import jakarta.persistence.*;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.global.entity.BaseEntity;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
-import static jakarta.persistence.FetchType.*;
-import static jakarta.persistence.GenerationType.*;
-
-@NoArgsConstructor
-@Entity(name = "Orders") @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Getter
+@Table(name = "orders")
 public class Orders extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)

@@ -1,17 +1,23 @@
 package jun.invitation.domain.invitation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
+import jun.invitation.image.domain.Image;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@RequiredArgsConstructor
 public class CoverDto {
 
     private Integer priority;
+
+    private Long templateId;
+
     private String imageUrl;
     private String imageOriginName;
     private String imageStoreFileName;
@@ -27,10 +33,17 @@ public class CoverDto {
     private String coverContents;
 
     public CoverDto(Invitation invitation) {
+
         this.priority = 0;
-        this.imageUrl = invitation.getMainImageUrl();
-        this.imageOriginName = invitation.getMainImageOriginName();
-        this.imageStoreFileName = invitation.getMainImageStoreFileName();
+        this.templateId = invitation.getProductInfo().getId();
+
+        Image mainImage = invitation.getMainImage();
+        if (mainImage != null){
+            this.imageUrl = mainImage.getUrl();
+            this.imageOriginName = mainImage.getOriginName();
+            this.imageStoreFileName = mainImage.getStoreFileName();
+        }
+
 
         Wedding wedding = invitation.getWedding();
         if (wedding != null) {
@@ -42,6 +55,7 @@ public class CoverDto {
         if (groomInfo != null) {
             this.groomName = groomInfo.getName();
         }
+
         FamilyInfo brideInfo = invitation.getBrideInfo();
         if ( brideInfo != null) {
             this.brideName = brideInfo.getName();

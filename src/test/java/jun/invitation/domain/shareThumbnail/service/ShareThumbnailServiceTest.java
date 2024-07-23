@@ -1,33 +1,33 @@
 package jun.invitation.domain.shareThumbnail.service;
 
+import jun.invitation.TestDataInit;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
+import jun.invitation.image.domain.Image;
 import jun.invitation.mock.FakeImageUploader;
 import jun.invitation.mock.TestUuidHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Rollback;
 
 import java.io.IOException;
 
 @Slf4j
+@SpringBootTest
+@TestDataInit
 class ShareThumbnailServiceTest {
 
+    @Autowired
     private ShareThumbnailService shareThumbnailService;
+
+    @Autowired
     private FakeImageUploader fakeImageUploader;
-
-    @BeforeEach
-    void init() {
-        fakeImageUploader = FakeImageUploader.builder()
-                .uuidHolder(new TestUuidHolder("ggdfsfsd-sdfadssdsa-sdfadsafad"))
-                .build();
-
-        shareThumbnailService = new ShareThumbnailService(fakeImageUploader);
-    }
-
 
     @Test
     void ShareThumbnailService는_ThumbnailDto와_MultipartFile로_ShareThumbnail을_생성할_수_있다() throws IOException {
@@ -48,11 +48,12 @@ class ShareThumbnailServiceTest {
         ShareThumbnail shareThumbnail = shareThumbnailService.create(file, shareThumbnailDto);
 
         //then
+        Image thumbnailImage = shareThumbnail.getImage();
         Assertions.assertThat(shareThumbnail.getTitle()).isEqualTo("썸네일 제목");
         Assertions.assertThat(shareThumbnail.getContents()).isEqualTo("썸네일 내용");
-        Assertions.assertThat(shareThumbnail.getImageUrl()).isEqualTo("https://test.com/ggdfsfsd-sdfadssdsa-sdfadsafad.png");
-        Assertions.assertThat(shareThumbnail.getImageOriginName()).isEqualTo("thumbnail.png");
-        Assertions.assertThat(shareThumbnail.getImageStoreFileName()).isEqualTo("ggdfsfsd-sdfadssdsa-sdfadsafad.png");
+        Assertions.assertThat(thumbnailImage.getUrl()).isEqualTo("https://test.com/ggdfsfsd-sdfadssdsa-sdfadsafad.png");
+        Assertions.assertThat(thumbnailImage.getOriginName()).isEqualTo("thumbnail.png");
+        Assertions.assertThat(thumbnailImage.getStoreFileName()).isEqualTo("ggdfsfsd-sdfadssdsa-sdfadsafad.png");
     }
 
     @Test
@@ -76,7 +77,7 @@ class ShareThumbnailServiceTest {
         shareThumbnailService.deleteImage(shareThumbnail);
 
         //then
-        Assertions.assertThat(fakeImageUploader.hasImg(shareThumbnail.getImageStoreFileName())).isFalse();
+        Assertions.assertThat(fakeImageUploader.hasImg(shareThumbnail.getImage().getStoreFileName())).isFalse();
     }
     
     @Test
@@ -113,13 +114,12 @@ class ShareThumbnailServiceTest {
         shareThumbnailService.update(newShareThumbnailDto, shareThumbnail, newFile);
 
         //then
+        Image thumbnailImage = shareThumbnail.getImage();
         Assertions.assertThat(shareThumbnail.getTitle()).isEqualTo("업데이트 썸네일 제목");
         Assertions.assertThat(shareThumbnail.getContents()).isEqualTo("업데이트 썸네일 내용");
-        Assertions.assertThat(shareThumbnail.getImageUrl()).isEqualTo("https://test.com/update-ggdfsfsd-sdfadssdsa-sdfadsafad.png");
-        Assertions.assertThat(shareThumbnail.getImageOriginName()).isEqualTo("newThumbnail.png");
-        Assertions.assertThat(shareThumbnail.getImageStoreFileName()).isEqualTo("update-ggdfsfsd-sdfadssdsa-sdfadsafad.png");
+        Assertions.assertThat(thumbnailImage.getUrl()).isEqualTo("https://test.com/update-ggdfsfsd-sdfadssdsa-sdfadsafad.png");
+        Assertions.assertThat(thumbnailImage.getOriginName()).isEqualTo("newThumbnail.png");
+        Assertions.assertThat(thumbnailImage.getStoreFileName()).isEqualTo("update-ggdfsfsd-sdfadssdsa-sdfadsafad.png");
     }
-
-
 
 }

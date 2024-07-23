@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jun.invitation.domain.invitation.domain.embedded.Wedding;
 import jun.invitation.domain.invitation.domain.embedded.WeddingType;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@RequiredArgsConstructor
 public class WeddingDateDto {
     private Integer priority;
 

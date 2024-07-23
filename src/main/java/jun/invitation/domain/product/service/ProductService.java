@@ -1,6 +1,5 @@
 package jun.invitation.domain.product.service;
 
-import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.product.dao.ProductRepository;
 import jun.invitation.domain.product.domain.Product;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,7 @@ public class ProductService {
         return productRepository.findById(id).orElseGet(null);
     }
 
-    public void deleteByInvitation(Long id) {
+    public void delete(Long id) {
         productRepository.deleteById(id);
     }
 }

@@ -1,7 +1,8 @@
 package jun.invitation.domain.priority.dto;
 
-import jun.invitation.domain.priority.domain.Priority;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor

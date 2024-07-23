@@ -53,7 +53,11 @@ public class FakeImageUploader implements ImageUploader {
 
     @Override
     public CompletableFuture<Map<ImageUploadKey, String>> uploadAsync(MultipartFile multipartFile) {
-        return null;
+        CompletableFuture<Map<ImageUploadKey, String>> future = new CompletableFuture<>();
+
+        future.complete(this.upload(multipartFile));
+
+        return future;
     }
 
     public boolean hasImg(String fileName) {

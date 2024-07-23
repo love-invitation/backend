@@ -23,7 +23,7 @@ public class UserController {
 
         User currentUser = SecurityUtils.getCurrentUser();
 
-        UserDto userDto = new UserDto(currentUser.getEmail());
+        UserDto userDto = currentUser == null ? null : new UserDto(currentUser.getEmail());
 
         ResponseDto<Object> result = ResponseDto.builder()
                 .status(OK.value())

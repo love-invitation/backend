@@ -1,7 +1,6 @@
 package jun.invitation.domain.gallery.dao;
 
 import jun.invitation.domain.gallery.Gallery;
-import jun.invitation.domain.invitation.domain.Invitation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

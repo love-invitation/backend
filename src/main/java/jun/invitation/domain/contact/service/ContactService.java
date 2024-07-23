@@ -2,13 +2,12 @@ package jun.invitation.domain.contact.service;
 
 import jun.invitation.domain.contact.dao.ContactRepository;
 import jun.invitation.domain.contact.domain.Contact;
+import jun.invitation.domain.contact.dto.ContactInfoDto;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
-
-import jun.invitation.domain.contact.dto.ContactInfoDto;
 import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
-import jun.invitation.domain.priority.PriorityName;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +19,11 @@ import java.util.stream.Collectors;
 
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
-import static jun.invitation.domain.priority.PriorityName.*;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ContactService {
 
     private final ContactRepository contactRepository;
@@ -67,7 +66,7 @@ public class ContactService {
 
     public void update(ContactReqDto newContacts, List<Contact> currentContacts, Invitation invitation) {
 
-        if (!currentContacts.isEmpty() || currentContacts != null) {
+        if (currentContacts != null || !currentContacts.isEmpty()) {
             contactRepository.deleteByProductId(invitation.getId());
         }
 

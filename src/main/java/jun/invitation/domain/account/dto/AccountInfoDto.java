@@ -2,6 +2,7 @@ package jun.invitation.domain.account.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor

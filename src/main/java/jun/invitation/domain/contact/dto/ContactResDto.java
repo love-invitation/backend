@@ -1,10 +1,12 @@
 package jun.invitation.domain.contact.dto;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Data
+@RequiredArgsConstructor
 public class ContactResDto {
     private Integer priority;
 

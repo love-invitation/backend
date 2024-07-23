@@ -2,11 +2,13 @@ package jun.invitation.domain.gallery.dto;
 
 import jun.invitation.domain.gallery.Gallery;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@RequiredArgsConstructor
 public class GalleryInfoDto {
     private Integer priority;
     private List<GalleryDto> galleries = new ArrayList<>();

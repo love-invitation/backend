@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "product_info")
 public class ProductInfo {
 
 

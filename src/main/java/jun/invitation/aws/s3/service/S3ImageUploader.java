@@ -20,7 +20,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static jun.invitation.aws.s3.ImageUploadKey.*;
