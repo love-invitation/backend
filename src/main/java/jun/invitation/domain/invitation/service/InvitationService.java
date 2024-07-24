@@ -46,7 +46,6 @@ import jun.invitation.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -151,34 +150,25 @@ public class InvitationService {
 
             Map<ImageUploadKey, String> map = imageUploader.upload(mainImage);
 
-            Image image = imageService.save(Image.builder()
-                    .url(map.get(IMAGE_URL))
-                    .originName(map.get(ORIGIN_FILE_NAME))
-                    .storeFileName(map.get(STORE_FILE_NAME))
-                    .build());
+            Image image = imageService.fromMap(map);
 
             image = imageService.save(image);
 
             invitation.registerMainImage(image);
         }
 
-        Long invitationTsid = saveInvitation(invitation);
+        Long invitationTsid = invitationRepository.save(invitation).getTsid();
         saveOrder(invitation);
 
         return invitationTsid;
 
     }
     private void saveOrder(Invitation invitation) {
-        orderService.requestOrder(invitation);
-    }
-
-
-    private Long saveInvitation(Invitation invitation) {
-        return invitationRepository.save(invitation).getTsid();
+        orderService.create(invitation);
     }
 
     @Transactional
-    public void deleteInvitation(Long invitationId) {
+    public void delete(Long invitationId) {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
 
@@ -292,13 +282,7 @@ public class InvitationService {
     }
 
     private void registImage(Invitation invitation, Map<ImageUploadKey, String> map) {
-
-        Image image = Image.builder()
-                .url(map.get(IMAGE_URL))
-                .originName(map.get(ORIGIN_FILE_NAME))
-                .storeFileName(map.get(STORE_FILE_NAME))
-                .build();
-
+        Image image = imageService.fromMap(map);
         imageService.save(image);
         invitation.registerMainImage(image);
     }

@@ -53,11 +53,7 @@ public class GalleryService {
         for (CompletableFuture<Map<ImageUploadKey, String>> future : futures) {
             Map<ImageUploadKey, String> map = future.join();
             if (map != null) {
-                Image image = Image.builder()
-                        .url(map.get(IMAGE_URL))
-                        .originName(map.get(ORIGIN_FILE_NAME))
-                        .storeFileName(map.get(STORE_FILE_NAME))
-                        .build();
+                Image image = imageService.fromMap(map);
 
                 imageService.save(image);
                 Gallery newGallery = new Gallery(sequence++, image);
