@@ -21,7 +21,8 @@ public class OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderService.class);
     private final OrderRepository orderRepository;
 
-    public void requestOrder(Invitation invitation) {
+
+    public void create(Invitation invitation) {
         Orders orders = Orders.builder()
                 .user(
 //                        SecurityUtils.getCurrentUser()
