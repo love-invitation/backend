@@ -158,16 +158,14 @@ public class InvitationService {
         }
 
         Long invitationTsid = invitationRepository.save(invitation).getTsid();
-        saveOrder(invitation);
+        orderService.create(invitation);
 
         return invitationTsid;
 
     }
-    private void saveOrder(Invitation invitation) {
-        orderService.create(invitation);
-    }
 
     @Transactional
+    @CacheEvict(value = "Products", key = "#tsid", cacheManager = "cacheManager")
     public void delete(Long invitationId) {
 
         Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
