@@ -2,6 +2,7 @@ package jun.invitation.domain.priority.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.product.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,19 +27,19 @@ public class Priority {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id")
-    private Invitation invitation;
+    private Product product;
 
     public Priority(String name, Integer priority) {
         this.name = name;
         this.priority = priority;
     }
 
-    public void register(Invitation invitation){
-        if (this.invitation != null) {
-            this.invitation.getPriority().remove(this);
+    public void register(Product product){
+        if (this.product != null) {
+            this.product.getPriority().remove(this);
         }
-        this.invitation = invitation;
-        invitation.getPriority().add(this);
+        this.product = product;
+        product.getPriority().add(this);
     }
 
     public void updatePriority(Integer priority){

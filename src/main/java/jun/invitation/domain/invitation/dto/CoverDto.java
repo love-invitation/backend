@@ -3,7 +3,7 @@ package jun.invitation.domain.invitation.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
-import jun.invitation.domain.invitation.domain.embedded.Wedding;
+import jun.invitation.domain.reservation.domain.Reservation;
 import jun.invitation.image.domain.Image;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +45,10 @@ public class CoverDto {
         }
 
 
-        Wedding wedding = invitation.getWedding();
-        if (wedding != null) {
-            this.weddingDate = wedding.getDate();
-            this.detail = wedding.getDetail();
+        Reservation reservation = invitation.getReservation();
+        if (reservation != null) {
+            this.weddingDate = reservation.getDate();
+            this.detail = reservation.getDetail();
         }
 
         FamilyInfo groomInfo = invitation.getGroomInfo();

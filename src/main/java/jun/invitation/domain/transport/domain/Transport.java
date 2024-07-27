@@ -2,6 +2,7 @@ package jun.invitation.domain.transport.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.transport.dto.TransportDto;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -23,20 +24,20 @@ public class Transport {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Invitation invitation;
+    private Product product;
 
     public Transport(TransportDto transportDto) {
         this.kind = transportDto.getKind();
         this.detail = transportDto.getDetail();
     }
 
-    public void register(Invitation invitation) {
+    public void register(Product product) {
 
-        if (this.invitation != null) {
-            this.invitation.getTransport().remove(this);
+        if (this.product != null) {
+            this.product.getTransport().remove(this);
         }
 
-        this.invitation = invitation;
-        invitation.getTransport().add(this);
+        this.product = product;
+        product.getTransport().add(this);
     }
 }

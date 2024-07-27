@@ -21,7 +21,7 @@ public class TransportService {
     private final TransportRepository transportRepository;
 
     public void delete(Long invitationId) {
-        transportRepository.deleteByInvitationId(invitationId);
+        transportRepository.deleteByProductId(invitationId);
     }
 
     public void save(List<TransportDto> transportDtos, Invitation invitation) {

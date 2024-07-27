@@ -2,6 +2,7 @@ package jun.invitation.domain.guestbook.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.product.domain.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,7 @@ public class Guestbook {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Invitation invitation;
+    private Product product;
 
     public Guestbook(String name, String password, String message) {
         this.name = name;
@@ -30,11 +31,11 @@ public class Guestbook {
         this.message = message;
     }
 
-    public void registerInvitation(Invitation invitation) {
-        if (this.invitation != null) {
-            this.invitation.getGuestbook().remove(this);
+    public void registerInvitation(Product product) {
+        if (this.product != null) {
+            this.product.getGuestbook().remove(this);
         }
-        this.invitation = invitation;
-        invitation.getGuestbook().add(this);
+        this.product = product;
+        product.getGuestbook().add(this);
     }
 }

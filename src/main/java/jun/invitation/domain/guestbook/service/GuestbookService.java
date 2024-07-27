@@ -44,7 +44,7 @@ public class GuestbookService {
     }
 
     public Page<GuestbookResponseDto> getResponseDtoList(Long invitationId, Pageable pageable) {
-        return guestbookRepository.findByInvitation_idOrderByIdDesc(invitationId, pageable)
+        return guestbookRepository.findByProduct_idOrderByIdDesc(invitationId, pageable)
                 .map(guestbook -> new GuestbookResponseDto(guestbook));
     }
 

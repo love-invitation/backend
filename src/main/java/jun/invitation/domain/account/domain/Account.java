@@ -3,6 +3,7 @@ package jun.invitation.domain.account.domain;
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.product.domain.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,7 @@ public class Account {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id")
-    private Invitation invitation;
+    private Product product;
 
     private String name;
     private String bankName;
@@ -38,12 +39,12 @@ public class Account {
         this.weddingSide = type;
     }
 
-    public void register(Invitation invitation) {
-        if (this.invitation != null) {
-            this.invitation.getAccounts().remove(this);
+    public void register(Product product) {
+        if (this.product != null) {
+            this.product.getAccounts().remove(this);
         }
 
-        this.invitation = invitation;
-        invitation.getAccounts().add(this);
+        this.product = product;
+        product.getAccounts().add(this);
     }
 }

@@ -1,6 +1,6 @@
-package jun.invitation.domain.invitation.dto;
+package jun.invitation.domain.reservation.dto;
 
-import jun.invitation.domain.invitation.domain.embedded.WeddingType;
+import jun.invitation.domain.reservation.domain.DateType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
-public class WeddingDto {
+public class ReservationDto {
     /**
      * booking : date, date type,
      * place : name, detail, address, latitude, longitude;
@@ -21,9 +21,9 @@ public class WeddingDto {
     private Double longitude;
 
     private LocalDateTime date;
-    private WeddingType dateType;
+    private DateType dateType;
 
-    public WeddingDto(String placeName, String detail, String placeAddress, Double latitude, Double longitude, LocalDateTime date, WeddingType dateType) {
+    public ReservationDto(String placeName, String detail, String placeAddress, Double latitude, Double longitude, LocalDateTime date, DateType dateType) {
         this.placeName = placeName;
         this.detail = detail;
         this.placeAddress = placeAddress;

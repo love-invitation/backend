@@ -81,14 +81,14 @@ public class InvitationController {
 
     }
 
-    @DeleteMapping("/{invitationId}")
-    public ResponseEntity<ResponseDto> deleteInvitation(@PathVariable(name = "invitationId") Long invitationId) throws Exception {
+    @DeleteMapping("/{invitationTsid}")
+    public ResponseEntity<ResponseDto> deleteInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) throws Exception {
 
-        invitationService.delete(invitationId);
+        invitationService.delete(invitationTsid);
 
         ResponseDto responseDto = ResponseDto.builder()
                 .status(OK.value())
-                .message("Invitation[ID : "+ invitationId+" ] successfully deleted.")
+                .message("Invitation[ID : "+ invitationTsid+" ] successfully deleted.")
                 .build();
 
         return ResponseEntity

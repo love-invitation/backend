@@ -11,8 +11,8 @@ import org.springframework.data.repository.query.Param;
 public interface GuestbookRepository extends JpaRepository<Guestbook, Long>{
 
     @Modifying
-    @Query(value = "delete from Guestbook g where g.invitation.id = :id")
+    @Query(value = "delete from Guestbook g where g.product.id = :id")
     void deleteByInvitationId(@Param(value = "id") Long invitationId);
 
-    Page<Guestbook> findByInvitation_idOrderByIdDesc(Long invitationId, Pageable pageable);
+    Page<Guestbook> findByProduct_idOrderByIdDesc(Long invitationId, Pageable pageable);
 }

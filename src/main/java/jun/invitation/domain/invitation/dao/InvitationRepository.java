@@ -11,7 +11,6 @@ import java.util.Optional;
 
 public interface InvitationRepository extends JpaRepository<Invitation, Long>, CustomInvitationRepository {
     Optional<Invitation> findByTsid(Long tsid);
-    void deleteByWedding_DateBefore(LocalDateTime now);
 
     @Query("select i.shareThumbnail from Invitation i where i.tsid = :tsid")
     ShareThumbnail findShareThumbnailByProductId(@Param(value = "tsid") Long tsid);

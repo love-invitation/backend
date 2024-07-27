@@ -3,6 +3,7 @@ package jun.invitation.domain.contact.domain;
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.product.domain.Product;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,7 @@ public class Contact {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id")
-    private Invitation invitation;
+    private Product product;
 
     private String name;
     private String phoneNumber;
@@ -38,13 +39,13 @@ public class Contact {
         this.weddingSide = weddingSide;
     }
 
-    public void register(Invitation invitation) {
+    public void register(Product product) {
 
-        if (this.invitation != null) {
-            this.invitation.getContacts().remove(this);
+        if (this.product != null) {
+            this.product.getContacts().remove(this);
         }
 
-        this.invitation = invitation;
-        invitation.getContacts().add(this);
+        this.product = product;
+        product.getContacts().add(this);
     }
 }

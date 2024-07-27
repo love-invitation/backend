@@ -2,6 +2,7 @@ package jun.invitation.domain.gallery;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
+import jun.invitation.domain.product.domain.Product;
 import jun.invitation.image.domain.Image;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +23,7 @@ public class Gallery {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id")
-    private Invitation invitation;
+    private Product product;
 
     @OneToOne(fetch = LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
@@ -33,9 +34,9 @@ public class Gallery {
         this.priority = priority;
     }
 
-    public void setInvitation(Invitation invitation) {
-        this.invitation = invitation;
-        invitation.getGallery().add(this);
+    public void setInvitation(Product product) {
+        this.product = product;
+        product.getGallery().add(this);
     }
 
 }

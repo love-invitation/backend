@@ -14,6 +14,6 @@ public interface TransportRepository extends JpaRepository<Transport, Long>{
     void deleteByTransports(@Param(value = "transports") List<Transport> transports);
 
     @Modifying
-    @Query(value = "delete from Transport t where t.invitation.id = :id")
-    void deleteByInvitationId(@Param(value = "id") Long invitationId);
+    @Query(value = "delete from Transport t where t.product.id = :id")
+    void deleteByProductId(@Param(value = "id") Long productId);
 }

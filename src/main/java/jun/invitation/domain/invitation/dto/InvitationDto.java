@@ -4,8 +4,10 @@ import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
-import jun.invitation.domain.invitation.domain.embedded.Wedding;
+import jun.invitation.domain.reservation.domain.Reservation;
 import jun.invitation.domain.priority.dto.PriorityDto;
+import jun.invitation.domain.reservation.dto.WeddingDateReqDto;
+import jun.invitation.domain.reservation.dto.WeddingPlaceReqDto;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.global.utils.PointUtils;
@@ -81,19 +83,6 @@ public class InvitationDto {
         return Invitation.builder()
                 .title(title)
                 .contents(contents)
-                .wedding(
-                        new Wedding(
-                                place.getName(),
-                                place.getDetail(),
-                                place.getAddress(),
-                                PointUtils.PointConvert(
-                                        place.getLongitude(),
-                                        place.getLatitude()
-                                ),
-                                booking.getDate(),
-                                booking.getDateType()
-                        )
-                )
                 .groomInfo(groom)
                 .brideInfo(bride)
                 .guestbookCheck(guestbookCheck)

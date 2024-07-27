@@ -1,7 +1,5 @@
 package jun.invitation.domain.invitation.service;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.account.domain.Account;
@@ -20,7 +18,7 @@ import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
-import jun.invitation.domain.invitation.domain.embedded.Wedding;
+import jun.invitation.domain.reservation.domain.Reservation;
 import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
 import jun.invitation.domain.orders.domain.Orders;
@@ -33,6 +31,9 @@ import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
+import jun.invitation.domain.reservation.dto.WeddingDateDto;
+import jun.invitation.domain.reservation.dto.WeddingPlaceDto;
+import jun.invitation.domain.reservation.service.ReservationService;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
@@ -84,24 +85,28 @@ public class InvitationService {
     private final ContactService contactService;
     private final AccountService accountService;
     private final ImageService imageService;
+    private final ReservationService reservationService;
 
     private final IdentifierGenerator identifierGenerator;
 
 
-    @Scheduled(cron = "0 0 0 * * ?")
-    @Transactional
-    public void removeAfterWedding() {
-        // todo : 다른 Entity들도 삭제해야함
-        LocalDateTime now = LocalDateTime.now();
-        invitationRepository.deleteByWedding_DateBefore(now);
-    }
+//    @Scheduled(cron = "0 0 0 * * ?")
+//    @Transactional
+//    public void removeAfterWedding() {
+//        // todo : 다른 Entity들도 삭제해야함
+//        LocalDateTime now = LocalDateTime.now();
+//        invitationRepository.deleteByWedding_DateBefore(now);
+//    }
 
     @Transactional
     public Long create(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage, MultipartFile shareThumbnailImage) throws IOException  {
 
         Invitation invitation = invitationdto.toInvitation();
+
         priorityService.create(invitationdto.getPriority(), invitation);
 
+        Reservation createdReservation = reservationService.create(invitationdto.getBooking(), invitationdto.getPlace());
+        ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getThumbnail());
         ProductInfo productInfo = productInfoService.read(invitationdto.getProductInfoId());
 
         /* 갤러리 저장 */
@@ -109,14 +114,14 @@ public class InvitationService {
             galleryService.save(gallery, invitation);
         }
 
-        ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getThumbnail());
-        invitation.registerShareThumbnail(createdThumbnail);
 
         invitation.register(
 //                getCurrentUser(),
                 null,
                 identifierGenerator.generate(),
-                productInfo
+                productInfo,
+                createdThumbnail,
+                createdReservation
                 );
 
         /* 교통수단 저장 */
@@ -164,15 +169,15 @@ public class InvitationService {
 
     @Transactional
     @CacheEvict(value = "Products", key = "#tsid", cacheManager = "cacheManager")
-    public void delete(Long invitationId) {
+    public void delete(Long tsid) {
 
-        Invitation invitation = invitationRepository.findById(invitationId).orElseThrow(InvitationNotFoundException::new);
-
+        Invitation invitation = invitationRepository.findByTsid(tsid).orElseThrow(InvitationNotFoundException::new);
+        Long invitationId = invitation.getId();
 //        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
 //            throw new InvitationAccessDeniedException();
 //        }
 
-        if (invitation.getMainImage().getStoreFileName() != null) {
+        if (invitation.getMainImage() != null && invitation.getMainImage().getStoreFileName() != null) {
             imageUploader.delete(invitation.getMainImage().getStoreFileName());
         }
 
@@ -248,7 +253,18 @@ public class InvitationService {
         shareThumbnailService.update(newShareThumbnail, currentShareThumbnail, shareThumbnail);
 
         mainImageUpdate(mainImage, invitation);
-        invitation.update(invitationDto);
+
+//        Reservation update = Reservation.builder()
+//                .dateType(booking.getDateType())
+//                .date(booking.getDate())
+//                .build();
+
+        reservationService.update(
+                invitationDto.getPlace(),
+                invitationDto.getBooking(),
+                invitation.getReservation()
+        );
+
     }
 
     /**
@@ -295,7 +311,7 @@ public class InvitationService {
     private LinkedHashMap<String, Object> sortByPriority(Invitation invitation) {
 
         List<Priority> priorities = invitation.getPriority();
-        Wedding wedding = invitation.getWedding();
+        Reservation reservation = invitation.getReservation();
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
 
@@ -320,12 +336,12 @@ public class InvitationService {
                     break;
                 case BOOKING:
                     result.put(BOOKING.getPriorityName(),
-                            new WeddingDateDto(wedding, priorityValue)
+                            new WeddingDateDto(reservation, priorityValue)
                     );
                     break;
                 case PLACE:
                     result.put(PLACE.getPriorityName(),
-                            new WeddingPlaceDto(wedding, priorityValue)
+                            new WeddingPlaceDto(reservation, priorityValue)
                     );
                     break;
                 case TRANSPORT:

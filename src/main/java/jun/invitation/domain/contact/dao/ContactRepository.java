@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 
     @Modifying
-    @Query(value = "delete from Contact c where c.invitation.id = :id")
+    @Query(value = "delete from Contact c where c.product.id = :id")
     void deleteByProductId(@Param(value = "id") Long productId);
 
 }

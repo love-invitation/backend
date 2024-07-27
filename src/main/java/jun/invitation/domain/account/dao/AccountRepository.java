@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
     @Modifying
-    @Query(value = "delete from Account a where a.invitation.id = :id")
+    @Query(value = "delete from Account a where a.product.id = :id")
     void deleteByProductId(@Param(value = "id") Long productId);
 }
