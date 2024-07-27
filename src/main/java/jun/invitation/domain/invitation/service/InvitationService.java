@@ -87,8 +87,6 @@ public class InvitationService {
 
     private final IdentifierGenerator identifierGenerator;
 
-    @PersistenceContext
-    private final EntityManager em;
 
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -198,8 +196,6 @@ public class InvitationService {
         priorityService.delete(invitationId);
         shareThumbnailService.deleteImage(invitation.getShareThumbnail());
         productService.delete(invitationId);
-        em.flush();
-        em.clear();
         imageService.delete(images);
     }
 
