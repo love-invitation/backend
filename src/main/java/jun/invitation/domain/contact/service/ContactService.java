@@ -11,12 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.*;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 
@@ -37,27 +35,12 @@ public class ContactService {
                 .forEach(contact -> contact.register(invitation));
     }
 
-    public Map<String, List> getSeperatedMap(List<Contact> contacts) {
-
-        List<ContactInfoDto> groomContact = new ArrayList<>();
-        List<ContactInfoDto> brideContact = new ArrayList<>();
-
-        contacts.forEach(contact -> {
-            if (contact.getWeddingSide().equals(BRIDE))
-                brideContact.add(new ContactInfoDto(
-                        contact.getPhoneNumber(), contact.getName(), contact.getRelation())
+    public Map<String, List<ContactInfoDto>> classifyByWeddingSide(List<Contact> contacts) {
+        return contacts.stream()
+                .collect(groupingBy(
+                        contact -> contact.getWeddingSide().getSide(),
+                        mapping(ContactInfoDto::new,toList()))
                 );
-            else if (contact.getWeddingSide().equals(GROOM))
-                groomContact.add(new ContactInfoDto(
-                    contact.getPhoneNumber(), contact.getName(), contact.getRelation())
-            );
-        });
-
-        Map<String, List> seperatedMap = new HashMap<>();
-        seperatedMap.put(BRIDE.getSide(), brideContact);
-        seperatedMap.put(GROOM.getSide(), groomContact);
-        return seperatedMap;
-
     }
 
     public void delete(Long productId) {
@@ -81,7 +64,7 @@ public class ContactService {
                             contact.register(invitation);
                             return contact;
                         })
-                        .collect(Collectors.toList());
+                        .collect(toList());
             }
 
             if (groomContactInfo != null) {
@@ -91,7 +74,7 @@ public class ContactService {
                             contact.register(invitation);
                             return contact;
                         })
-                        .collect(Collectors.toList());
+                        .collect(toList());
             }
 
         }

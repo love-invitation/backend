@@ -9,6 +9,7 @@ import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.account.dto.AccountResDto;
 import jun.invitation.domain.account.service.AccountService;
 import jun.invitation.domain.contact.domain.Contact;
+import jun.invitation.domain.contact.dto.ContactInfoDto;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.contact.dto.ContactResDto;
 import jun.invitation.domain.contact.service.ContactService;
@@ -61,7 +62,6 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import static jun.invitation.aws.s3.ImageUploadKey.*;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 import static jun.invitation.domain.priority.PriorityName.*;
@@ -346,12 +346,12 @@ public class InvitationService {
                     break;
                 case CONTACT:
 
-                    Map<String, List> seperatedContactMap = contactService.getSeperatedMap(invitation.getContacts());
+                    Map<String, List<ContactInfoDto>> classifiedContact = contactService.classifyByWeddingSide(invitation.getContacts());
 
                     result.put(CONTACT.getPriorityName(),
                             new ContactResDto(
-                                    seperatedContactMap.get(GROOM.getSide()),
-                                    seperatedContactMap.get(BRIDE.getSide()),
+                                    classifiedContact.get(GROOM.getSide()),
+                                    classifiedContact.get(BRIDE.getSide()),
                                     priorityValue
                             )
                     );
