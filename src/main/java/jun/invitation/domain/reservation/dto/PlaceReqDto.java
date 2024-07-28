@@ -1,11 +1,11 @@
-package jun.invitation.domain.invitation.dto;
+package jun.invitation.domain.reservation.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class WeddingPlaceReqDto {
+public class PlaceReqDto {
     private String name;
     private String detail;
     private String address;
@@ -13,7 +13,7 @@ public class WeddingPlaceReqDto {
     private Double longitude;
     private Double latitude;
 
-    public WeddingPlaceReqDto(String name, String detail, String address, Double longitude, Double latitude) {
+    public PlaceReqDto(String name, String detail, String address, Double longitude, Double latitude) {
         this.name = name;
         this.detail = detail;
         this.address = address;

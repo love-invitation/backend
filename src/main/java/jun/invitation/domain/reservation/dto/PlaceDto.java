@@ -1,13 +1,13 @@
-package jun.invitation.domain.invitation.dto;
+package jun.invitation.domain.reservation.dto;
 
-import jun.invitation.domain.invitation.domain.embedded.Wedding;
+import jun.invitation.domain.reservation.domain.Reservation;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
 @Data
 @RequiredArgsConstructor
-public class WeddingPlaceDto {
+public class PlaceDto {
     private Integer priority;
     private String name;
     private String detail;
@@ -16,16 +16,16 @@ public class WeddingPlaceDto {
     private Double longitude;
     private Double latitude;
 
-    public WeddingPlaceDto(Wedding wedding, Integer priority) {
+    public PlaceDto(Reservation reservation, Integer priority) {
 
         this.priority = priority;
 
-        if (wedding != null){
-            this.name = wedding.getPlaceName();
-            this.detail = wedding.getDetail();
-            this.address = wedding.getPlaceAddress();
+        if (reservation != null){
+            this.name = reservation.getPlaceName();
+            this.detail = reservation.getDetail();
+            this.address = reservation.getPlaceAddress();
 
-            Point geography = wedding.getGeography();
+            Point geography = reservation.getGeography();
             if (geography != null) {
                 this.longitude = geography.getX();
                 this.latitude = geography.getY();
