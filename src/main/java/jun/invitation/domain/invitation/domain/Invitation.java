@@ -1,29 +1,14 @@
 package jun.invitation.domain.invitation.domain;
 
 import jakarta.persistence.*;
-import jun.invitation.domain.account.domain.Account;
-import jun.invitation.domain.contact.domain.Contact;
-import jun.invitation.domain.gallery.Gallery;
-import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
-import jun.invitation.domain.reservation.domain.Reservation;
 import jun.invitation.domain.invitation.dto.InvitationDto;
-import jun.invitation.domain.reservation.dto.WeddingDateReqDto;
-import jun.invitation.domain.reservation.dto.WeddingPlaceReqDto;
-import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.product.domain.Product;
-import jun.invitation.domain.transport.domain.Transport;
-import jun.invitation.global.utils.PointUtils;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static jakarta.persistence.CascadeType.PERSIST;
 
 @Entity
 @Getter
@@ -78,12 +63,23 @@ public class Invitation extends Product {
         this.coverContents = coverContents;
     }
 
-    public void update(InvitationDto invitationDto) {
-        super.update(invitationDto.getGuestbookCheck());
-        this.title = invitationDto.getTitle();
-        this.contents = invitationDto.getContents();
-        this.brideInfo = invitationDto.getBride();
-        this.groomInfo = invitationDto.getGroom();
-        this.coverContents = invitationDto.getCoverContents();
+    public void update(Boolean guestbookCheck, String title, String contents, FamilyInfo brideInfo, FamilyInfo groomInfo, String coverContents) {
+        super.update(guestbookCheck);
+        this.title = title;
+        this.contents = contents;
+        this.brideInfo = brideInfo;
+        this.groomInfo = groomInfo;
+        this.coverContents = coverContents;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + "Invitation{" +
+                "coverContents='" + coverContents + '\'' +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", brideInfo=" + brideInfo.toString() +
+                ", groomInfo=" + groomInfo.toString() +
+                '}';
     }
 }

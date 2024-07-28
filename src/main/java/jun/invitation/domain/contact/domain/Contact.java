@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
 import jun.invitation.domain.product.domain.Product;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,6 +33,7 @@ public class Contact {
     @Enumerated(STRING)
     private WeddingSide weddingSide;
 
+    @Builder
     public Contact(String name, String phoneNumber, String relation, WeddingSide weddingSide) {
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -47,5 +49,16 @@ public class Contact {
 
         this.product = product;
         product.getContacts().add(this);
+    }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", relation='" + relation + '\'' +
+                ", weddingSide=" + weddingSide +
+                '}';
     }
 }

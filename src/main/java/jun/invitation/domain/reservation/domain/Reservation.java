@@ -52,4 +52,16 @@ public class Reservation {
         this.dateType = dateType;
     }
 
+    @Override
+    public String toString() {
+        return "Reservation{" +
+                "id=" + id +
+                ", placeName='" + placeName + '\'' +
+                ", detail='" + detail + '\'' +
+                ", placeAddress='" + placeAddress + '\'' +
+                ", geography=" + geography +
+                ", date=" + date +
+                ", dateType=" + dateType +
+                '}';
+    }
 }

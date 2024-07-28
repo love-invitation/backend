@@ -38,4 +38,14 @@ public class Guestbook {
         this.product = product;
         product.getGuestbook().add(this);
     }
+
+    @Override
+    public String toString() {
+        return "Guestbook{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

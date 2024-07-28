@@ -39,4 +39,12 @@ public class Gallery {
         product.getGallery().add(this);
     }
 
+    @Override
+    public String toString() {
+        return "Gallery{" +
+                "id=" + id +
+                ", priority=" + priority +
+                ", image=" + image +
+                '}';
+    }
 }

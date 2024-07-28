@@ -47,4 +47,15 @@ public class Account {
         this.product = product;
         product.getAccounts().add(this);
     }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", bankName='" + bankName + '\'' +
+                ", accountNumber='" + accountNumber + '\'' +
+                ", weddingSide=" + weddingSide +
+                '}';
+    }
 }

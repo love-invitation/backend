@@ -41,4 +41,14 @@ public class ShareThumbnail {
     public void updateImageValue(Image image) {
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return "ShareThumbnail{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", contents='" + contents + '\'' +
+                ", image=" + image +
+                '}';
+    }
 }

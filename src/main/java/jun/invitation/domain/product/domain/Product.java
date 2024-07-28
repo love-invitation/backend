@@ -98,4 +98,24 @@ public abstract class Product extends BaseEntity {
     public void registerMainImage(Image image) {
         this.mainImage = image;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", tsid=" + tsid +
+                ", productInfo=" + productInfo.toString() +
+                ", user=" + user.toString() +
+                ", shareThumbnail=" + shareThumbnail.toString() +
+                ", mainImage=" + mainImage.toString() +
+                ", reservation=" + reservation.toString() +
+                ", gallery=" + gallery.toString() +
+                ", transport=" + transport.toString() +
+                ", priority=" + priority.toString() +
+                ", guestbook=" + guestbook.toString() +
+                ", contacts=" + contacts.toString() +
+                ", accounts=" + accounts.toString() +
+                ", guestbookCheck=" + guestbookCheck +
+                '}';
+    }
 }

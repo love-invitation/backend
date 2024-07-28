@@ -40,4 +40,13 @@ public class Transport {
         this.product = product;
         product.getTransport().add(this);
     }
+
+    @Override
+    public String toString() {
+        return "Transport{" +
+                "id=" + id +
+                ", kind='" + kind + '\'' +
+                ", detail='" + detail + '\'' +
+                '}';
+    }
 }

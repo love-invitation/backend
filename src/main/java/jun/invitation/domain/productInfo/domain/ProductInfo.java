@@ -7,14 +7,17 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+import static jakarta.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Table(name = "product_info")
 public class ProductInfo {
 
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Id
     @Column(name = "productInfo_id")
     private Long id;
@@ -42,5 +45,17 @@ public class ProductInfo {
         this.price = price;
         this.best = best;
         this.newest = newest;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductInfo{" +
+                "id=" + id +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", templateName='" + templateName + '\'' +
+                ", price=" + price +
+                ", best=" + best +
+                ", newest=" + newest +
+                '}';
     }
 }

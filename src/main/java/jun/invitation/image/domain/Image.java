@@ -29,4 +29,14 @@ public class Image {
         this.storeFileName = storeFileName;
         this.url = url;
     }
+
+    @Override
+    public String toString() {
+        return "Image{" +
+                "id=" + id +
+                ", originName='" + originName + '\'' +
+                ", storeFileName='" + storeFileName + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

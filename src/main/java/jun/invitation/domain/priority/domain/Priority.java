@@ -45,4 +45,13 @@ public class Priority {
     public void updatePriority(Integer priority){
         this.priority = priority;
     }
+
+    @Override
+    public String toString() {
+        return "Priority{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", priority=" + priority +
+                '}';
+    }
 }

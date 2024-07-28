@@ -34,4 +34,15 @@ public class User extends BaseEntity {
         this.providerId = providerId;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
+                ", provider='" + provider + '\'' +
+                ", providerId='" + providerId + '\'' +
+                '}';
+    }
 }
