@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,22 +85,17 @@ public class AccountService {
             List<AccountInfoDto> groomAccountInfo = newAccounts.getGroom();
 
             if (brideAccountInfo != null) {
-                brideAccountInfo.stream()
-                        .map(ba -> {
-                            Account account = new Account(ba.getName(), ba.getBankName(), ba.getAccountNumber(), BRIDE);
-                            account.register(invitation);
-                            return account;
-                        });
+                brideAccountInfo.forEach(ba -> {
+                    Account account = new Account(ba.getName(), ba.getBankName(), ba.getAccountNumber(), BRIDE);
+                    account.register(invitation);
+                });
             }
             if (groomAccountInfo != null) {
-                groomAccountInfo.stream()
-                        .map(gc -> {
+                groomAccountInfo.forEach(gc -> {
                             Account account = new Account(gc.getName(), gc.getBankName(), gc.getAccountNumber(), GROOM);
                             account.register(invitation);
-                            return account;
-                        }).collect(Collectors.toList());
+                });
             }
-
         }
     }
 }

@@ -43,14 +43,11 @@ public class TransportService {
             invitation.getTransport().clear();
         }
 
-        if (newTransportDtos != null && !newTransportDtos.isEmpty()) {
-            newTransportDtos.stream()
-                    .map(transportDto -> {
-                        Transport transport = new Transport(transportDto);
-                        transport.register(invitation);
-                        return transport;
-                    })
-                    .collect(Collectors.toList());
+        if (!ObjectUtils.isEmpty(newTransportDtos)) {
+            newTransportDtos.forEach(transportDto -> {
+                Transport transport = new Transport(transportDto);
+                transport.register(invitation);
+            });
         }
     }
 }
