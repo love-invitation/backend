@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,8 +38,10 @@ public class TransportService {
      */
     public void update(List<Transport> currentTransports, Invitation invitation, List<TransportDto> newTransportDtos) {
 
-        if (!currentTransports.isEmpty())
+        if (!ObjectUtils.isEmpty(currentTransports)){
             transportRepository.deleteByTransports(currentTransports);
+            invitation.getTransport().clear();
+        }
 
         if (newTransportDtos != null && !newTransportDtos.isEmpty()) {
             newTransportDtos.stream()

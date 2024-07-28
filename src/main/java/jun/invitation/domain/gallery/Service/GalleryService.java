@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,9 +36,7 @@ public class GalleryService {
         if (galleries.isEmpty()) {
             return;
         }
-        galleries.forEach(g -> {
-            imageUploader.delete(g.getImage().getStoreFileName());
-        });
+        galleries.forEach(g -> imageUploader.delete(g.getImage().getStoreFileName()));
         galleryRepository.deleteByGalleries(galleries);
     }
 
@@ -70,14 +69,14 @@ public class GalleryService {
      */
     public void update(List<Gallery> currentGalleries, Invitation invitation, List<MultipartFile> newGalleries) throws IOException {
         // 1.
-        if (!currentGalleries.isEmpty() && newGalleries != null) {
+        if (!ObjectUtils.isEmpty(currentGalleries) && !ObjectUtils.isEmpty(newGalleries)) {
             delete(currentGalleries);
             invitation.getGallery().clear();
             save(newGalleries, invitation);
-        } else if (!currentGalleries.isEmpty() && newGalleries == null){
+        } else if (!ObjectUtils.isEmpty(currentGalleries) && ObjectUtils.isEmpty(newGalleries)){
             // 2.
             delete(currentGalleries);
-        } else if (currentGalleries.isEmpty() && newGalleries != null) {
+        } else if (ObjectUtils.isEmpty(currentGalleries) && !ObjectUtils.isEmpty(newGalleries)) {
             // 3.
             save(newGalleries, invitation);
         }

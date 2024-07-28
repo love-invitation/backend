@@ -30,9 +30,9 @@ public class AccountService {
 
     public void save(List<AccountInfoDto> accountInfoDtos, Invitation invitation, WeddingSide side) {
 
-        if (accountInfoDtos == null) {
+        if (ObjectUtils.isEmpty(accountInfoDtos))
             return;
-        }
+
         accountInfoDtos.stream()
                 .map(a -> new Account(a.getName(), a.getBankName(), a.getAccountNumber(), side))
                 .forEach(account -> account.register(invitation));
@@ -75,7 +75,7 @@ public class AccountService {
 
     public void update(AccountReqDto newAccounts, List<Account> currentAccounts, Invitation invitation) {
 
-        if (!currentAccounts.isEmpty() || currentAccounts != null) {
+        if (!ObjectUtils.isEmpty(currentAccounts)) {
             accountRepository.deleteByProductId(invitation.getId());
         }
 
