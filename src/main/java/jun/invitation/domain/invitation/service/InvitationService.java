@@ -31,8 +31,8 @@ import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
-import jun.invitation.domain.reservation.dto.WeddingDateDto;
-import jun.invitation.domain.reservation.dto.WeddingPlaceDto;
+import jun.invitation.domain.reservation.dto.DateDto;
+import jun.invitation.domain.reservation.dto.PlaceDto;
 import jun.invitation.domain.reservation.service.ReservationService;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
@@ -49,13 +49,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -229,24 +227,17 @@ public class InvitationService {
 
         priorityService.update(newPriority, currentPriority);
 
-        /**
-         * contact
-         */
+        /* contact */
         ContactReqDto newContacts = invitationDto.getContacts();
         List<Contact> currentContacts = invitation.getContacts();
         contactService.update(newContacts, currentContacts, invitation);
 
-
-        /**
-         * account
-         */
+        /* account */
         AccountReqDto newAccounts = invitationDto.getAccounts();
         List<Account> currentAccounts = invitation.getAccounts();
         accountService.update(newAccounts, currentAccounts, invitation);
 
-        /**
-         * ShareThumbnail
-         */
+        /* ShareThumbnail */
         ShareThumbnailDto newShareThumbnail = invitationDto.getThumbnail();
         ShareThumbnail currentShareThumbnail = invitation.getShareThumbnail();
 
@@ -254,15 +245,20 @@ public class InvitationService {
 
         mainImageUpdate(mainImage, invitation);
 
-//        Reservation update = Reservation.builder()
-//                .dateType(booking.getDateType())
-//                .date(booking.getDate())
-//                .build();
-
+        /* reservation */
         reservationService.update(
                 invitationDto.getPlace(),
                 invitationDto.getBooking(),
                 invitation.getReservation()
+        );
+
+        invitation.update(
+                invitationDto.getGuestbookCheck(),
+                invitationDto.getTitle(),
+                invitationDto.getContents(),
+                invitationDto.getBride(),
+                invitationDto.getGroom(),
+                invitationDto.getCoverContents()
         );
 
     }
@@ -336,12 +332,12 @@ public class InvitationService {
                     break;
                 case BOOKING:
                     result.put(BOOKING.getPriorityName(),
-                            new WeddingDateDto(reservation, priorityValue)
+                            new DateDto(reservation, priorityValue)
                     );
                     break;
                 case PLACE:
                     result.put(PLACE.getPriorityName(),
-                            new WeddingPlaceDto(reservation, priorityValue)
+                            new PlaceDto(reservation, priorityValue)
                     );
                     break;
                 case TRANSPORT:
@@ -399,6 +395,7 @@ public class InvitationService {
             return false;
     }
 
+    @Transactional(readOnly = true)
     public Invitation findByInvitationId(Long invitationId) {
         return invitationRepository
                 .findById(invitationId)
