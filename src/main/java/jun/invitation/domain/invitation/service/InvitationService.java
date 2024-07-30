@@ -105,7 +105,7 @@ public class InvitationService {
 
         Reservation createdReservation = reservationService.create(invitationdto.getBooking(), invitationdto.getPlace());
         ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getThumbnail());
-        ProductInfo productInfo = productInfoService.read(invitationdto.getProductInfoId());
+        ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
 
         /* 갤러리 저장 */
         if (gallery != null) {

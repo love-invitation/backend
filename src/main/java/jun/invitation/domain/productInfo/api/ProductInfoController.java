@@ -25,7 +25,7 @@ public class ProductInfoController {
     @GetMapping
     public ResponseEntity<ResponseDto> getProductByProductInfo() {
 
-        List<ProductInfoDto> productInfoDtos = productInfoService.readAllProductInfos();
+        List<ProductInfoDto> productInfoDtos = productInfoService.findAll();
 
         ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos, null);
 
@@ -42,7 +42,7 @@ public class ProductInfoController {
 
     @GetMapping("/best")
     public ResponseEntity<ResponseDto> handleBestProductInfos() {
-        List<ProductInfoDto> productInfoDtos = productInfoService.readBestProductInfos();
+        List<ProductInfoDto> productInfoDtos = productInfoService.findByBestList();
 
         ProductInfoResDto productInfoResDto = new ProductInfoResDto(productInfoDtos, null);
 
@@ -60,7 +60,7 @@ public class ProductInfoController {
     @GetMapping("/{productInfoId}")
     public ResponseEntity<ResponseDto> handleProductInfo(@PathVariable(name = "productInfoId") Long productInfoId) {
 
-        ProductInfo byId = productInfoService.read(productInfoId);
+        ProductInfo byId = productInfoService.findById(productInfoId);
 
         ProductInfoDto productInfoDto = new ProductInfoDto(byId);
 

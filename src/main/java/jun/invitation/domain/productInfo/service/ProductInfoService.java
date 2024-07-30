@@ -20,26 +20,20 @@ public class ProductInfoService {
         productInfoRepository.save(productInfo);
     }
 
-    public List<ProductInfoDto> readAllProductInfos() {
-        List<ProductInfo> productInfoList = productInfoRepository.findAll();
-
-        return productInfoList.stream()
-                .map(ProductInfoDto::new)
+    public List<ProductInfoDto> findAll() {
+        return productInfoRepository.findAll()
+                .stream().map(ProductInfoDto::new)
                 .collect(Collectors.toList());
     }
 
-    public ProductInfo read(Long id) {
-        return productInfoRepository
-                .findById(id)
+    public ProductInfo findById(Long id) {
+        return productInfoRepository.findById(id)
                 .orElseThrow(ProductInfoNotFoundException::new);
     }
 
-    public List<ProductInfoDto> readBestProductInfos() {
-
-        List<ProductInfo> productInfoByBest = productInfoRepository.findByBestTrue();
-
-        return productInfoByBest.stream()
-                .map(ProductInfoDto::new)
+    public List<ProductInfoDto> findByBestList() {
+        return productInfoRepository.findByBestTrue()
+                .stream().map(ProductInfoDto::new)
                 .collect(Collectors.toList());
     }
 }
