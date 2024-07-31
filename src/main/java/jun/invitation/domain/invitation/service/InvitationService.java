@@ -51,13 +51,11 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -108,10 +106,8 @@ public class InvitationService {
         ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
 
         /* 갤러리 저장 */
-        if (gallery != null) {
+        if (!ObjectUtils.isEmpty(gallery))
             galleryService.save(gallery, invitation);
-        }
-
 
         invitation.register(
 //                getCurrentUser(),
@@ -120,43 +116,37 @@ public class InvitationService {
                 productInfo,
                 createdThumbnail,
                 createdReservation
-                );
+        );
 
         /* 교통수단 저장 */
         List<TransportDto> transportDtos = invitationdto.getTransport();
 
-        if (transportDtos != null) {
+        if (!ObjectUtils.isEmpty(transportDtos))
             transportService.save(transportDtos, invitation);
-        }
+
 
         /* 연락처 저장 */
-        ContactReqDto contacts = invitationdto.getContacts();
-
-        if (contacts != null) {
-            contactService.save(contacts.getGroom(), invitation, GROOM);
-            contactService.save(contacts.getBride(), invitation, BRIDE);
-        }
+        Optional.ofNullable(invitationdto.getContacts())
+                .ifPresent(c -> {
+                    contactService.save(c.getGroom(), invitation, GROOM);
+                    contactService.save(c.getBride(), invitation, BRIDE);
+                });
 
         /* 계좌번호 저장 */
-        AccountReqDto accounts = invitationdto.getAccounts();
-
-        if (accounts != null) {
-            accountService.save(accounts.getGroom(), invitation, GROOM);
-            accountService.save(accounts.getBride(), invitation, BRIDE);
-        }
-
+        Optional.ofNullable(invitationdto.getAccounts())
+                .ifPresent(a -> {
+                    accountService.save(a.getGroom(), invitation, GROOM);
+                    accountService.save(a.getBride(), invitation, BRIDE);
+                });
 
         /* 메인 이미지 저장 */
-        if (mainImage != null) {
+        Optional.ofNullable(mainImage)
+                .ifPresent(m -> {
+                    Map<ImageUploadKey, String> map = imageUploader.upload(mainImage);
+                    Image image = imageService.create(map);
+                    invitation.registerMainImage(image);
+                });
 
-            Map<ImageUploadKey, String> map = imageUploader.upload(mainImage);
-
-            Image image = imageService.fromMap(map);
-
-            image = imageService.save(image);
-
-            invitation.registerMainImage(image);
-        }
 
         Long invitationTsid = invitationRepository.save(invitation).getTsid();
         orderService.create(invitation);
@@ -169,26 +159,18 @@ public class InvitationService {
     @CacheEvict(value = "Products", key = "#tsid", cacheManager = "cacheManager")
     public void delete(Long tsid) {
 
-        Invitation invitation = invitationRepository.findByTsid(tsid).orElseThrow(InvitationNotFoundException::new);
+        Invitation invitation = invitationRepository.findByTsid(tsid)
+                .orElseThrow(InvitationNotFoundException::new);
         Long invitationId = invitation.getId();
 //        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
 //            throw new InvitationAccessDeniedException();
 //        }
 
-        if (invitation.getMainImage() != null && invitation.getMainImage().getStoreFileName() != null) {
-            imageUploader.delete(invitation.getMainImage().getStoreFileName());
-        }
+//        if (invitation.getMainImage() != null && invitation.getMainImage().getStoreFileName() != null) {
+//            imageUploader.delete(invitation.getMainImage().getStoreFileName());
+//        }
 
-        List<Image> images = invitation.getGallery()
-                .stream().map(Gallery::getImage)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        if (invitation.getShareThumbnail().getImage() != null) {
-            images.add(invitation.getShareThumbnail().getImage());
-        }
-
-        if (invitation.getMainImage() != null)
-            images.add(invitation.getMainImage());
+        List<Image> images = getImageToDelete(invitation);
 
         galleryService.delete(invitation.getGallery());
         guestbookService.delete(invitationId);
@@ -202,6 +184,25 @@ public class InvitationService {
         imageService.delete(images);
     }
 
+    private List<Image> getImageToDelete(Invitation invitation) {
+        List<Image> images = invitation.getGallery()
+                .stream().map(Gallery::getImage)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        /* share thumbnail -> List<Image> images 에 추가 */
+        Optional.ofNullable(invitation.getShareThumbnail())
+                .map(ShareThumbnail::getImage)
+                .ifPresent(images::add);
+
+        /* main image -> List<Image> images 에 추가 */
+        Optional.ofNullable(invitation.getMainImage())
+                .ifPresent(i -> {
+                    images.add(i);
+                    imageUploader.delete(i.getStoreFileName());
+                });
+
+        return images;
+    }
 
     @Transactional
     @CacheEvict(value = "Products", key = "#tsid", cacheManager = "cacheManager")
@@ -269,27 +270,25 @@ public class InvitationService {
      *  기존 x, main Image O : 기존 삭제 x, 메인 이미지 저장 o
      *  기존 x, main Image x : 아무 행동 x
      */
-    private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws IOException, RuntimeException {
+    private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws RuntimeException {
         String mainImageStoreFileName = invitation.getMainImage() == null ? null : invitation.getMainImage().getStoreFileName();
         CompletableFuture<Map<ImageUploadKey, String>> future;
         // 기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
         if (mainImageStoreFileName != null && mainImage != null) {
             imageUploader.delete(mainImageStoreFileName);
             future = imageUploader.uploadAsync(mainImage);
-            registImage(invitation, future.join());
-
+            registerImage(invitation, future.join());
         } else if (mainImageStoreFileName != null && mainImage == null) {
             imageUploader.delete(mainImageStoreFileName);
             invitation.registerMainImage(null);
         } else if (mainImageStoreFileName == null && mainImage != null){
             future = imageUploader.uploadAsync(mainImage);
-            registImage(invitation, future.join());
+            registerImage(invitation, future.join());
         }
     }
 
-    private void registImage(Invitation invitation, Map<ImageUploadKey, String> map) {
-        Image image = imageService.fromMap(map);
-        imageService.save(image);
+    private void registerImage(Invitation invitation, Map<ImageUploadKey, String> map) {
+        Image image = imageService.create(map);
         invitation.registerMainImage(image);
     }
 
@@ -377,11 +376,10 @@ public class InvitationService {
             }
         }
 
-        ShareThumbnail shareThumbnail = invitation.getShareThumbnail();
-        String shareThumbTitle = shareThumbnail.getTitle();
-        String shareThumbContents = shareThumbnail.getContents();
-        String shareThumbImageUrl = shareThumbnail.getImage() == null ? null : shareThumbnail.getImage().getUrl();
-        result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(shareThumbTitle,shareThumbContents, shareThumbImageUrl));
+        // null을 넣어서 줘야하는지 아니면 지금처럼 result에 아예 값을 넣지 않을지, 프론트 개발자한테 물어봐야함
+        Optional.ofNullable(invitation.getShareThumbnail())
+                .ifPresentOrElse(s -> result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(s)),
+                        ()->result.put(THUMBNAIL.getPriorityName(), null));
 
         return result;
     }
