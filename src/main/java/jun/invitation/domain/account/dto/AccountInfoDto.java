@@ -1,5 +1,6 @@
 package jun.invitation.domain.account.dto;
 
+import jun.invitation.domain.account.domain.Account;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -16,5 +17,11 @@ public class AccountInfoDto {
         this.name = name;
         this.accountNumber = accountNumber;
         this.bankName = bankName;
+    }
+
+    public AccountInfoDto(Account account) {
+        this.name = account.getName();
+        this.accountNumber = account.getAccountNumber();
+        this.bankName = account.getBankName();
     }
 }

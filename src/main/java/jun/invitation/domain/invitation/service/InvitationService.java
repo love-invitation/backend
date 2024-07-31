@@ -3,6 +3,7 @@ package jun.invitation.domain.invitation.service;
 import jun.invitation.aws.s3.ImageUploadKey;
 import jun.invitation.aws.s3.ImageUploader;
 import jun.invitation.domain.account.domain.Account;
+import jun.invitation.domain.account.dto.AccountInfoDto;
 import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.account.dto.AccountResDto;
 import jun.invitation.domain.account.service.AccountService;
@@ -363,15 +364,9 @@ public class InvitationService {
                     break;
                 case ACCOUNT:
 
-                    Map<String, List> seperatedAccountMap = accountService.getSeperatedMap(invitation.getAccounts());
+                    Map<String, List<AccountInfoDto>> classifiedMap = accountService.classifyBySide(invitation.getAccounts());
 
-                    result.put(ACCOUNT.getPriorityName(),
-                            new AccountResDto(
-                                    seperatedAccountMap.get(GROOM.getSide()),
-                                    seperatedAccountMap.get(BRIDE.getSide()),
-                                    priorityValue
-                            )
-                    );
+                    result.put(ACCOUNT.getPriorityName(), new AccountResDto(classifiedMap, priorityValue));
                     break;
             }
         }

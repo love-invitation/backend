@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
+
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 
 @Data
 @NoArgsConstructor
@@ -15,12 +19,12 @@ public class AccountResDto {
     private List<AccountInfoDto> groom;
     private List<AccountInfoDto> bride;
 
-    public AccountResDto(List<AccountInfoDto> groomAccountInfo, List<AccountInfoDto> brideAccountInfo, Integer priority) {
+    public AccountResDto(Map<String, List<AccountInfoDto>> classifiedMap, Integer priority) {
 
         this.priority = priority;
 
-        this.groom = groomAccountInfo;
-        this.bride = brideAccountInfo;
+        this.groom = classifiedMap.get(GROOM.getSide());
+        this.bride = classifiedMap.get(BRIDE.getSide());
 
     }
 }

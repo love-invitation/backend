@@ -12,12 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
+import static java.util.stream.Collectors.*;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 
@@ -39,35 +36,30 @@ public class AccountService {
                 .forEach(account -> account.register(invitation));
     }
 
-    public Map<String, List> getSeperatedMap(List<Account> accounts) {
+    public Map<String, List<AccountInfoDto>> classifyBySide(List<Account> accounts) {
+        Map<WeddingSide, List<Account>> collect = accounts.stream()
+                .collect(groupingBy(Account::getWeddingSide));
 
-        List<AccountInfoDto> groom = new ArrayList<>();
-        List<AccountInfoDto> bride = new ArrayList<>();
+        return collect.entrySet().stream()
+                .collect(toMap(
+                        entry -> entry.getKey().getSide(),
+                        entry -> entry.getValue().stream()
+                                .map(AccountInfoDto::new)
+                                .toList()
+                ));
+    }
 
-        accounts.forEach(account -> {
-            if (account.getWeddingSide().equals(BRIDE))
-                bride.add(
-                    new AccountInfoDto(
-                            account.getName(),
-                            account.getAccountNumber(),
-                            account.getBankName()
-                    )
-            );
-            else if (account.getWeddingSide().equals(GROOM))
-                groom.add(
-                        new AccountInfoDto(
-                                account.getName(),
-                                account.getAccountNumber(),
-                                account.getBankName()
-                        )
-                );
-        });
+    public Map<String, List<AccountInfoDto>> test(List<Account> accounts) {
+        Map<WeddingSide, List<Account>> collect = accounts.stream()
+                .collect(groupingBy(Account::getWeddingSide));
 
-        Map<String, List> seperatedMap = new HashMap<>();
-        seperatedMap.put(BRIDE.getSide(), bride );
-        seperatedMap.put(GROOM.getSide(), groom);
-        return seperatedMap;
-
+        return collect.entrySet().stream()
+                .collect(toMap(
+                        entry -> entry.getKey().getSide(),
+                        entry -> entry.getValue().stream()
+                                .map(AccountInfoDto::new)
+                                .toList()
+                ));
     }
 
     public void delete(Long productId) {
