@@ -7,15 +7,17 @@ import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.image.domain.Image;
 import jun.invitation.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
-import static jun.invitation.aws.s3.ImageUploadKey.*;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ShareThumbnailService {
@@ -26,68 +28,58 @@ public class ShareThumbnailService {
     @Transactional
     public ShareThumbnail create(MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) throws IOException {
 
-        Image image = null;
-        String title = null;
-        String contents = null;
+        Optional<MultipartFile> multipartOpt = Optional.ofNullable(shareThumbImage);
+        Optional<ShareThumbnailDto> thumbnailDtoOpt = Optional.ofNullable(shareThumbnailDto);
 
-        if (shareThumbImage != null) {
-            Map<ImageUploadKey, String> map = imageUploader.upload(shareThumbImage);
-
-            image = Image.builder()
-                    .url(map.get(IMAGE_URL))
-                    .originName(map.get(ORIGIN_FILE_NAME))
-                    .storeFileName(map.get(STORE_FILE_NAME))
-                    .build();
-
-            imageService.save(image);
-        }
-
-        if (shareThumbnailDto != null){
-            title = shareThumbnailDto.getTitle();
-            contents = shareThumbnailDto.getContents();
-        }
-
-        return new ShareThumbnail(title, contents, image);
+        return multipartOpt.flatMap(multipartFile -> thumbnailDtoOpt.map(thumbnailDto -> {
+                    Map<ImageUploadKey, String> map = imageUploader.upload(multipartFile);
+                    Image image = imageService.create(map);
+                    return ShareThumbnail.builder()
+                            .title(shareThumbnailDto.getTitle())
+                            .contents(shareThumbnailDto.getContents())
+                            .image(image)
+                            .build();
+                }))
+                .orElse(null);
     }
 
     @Transactional
     public void deleteImage(ShareThumbnail shareThumbnail) {
-        if (shareThumbnail != null) {
-            String imageStoreFileName = shareThumbnail.getImage().getStoreFileName();
-            if (imageStoreFileName != null) {
-                imageUploader.delete(imageStoreFileName);
-            }
-        }
+        Optional.ofNullable(shareThumbnail)
+                .map(ShareThumbnail::getImage)
+                .map(Image::getStoreFileName)
+                .ifPresent(imageUploader::delete);
     }
 
     @Transactional
-    public void update(ShareThumbnailDto newShareThumbnail, ShareThumbnail currentShareThumbnail, MultipartFile newShareThumbnailImage) throws IOException {
+    public void update(ShareThumbnailDto updateThumbnail, ShareThumbnail thumbnail, MultipartFile multipartFile) throws IOException {
 
-        currentShareThumbnail.updateTextValue(
-                newShareThumbnail.getTitle(),
-                newShareThumbnail.getContents()
-                );
+        if (cannotUpdate(updateThumbnail, thumbnail, multipartFile))
+            return;
 
-        String storeFileName = currentShareThumbnail.getImage() == null ? null : currentShareThumbnail.getImage().getStoreFileName();
-        if (storeFileName != null) {
-            imageUploader.delete(storeFileName);
-        }
+        // text update
+        thumbnail.updateText(updateThumbnail.getTitle(), updateThumbnail.getContents());
 
-        if (newShareThumbnailImage != null) {
+        // image update
+        deleteCurrentImage(thumbnail);
+        updateImage(multipartFile, thumbnail);
+    }
 
-            Map<ImageUploadKey, String> savedFileMap = imageUploader.upload(newShareThumbnailImage);
+    private boolean cannotUpdate(ShareThumbnailDto updateThumbnail, ShareThumbnail thumbnail, MultipartFile multipartFile) {
+        return ObjectUtils.isEmpty(updateThumbnail)
+                || ObjectUtils.isEmpty(multipartFile)
+                || ObjectUtils.isEmpty(thumbnail);
+    }
 
-            Image image = Image.builder()
-                    .url(savedFileMap.get(IMAGE_URL))
-                    .originName(savedFileMap.get(ORIGIN_FILE_NAME))
-                    .storeFileName(savedFileMap.get(STORE_FILE_NAME))
-                    .build();
+    private void deleteCurrentImage(ShareThumbnail shareThumbnail) {
+        Optional.ofNullable(shareThumbnail.getImage())
+                .map(Image::getStoreFileName)
+                .ifPresent(imageUploader::delete);
+    }
 
-            imageService.save(image);
-
-            currentShareThumbnail.updateImageValue(image);
-        } else {
-            currentShareThumbnail.updateImageValue(null);
-        }
+    private void updateImage(MultipartFile multipartFile, ShareThumbnail shareThumbnail) {
+        Map<ImageUploadKey, String> map = imageUploader.upload(multipartFile);
+        Image image = imageService.create(map);
+        shareThumbnail.registerImage(image);
     }
 }

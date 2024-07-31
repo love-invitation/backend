@@ -12,7 +12,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 public class ShareThumbnail {
 
     @Id
@@ -33,12 +33,12 @@ public class ShareThumbnail {
         this.image = image;
     }
 
-    public void updateTextValue(String title, String contents) {
+    public void updateText(String title, String contents) {
         this.title = title;
         this.contents = contents;
     }
 
-    public void updateImageValue(Image image) {
+    public void registerImage(Image image) {
         this.image = image;
     }
 
