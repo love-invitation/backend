@@ -26,12 +26,12 @@ public class InvitationRepositoryImpl implements CustomInvitationRepository{
 
         return Optional.ofNullable(queryFactory
                 .selectFrom(invitation)
-                .join(invitation.shareThumbnail, shareThumbnail).fetchJoin()
-                .join(invitation.shareThumbnail.image, new QImage("shareThumbnailImage")).fetchJoin()
-                .join(invitation.mainImage, new QImage("mainImage")).fetchJoin()
+                .leftJoin(invitation.shareThumbnail, shareThumbnail).fetchJoin()
+                .leftJoin(invitation.shareThumbnail.image, new QImage("shareThumbnailImage")).fetchJoin()
+                .leftJoin(invitation.mainImage, new QImage("mainImage")).fetchJoin()
                 .join(invitation.productInfo, productInfo).fetchJoin()
                 .join(invitation.gallery, gallery).fetchJoin()
-                .join(invitation.reservation, reservation).fetchJoin()
+                .leftJoin(invitation.reservation, reservation).fetchJoin()
                 .join(gallery.image, image).fetchJoin()
                 .where(invitation.tsid.eq(tsid))
                 .fetchFirst());
