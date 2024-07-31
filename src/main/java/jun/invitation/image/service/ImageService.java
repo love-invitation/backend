@@ -19,8 +19,7 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
 
-    @Transactional
-    public Image save(Image image) {
+    private Image save(Image image) {
         return imageRepository.save(image);
     }
 
@@ -29,11 +28,17 @@ public class ImageService {
         imageRepository.deleteByImages(images);
     }
 
-    public Image fromMap(Map<ImageUploadKey, String> map) {
+    private Image fromMap(Map<ImageUploadKey, String> map) {
         return Image.builder()
                 .url(map.get(IMAGE_URL))
                 .originName(map.get(ORIGIN_FILE_NAME))
                 .storeFileName(map.get(STORE_FILE_NAME))
                 .build();
+    }
+
+    @Transactional
+    public Image create(Map<ImageUploadKey, String> map) {
+        Image image = fromMap(map);
+        return save(image);
     }
 }
