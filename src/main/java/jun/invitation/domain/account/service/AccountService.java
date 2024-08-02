@@ -26,7 +26,7 @@ public class AccountService {
 
     private final AccountRepository accountRepository;
 
-    public void save(List<AccountInfoDto> accountInfoDtos, Invitation invitation, WeddingSide side) {
+    public void register(List<AccountInfoDto> accountInfoDtos, Invitation invitation, WeddingSide side) {
 
         if (ObjectUtils.isEmpty(accountInfoDtos))
             return;
@@ -41,53 +41,29 @@ public class AccountService {
                 .collect(groupingBy(Account::getWeddingSide));
 
         return collect.entrySet().stream()
-                .collect(toMap(
-                        entry -> entry.getKey().getSide(),
-                        entry -> entry.getValue().stream()
-                                .map(AccountInfoDto::new)
-                                .toList()
-                ));
-    }
-
-    public Map<String, List<AccountInfoDto>> test(List<Account> accounts) {
-        Map<WeddingSide, List<Account>> collect = accounts.stream()
-                .collect(groupingBy(Account::getWeddingSide));
-
-        return collect.entrySet().stream()
-                .collect(toMap(
-                        entry -> entry.getKey().getSide(),
-                        entry -> entry.getValue().stream()
-                                .map(AccountInfoDto::new)
-                                .toList()
-                ));
+                .collect(
+                        toMap( entry -> entry.getKey().getSide(),
+                                entry -> entry.getValue().stream()
+                                        .map(AccountInfoDto::new)
+                                        .toList()
+                        )
+                );
     }
 
     public void delete(Long productId) {
         accountRepository.deleteByProductId(productId);
     }
 
-    public void update(AccountReqDto newAccounts, List<Account> currentAccounts, Invitation invitation) {
+    public void update(AccountReqDto newAccounts, Invitation invitation) {
 
-        if (!ObjectUtils.isEmpty(currentAccounts)) {
+        if (!ObjectUtils.isEmpty(invitation.getAccounts())) {
             accountRepository.deleteByProductId(invitation.getId());
         }
 
-        if (newAccounts != null) {
-            List<AccountInfoDto> brideAccountInfo = newAccounts.getBride();
-            List<AccountInfoDto> groomAccountInfo = newAccounts.getGroom();
-
-            if (brideAccountInfo != null) {
-                brideAccountInfo.forEach(ba -> {
-                    Account account = new Account(ba.getName(), ba.getBankName(), ba.getAccountNumber(), BRIDE);
-                    account.register(invitation);
+        Optional.ofNullable(newAccounts)
+                .ifPresent(update -> {
+                    register(update.getGroom(), invitation, GROOM);
+                    register(update.getBride(), invitation, BRIDE);
                 });
-            }
-            if (groomAccountInfo != null) {
-                groomAccountInfo.forEach(gc -> {
-                            Account account = new Account(gc.getName(), gc.getBankName(), gc.getAccountNumber(), GROOM);
-                            account.register(invitation);
-                });
-            }
-        }
     }
 }

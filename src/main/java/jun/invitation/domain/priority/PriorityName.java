@@ -1,5 +1,7 @@
 package jun.invitation.domain.priority;
 
+import java.util.Arrays;
+
 public enum PriorityName {
     THUMBNAIL("thumbnail"),
     GALLERY("gallery"),
@@ -13,7 +15,7 @@ public enum PriorityName {
     COVER("cover"),
     PLACE("place");
 
-    private String priorityName;
+    private final String priorityName;
 
     PriorityName(String priorityName) {
         this.priorityName = priorityName;
@@ -24,11 +26,9 @@ public enum PriorityName {
     }
 
     public static PriorityName fromPriorityName(String priorityName) {
-        for (PriorityName invitationProperties : PriorityName.values()) {
-            if (invitationProperties.getPriorityName().equals(priorityName)) {
-                return invitationProperties;
-            }
-        }
-        throw new IllegalArgumentException("No priorityName in Enum :" + priorityName);
+        return Arrays.stream(PriorityName.values())
+                .filter(p -> p.getPriorityName().equals(priorityName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No priorityName in Enum :" + priorityName));
     }
 }

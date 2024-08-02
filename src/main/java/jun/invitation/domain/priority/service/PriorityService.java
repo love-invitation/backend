@@ -8,9 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +24,10 @@ public class PriorityService {
     private final PriorityRepository priorityRepository;
 
     public void create(List<PriorityDto> priorityDtos, Invitation invitation) {
+
+        if (ObjectUtils.isEmpty(priorityDtos))
+            return;
+
         priorityDtos.forEach(
                 p -> new Priority(p.getName(), p.getPriority())
                         .register(invitation)

@@ -36,7 +36,9 @@ public class TransportService {
      *      -> 기존 currentTransports 있으면 delete.
      *      -> 수정할 newTransports가 있다면 save.
      */
-    public void update(List<Transport> currentTransports, Invitation invitation, List<TransportDto> newTransportDtos) {
+    public void update(Invitation invitation, List<TransportDto> newTransportDtos) {
+
+        List<Transport> currentTransports = invitation.getTransport();
 
         if (!ObjectUtils.isEmpty(currentTransports)){
             transportRepository.deleteByTransports(currentTransports);
