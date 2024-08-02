@@ -1,9 +1,12 @@
 package jun.invitation.domain.reservation.dto;
 
+import jun.invitation.domain.reservation.domain.Place;
 import jun.invitation.domain.reservation.domain.Reservation;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
+
+import java.util.Optional;
 
 @Data
 @RequiredArgsConstructor
@@ -20,16 +23,19 @@ public class PlaceDto {
 
         this.priority = priority;
 
-        if (reservation != null){
-            this.name = reservation.getPlaceName();
-            this.detail = reservation.getDetail();
-            this.address = reservation.getPlaceAddress();
+        Optional.ofNullable(reservation)
+                .map(Reservation::getPlace)
+                .ifPresent(this::init);
+    }
 
-            Point geography = reservation.getGeography();
-            if (geography != null) {
-                this.longitude = geography.getX();
-                this.latitude = geography.getY();
-            }
-        }
+    private void init(Place p) {
+        this.name = p.getPlaceName();
+        this.detail = p.getDetail();
+        this.address = p.getPlaceAddress();
+        Optional.ofNullable(p.getGeography())
+                .ifPresent(g-> {
+                    this.longitude = g.getX();
+                    this.latitude = g.getY();
+                });
     }
 }

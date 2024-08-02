@@ -19,49 +19,22 @@ public class Reservation {
     @Column(name = "reservation_id")
     private Long id;
 
-    private String placeName;
-    private String detail;
-    private String placeAddress;
+    @Embedded
+    private Place place;
 
-    @Column(columnDefinition = "GEOMETRY")
-    private Point geography;
+    @Embedded
+    private Booking booking;
 
-    private LocalDateTime date;
-
-    @Enumerated(value = STRING)
-    private DateType dateType;
-
-    public Reservation(String placeName, String detail, String placeAddress, Point geography, LocalDateTime date, DateType dateType) {
-        this.placeName = placeName;
-        this.detail = detail;
-        this.placeAddress = placeAddress;
-        this.geography = geography;
-        this.date = date;
-        this.dateType = dateType;
+    public Reservation(Place place, Booking booking) {
+        this.place = place;
+        this.booking = booking;
     }
 
-    public void updatePlace(String placeName, String detail, String placeAddress, Point geography) {
-        this.placeName = placeName;
-        this.detail = detail;
-        this.placeAddress = placeAddress;
-        this.geography = geography;
+    public void updatePlace(Place place) {
+        this.place = place;
     }
 
-    public void updateBooking(LocalDateTime date, DateType dateType) {
-        this.date = date;
-        this.dateType = dateType;
-    }
-
-    @Override
-    public String toString() {
-        return "Reservation{" +
-                "id=" + id +
-                ", placeName='" + placeName + '\'' +
-                ", detail='" + detail + '\'' +
-                ", placeAddress='" + placeAddress + '\'' +
-                ", geography=" + geography +
-                ", date=" + date +
-                ", dateType=" + dateType +
-                '}';
+    public void updateBooking(Booking booking) {
+        this.booking = booking;
     }
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 @RequiredArgsConstructor
@@ -19,9 +20,11 @@ public class DateDto {
 
     public DateDto(Reservation reservation, Integer priority) {
         this.priority = priority;
-        if (reservation != null) {
-            this.date = reservation.getDate();
-            this.dateType = reservation.getDateType();
-        }
+        Optional.ofNullable(reservation)
+                .map(Reservation::getBooking)
+                .ifPresent(b -> {
+                    this.date = b.getDate();
+                    this.dateType = b.getDateType();
+                });
     }
 }

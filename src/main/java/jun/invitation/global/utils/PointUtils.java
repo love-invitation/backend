@@ -19,7 +19,6 @@ public class PointUtils {
             point = (Point) new WKTReader().read(pointWKT);
         } catch (ParseException e) {
             log.info("[message : WKTReader().read(pointWKT) 수행 중 ParseException] 발생, point = null 후 정상 흐름으로 이어가겠습니다.");
-            point = null;
         }
         return point;
     }
