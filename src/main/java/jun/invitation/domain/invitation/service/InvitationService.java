@@ -194,10 +194,7 @@ public class InvitationService {
 
         /* main image -> List<Image> images 에 추가 */
         Optional.ofNullable(invitation.getMainImage())
-                .ifPresent(i -> {
-                    images.add(i);
-                    imageUploader.delete(i.getStoreFileName());
-                });
+                .ifPresent(images::add);
 
         return images;
     }
