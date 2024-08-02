@@ -15,13 +15,12 @@ import jun.invitation.domain.contact.service.ContactService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.gallery.dto.GalleryInfoDto;
-import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.reservation.domain.Reservation;
 import jun.invitation.domain.invitation.dto.*;
-import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
+import jun.invitation.domain.invitation.exception.ProductNotFoundException;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.PriorityName;
@@ -63,6 +62,7 @@ import java.util.stream.Collectors;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
 import static jun.invitation.domain.priority.PriorityName.*;
+import static jun.invitation.global.utils.SecurityUtils.getCurrentUser;
 
 @Service
 @Slf4j
@@ -76,7 +76,6 @@ public class InvitationService {
     private final ProductService productService;
     private final PriorityService priorityService;
     private final TransportService transportService;
-    private final GuestbookService guestbookService;
     private final ShareThumbnailService shareThumbnailService;
     private final OrderService orderService;
     private final ContactService contactService;
@@ -111,8 +110,7 @@ public class InvitationService {
             galleryService.save(gallery, invitation);
 
         invitation.register(
-//                getCurrentUser(),
-                null,
+                getCurrentUser(),
                 identifierGenerator.generate(),
                 productInfo,
                 createdThumbnail,
@@ -136,8 +134,8 @@ public class InvitationService {
         /* 계좌번호 저장 */
         Optional.ofNullable(invitationdto.getAccounts())
                 .ifPresent(a -> {
-                    accountService.save(a.getGroom(), invitation, GROOM);
-                    accountService.save(a.getBride(), invitation, BRIDE);
+                    accountService.register(a.getGroom(), invitation, GROOM);
+                    accountService.register(a.getBride(), invitation, BRIDE);
                 });
 
         /* 메인 이미지 저장 */
@@ -161,7 +159,7 @@ public class InvitationService {
     public void delete(Long tsid) {
 
         Invitation invitation = invitationRepository.findByTsid(tsid)
-                .orElseThrow(InvitationNotFoundException::new);
+                .orElseThrow(ProductNotFoundException::new);
         Long invitationId = invitation.getId();
 //        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
 //            throw new InvitationAccessDeniedException();
@@ -174,7 +172,6 @@ public class InvitationService {
         List<Image> images = getImageToDelete(invitation);
 
         galleryService.delete(invitation.getGallery());
-        guestbookService.delete(invitationId);
         transportService.delete(invitationId);
         contactService.delete(invitationId);
         accountService.delete(invitationId);
@@ -210,7 +207,7 @@ public class InvitationService {
     public void update(Long tsid, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage, MultipartFile shareThumbnail) throws IOException {
 
         Invitation invitation = invitationRepository.findByTsid(tsid)
-                .orElseThrow(InvitationNotFoundException::new);
+                .orElseThrow(ProductNotFoundException::new);
 
         // 유효성 check
 //        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
@@ -298,7 +295,7 @@ public class InvitationService {
     public LinkedHashMap<String, Object> read(Long tsid) {
 
         Invitation invitation = invitationRepository.findByTsidIdWithALL(tsid)
-                .orElseThrow(InvitationNotFoundException::new);
+                .orElseThrow(ProductNotFoundException::new);
 
         return sortByPriority(invitation);
     }
@@ -311,7 +308,7 @@ public class InvitationService {
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
 
-        Orders orders = orderService.requestFindOrder(invitation.getId());
+        Orders orders = orderService.findOrder(invitation.getId());
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
@@ -382,17 +379,21 @@ public class InvitationService {
     public boolean isYours (Long userId, Long productId) {
         Product product = productService.findOne(productId);
 
-        if (product != null && product.getUser().getId() == userId)
-            return true;
-        else
-            return false;
+        return product.getUser().getId().equals(userId);
     }
 
     @Transactional(readOnly = true)
-    public Invitation findByInvitationId(Long invitationId) {
+    public Invitation findById(Long invitationId) {
         return invitationRepository
                 .findById(invitationId)
-                .orElseThrow(InvitationNotFoundException::new);
+                .orElseThrow(ProductNotFoundException::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Invitation findByTsid(Long tsid) {
+        return invitationRepository
+                .findByTsid(tsid)
+                .orElseThrow(ProductNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
