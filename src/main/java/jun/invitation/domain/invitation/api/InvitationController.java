@@ -1,5 +1,6 @@
 package jun.invitation.domain.invitation.api;
 
+import jun.invitation.domain.guestbook.service.GuestbookService;
 import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
@@ -21,6 +22,7 @@ import static org.springframework.http.HttpStatus.OK;
 public class InvitationController {
 
     private final InvitationService invitationService;
+    private final GuestbookService guestbookService;
 
     @PostMapping
     public ResponseEntity<ResponseDto> createInvitation(
@@ -84,6 +86,7 @@ public class InvitationController {
     @DeleteMapping("/{invitationTsid}")
     public ResponseEntity<ResponseDto> deleteInvitation(@PathVariable(name = "invitationTsid") Long invitationTsid) throws Exception {
 
+        guestbookService.delete(invitationTsid);
         invitationService.delete(invitationTsid);
 
         ResponseDto responseDto = ResponseDto.builder()

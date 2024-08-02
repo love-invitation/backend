@@ -26,13 +26,13 @@ public class GuestbookController {
     private final InvitationService invitationService;
     private final GuestbookService guestbookService;
 
-    @GetMapping("/{invitationId}/guestbooks")
-    public ResponseEntity<ResponseDto> readGuestbook(@PathVariable(name = "invitationId") Long invitationId,
+    @GetMapping("/{productId}/guestbooks")
+    public ResponseEntity<ResponseDto> readGuestbook(@PathVariable(name = "productId") Long productId,
             @RequestParam(value = "page", defaultValue = "0") int page) {
 
         Pageable paging = PageRequest.of(page, 3);
 
-        Page<GuestbookResponseDto> responseDtoList = guestbookService.getResponseDtoList(invitationId, paging);
+        Page<GuestbookResponseDto> responseDtoList = guestbookService.getResponseDtoList(productId, paging);
 
         ResponseDto<Object> result = ResponseDto
                 .builder()
@@ -46,15 +46,13 @@ public class GuestbookController {
     }
 
     // Create
-    @PostMapping("/{invitationId}/guestbooks")
+    @PostMapping("/{productId}/guestbooks")
     public ResponseEntity<ResponseDto> createGuestbook(
-            @PathVariable(name = "invitationId") Long invitationId,
+            @PathVariable(name = "productId") Long productId,
             @RequestBody GuestbookDto guestbookDto
             ) {
 
-        Invitation invitation = invitationService.findByInvitationId(invitationId);
-
-        guestbookService.requestCreate(guestbookDto, invitation);
+        guestbookService.create(guestbookDto, productId);
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(CREATED.value())
@@ -66,24 +64,18 @@ public class GuestbookController {
     }
 
     // Delete
-    @DeleteMapping("/{invitationId}/guestbooks/{guestbookId}")
+    @DeleteMapping("/{productId}/guestbooks/{guestbookId}")
     public ResponseEntity<ResponseDto> deleteGuestbook(
-            @PathVariable(name = "invitationId") Long invitationId,
+            @PathVariable(name = "productId") Long productId,
             @PathVariable(name = "guestbookId") Long guestbookId,
-            @RequestBody(required = false) Map<String, String> password
+            @RequestBody(required = false) String password
     ) {
 
-        Invitation invitation = invitationService.findByInvitationId(invitationId);
-
-        if (password == null) {
-            guestbookService.delete(invitation, guestbookId);
-        } else {
-            guestbookService.delete(invitation, guestbookId, password.get("password"));
-        }
+        guestbookService.deleteGuestbook(productId, guestbookId, password);
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(OK.value())
-                .message("[Guestbook Id: " + guestbookId + "] of [Invitation Id: " + invitationId + "] is deleted.")
+                .message("[Guestbook Id: " + guestbookId + "] of [Invitation Id: " + productId + "] is deleted.")
                 .build();
 
         return ResponseEntity

@@ -12,7 +12,7 @@ public interface GuestbookRepository extends JpaRepository<Guestbook, Long>{
 
     @Modifying
     @Query(value = "delete from Guestbook g where g.product.id = :id")
-    void deleteByInvitationId(@Param(value = "id") Long invitationId);
+    void deleteByProductId(@Param(value = "id") Long productId);
 
     Page<Guestbook> findByProduct_idOrderByIdDesc(Long invitationId, Pageable pageable);
 }
