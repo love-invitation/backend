@@ -2,6 +2,7 @@ package jun.invitation.domain.product.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jun.invitation.domain.invitation.exception.ProductNotFoundException;
 import jun.invitation.domain.product.dao.ProductRepository;
 import jun.invitation.domain.product.domain.Product;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Product findOne(Long id) {
-
-        return productRepository.findById(id).orElseGet(null);
+        return productRepository.findById(id)
+                .orElseThrow(ProductNotFoundException::new);
     }
 
     @Transactional

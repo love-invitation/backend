@@ -5,7 +5,7 @@ import jun.invitation.auth.jwt.exception.InvalidTokenException;
 import jun.invitation.auth.jwt.exception.NoTokenException;
 import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
-import jun.invitation.domain.invitation.exception.InvitationNotFoundException;
+import jun.invitation.domain.invitation.exception.ProductNotFoundException;
 import jun.invitation.domain.orders.exception.OrderNotFoundException;
 import jun.invitation.domain.productInfo.exception.ProductInfoNotFoundException;
 import jun.invitation.domain.user.exception.UserNotFoundException;
@@ -68,8 +68,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(InvitationNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlerInvitationNotFoundException(InvitationNotFoundException e) {
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerInvitationNotFoundException(ProductNotFoundException e) {
         final ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.INVITATION_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
