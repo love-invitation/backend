@@ -297,24 +297,25 @@ public class InvitationService {
         Invitation invitation = invitationRepository.findByTsidIdWithALL(tsid)
                 .orElseThrow(ProductNotFoundException::new);
 
-        return sortByPriority(invitation);
+        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+        result.put(TSID.getPriorityName(), invitation.getTsid());
+        result.put(COVER.getPriorityName(), new CoverDto(invitation));
+
+        sortByPriority(invitation, result);
+
+        Optional.ofNullable(invitation.getShareThumbnail())
+                .ifPresentOrElse(s -> result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(s)),
+                        ()->result.put(THUMBNAIL.getPriorityName(), null));
+        return result;
     }
 
 
-    private LinkedHashMap<String, Object> sortByPriority(Invitation invitation) {
+    private void sortByPriority(Invitation invitation, LinkedHashMap<String, Object> result) {
 
         List<Priority> priorities = invitation.getPriority();
         Reservation reservation = invitation.getReservation();
         FamilyInfo groomInfo = invitation.getGroomInfo();
         FamilyInfo brideInfo = invitation.getBrideInfo();
-
-        Orders orders = orderService.findOrder(invitation.getId());
-
-        LinkedHashMap<String, Object> result = new LinkedHashMap<>();
-
-        result.put(TSID.getPriorityName(), invitation.getTsid());
-        result.put(ISPAID.getPriorityName(), orders.getIsPaid());
-        result.put(COVER.getPriorityName(), new CoverDto( invitation));
 
         for (Priority priority : priorities) {
             PriorityName name = fromPriorityName(priority.getName());
@@ -348,9 +349,7 @@ public class InvitationService {
                     );
                     break;
                 case CONTACT:
-
                     Map<String, List<ContactInfoDto>> classifiedContact = contactService.classifyByWeddingSide(invitation.getContacts());
-
                     result.put(CONTACT.getPriorityName(),
                             new ContactResDto(
                                     classifiedContact.get(GROOM.getSide()),
@@ -360,20 +359,11 @@ public class InvitationService {
                     );
                     break;
                 case ACCOUNT:
-
                     Map<String, List<AccountInfoDto>> classifiedMap = accountService.classifyBySide(invitation.getAccounts());
-
                     result.put(ACCOUNT.getPriorityName(), new AccountResDto(classifiedMap, priorityValue));
                     break;
             }
         }
-
-        // null을 넣어서 줘야하는지 아니면 지금처럼 result에 아예 값을 넣지 않을지, 프론트 개발자한테 물어봐야함
-        Optional.ofNullable(invitation.getShareThumbnail())
-                .ifPresentOrElse(s -> result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(s)),
-                        ()->result.put(THUMBNAIL.getPriorityName(), null));
-
-        return result;
     }
 
     public boolean isYours (Long userId, Long productId) {
