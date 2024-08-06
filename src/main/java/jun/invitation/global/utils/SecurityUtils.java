@@ -1,12 +1,18 @@
 package jun.invitation.global.utils;
 
-import jun.invitation.auth.oauth.PrincipalDetails;
+import jun.invitation.global.auth.oauth.PrincipalDetails;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.domain.user.exception.UserNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 public class SecurityUtils {
     public static User getCurrentUser() {
 
+        if (SecurityContextHolder.getContext().
+                getAuthentication() == null) {
+            return null;
+        }
+        
         try {
 
             Object principal = SecurityContextHolder.getContext().

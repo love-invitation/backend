@@ -12,7 +12,7 @@ import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.transport.domain.Transport;
 import jun.invitation.domain.user.domain.User;
 import jun.invitation.global.entity.BaseEntity;
-import jun.invitation.image.domain.Image;
+import jun.invitation.domain.image.domain.Image;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

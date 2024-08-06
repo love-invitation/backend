@@ -1,8 +1,8 @@
 package jun.invitation.domain.guestbook.domain;
 
 import jakarta.persistence.*;
-import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.product.domain.Product;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,6 +25,7 @@ public class Guestbook {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Builder
     public Guestbook(String name, String password, String message) {
         this.name = name;
         this.password = password;

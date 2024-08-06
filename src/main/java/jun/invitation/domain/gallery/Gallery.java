@@ -1,9 +1,8 @@
 package jun.invitation.domain.gallery;
 
 import jakarta.persistence.*;
-import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.product.domain.Product;
-import jun.invitation.image.domain.Image;
+import jun.invitation.domain.image.domain.Image;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

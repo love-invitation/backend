@@ -5,7 +5,7 @@ import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.contact.dto.ContactInfoDto;
 import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.invitation.domain.WeddingSide;
 import jun.invitation.domain.product.domain.Product;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,23 +15,24 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.*;
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
+import static jun.invitation.domain.invitation.domain.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.WeddingSide.GROOM;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class ContactService {
 
     private final ContactRepository contactRepository;
 
+    @Transactional
     public void save(List<ContactInfoDto> contactDtos, Product product, WeddingSide type) {
-        if (ObjectUtils.isEmpty(contactDtos)) {
+        if (ObjectUtils.isEmpty(contactDtos))
             return;
-        }
+
         contactDtos.forEach(contactInfoDto -> {
             Contact contact = new Contact(contactInfoDto.getName(), contactInfoDto.getPhoneNumber(), contactInfoDto.getRelation(), type);
             contact.register(product);
@@ -46,20 +47,22 @@ public class ContactService {
                 );
     }
 
+    @Transactional
     public void delete(Long productId) {
         contactRepository.deleteByProductId(productId);
     }
 
-    public void update(ContactReqDto newContacts, List<Contact> currentContacts, Invitation invitation) {
+    @Transactional
+    public void update(ContactReqDto newContacts, Invitation invitation) {
 
-        if (!ObjectUtils.isEmpty(currentContacts))
+        if (!ObjectUtils.isEmpty(invitation.getContacts()))
             contactRepository.deleteByProductId(invitation.getId());
 
-
-        if (newContacts != null) {
-            createAndRegister(newContacts.getBride(),invitation, BRIDE);
-            createAndRegister(newContacts.getGroom(),invitation, GROOM);
-        }
+        Optional.ofNullable(newContacts)
+                .ifPresent(nc -> {
+                    createAndRegister(newContacts.getBride(),invitation, BRIDE);
+                    createAndRegister(newContacts.getGroom(),invitation, GROOM);
+                });
     }
 
     private void createAndRegister(List<ContactInfoDto> contactInfoDto, Product product, WeddingSide weddingSide) {
@@ -71,5 +74,14 @@ public class ContactService {
             Contact contact = new Contact(bc.getName(), bc.getPhoneNumber(), bc.getRelation(), weddingSide);
             contact.register(product);
         });
+    }
+
+    @Transactional
+    public void create(ContactReqDto contacts, Invitation invitation) {
+        Optional.ofNullable(contacts)
+                .ifPresent(c -> {
+                    save(c.getGroom(), invitation, GROOM);
+                    save(c.getBride(), invitation, BRIDE);
+                });
     }
 }

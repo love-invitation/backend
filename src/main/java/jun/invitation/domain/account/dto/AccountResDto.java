@@ -2,13 +2,12 @@ package jun.invitation.domain.account.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
+import static jun.invitation.domain.invitation.domain.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.WeddingSide.GROOM;
 
 @Data
 @NoArgsConstructor

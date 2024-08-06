@@ -1,8 +1,7 @@
 package jun.invitation.domain.contact.domain;
 
 import jakarta.persistence.*;
-import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.invitation.domain.WeddingSide;
 import jun.invitation.domain.product.domain.Product;
 import lombok.Builder;
 import lombok.Getter;

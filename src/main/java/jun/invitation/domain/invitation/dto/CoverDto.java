@@ -2,13 +2,11 @@ package jun.invitation.domain.invitation.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
-import jun.invitation.domain.reservation.domain.Reservation;
-import jun.invitation.image.domain.Image;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Data
 @RequiredArgsConstructor
@@ -37,29 +35,24 @@ public class CoverDto {
         this.priority = 0;
         this.templateId = invitation.getProductInfo().getId();
 
-        Image mainImage = invitation.getMainImage();
-        if (mainImage != null){
-            this.imageUrl = mainImage.getUrl();
-            this.imageOriginName = mainImage.getOriginName();
-            this.imageStoreFileName = mainImage.getStoreFileName();
-        }
+        Optional.ofNullable(invitation.getMainImage())
+                .ifPresent(mainImage -> {
+                    this.imageUrl = mainImage.getUrl();
+                    this.imageOriginName = mainImage.getOriginName();
+                    this.imageStoreFileName = mainImage.getStoreFileName();
+                });
 
+        Optional.ofNullable(invitation.getReservation())
+                .ifPresent(reservation -> {
+                    this.weddingDate = reservation.getBooking().getDate();
+                    this.detail = reservation.getPlace().getDetail();
+                });
 
-        Reservation reservation = invitation.getReservation();
-        if (reservation != null) {
-            this.weddingDate = reservation.getDate();
-            this.detail = reservation.getDetail();
-        }
+        Optional.ofNullable(invitation.getGroomInfo())
+                .ifPresent(groomInfo -> this.groomName = groomInfo.getName());
 
-        FamilyInfo groomInfo = invitation.getGroomInfo();
-        if (groomInfo != null) {
-            this.groomName = groomInfo.getName();
-        }
-
-        FamilyInfo brideInfo = invitation.getBrideInfo();
-        if ( brideInfo != null) {
-            this.brideName = brideInfo.getName();
-        }
+        Optional.ofNullable(invitation.getBrideInfo())
+                .ifPresent(brideInfo -> this.brideName = brideInfo.getName());
 
         this.coverContents = invitation.getCoverContents();
 

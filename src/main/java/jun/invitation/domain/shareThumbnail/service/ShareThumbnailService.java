@@ -1,11 +1,10 @@
 package jun.invitation.domain.shareThumbnail.service;
 
-import jun.invitation.aws.s3.ImageUploadKey;
-import jun.invitation.aws.s3.ImageUploader;
+import jun.invitation.global.aws.s3.ImageUploader;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
-import jun.invitation.image.domain.Image;
-import jun.invitation.image.service.ImageService;
+import jun.invitation.domain.image.domain.Image;
+import jun.invitation.domain.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -26,17 +23,16 @@ public class ShareThumbnailService {
     private final ImageService imageService;
 
     @Transactional
-    public ShareThumbnail create(MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) throws IOException {
+    public ShareThumbnail create(MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) {
 
         Optional<MultipartFile> multipartOpt = Optional.ofNullable(shareThumbImage);
         Optional<ShareThumbnailDto> thumbnailDtoOpt = Optional.ofNullable(shareThumbnailDto);
 
         return multipartOpt.flatMap(multipartFile -> thumbnailDtoOpt.map(thumbnailDto -> {
-                    Map<ImageUploadKey, String> map = imageUploader.upload(multipartFile);
-                    Image image = imageService.create(map);
+                    Image image = imageService.saveWithImageUpload(multipartFile);
                     return ShareThumbnail.builder()
-                            .title(shareThumbnailDto.getTitle())
-                            .contents(shareThumbnailDto.getContents())
+                            .title(thumbnailDto.getTitle())
+                            .contents(thumbnailDto.getContents())
                             .image(image)
                             .build();
                 }))
@@ -52,7 +48,7 @@ public class ShareThumbnailService {
     }
 
     @Transactional
-    public void update(ShareThumbnailDto updateThumbnail, ShareThumbnail thumbnail, MultipartFile multipartFile) throws IOException {
+    public void update(ShareThumbnailDto updateThumbnail, ShareThumbnail thumbnail, MultipartFile multipartFile) {
 
         if (cannotUpdate(updateThumbnail, thumbnail, multipartFile))
             return;
@@ -78,8 +74,7 @@ public class ShareThumbnailService {
     }
 
     private void updateImage(MultipartFile multipartFile, ShareThumbnail shareThumbnail) {
-        Map<ImageUploadKey, String> map = imageUploader.upload(multipartFile);
-        Image image = imageService.create(map);
+        Image image = imageService.saveWithImageUpload(multipartFile);
         shareThumbnail.registerImage(image);
     }
 }

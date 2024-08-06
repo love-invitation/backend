@@ -1,12 +1,12 @@
 package jun.invitation.domain.gallery.Service;
 
-import jun.invitation.aws.s3.ImageUploadKey;
-import jun.invitation.aws.s3.ImageUploader;
+import jun.invitation.global.aws.s3.ImageUploadKey;
+import jun.invitation.global.aws.s3.ImageUploader;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.dao.GalleryRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.image.domain.Image;
-import jun.invitation.image.service.ImageService;
+import jun.invitation.domain.image.domain.Image;
+import jun.invitation.domain.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import static jun.invitation.aws.s3.ImageUploadKey.*;
 
 @Service
 @RequiredArgsConstructor
@@ -33,15 +30,19 @@ public class GalleryService {
 
     @Transactional
     public void delete(List<Gallery> galleries) {
-        if (galleries.isEmpty()) {
+        if (ObjectUtils.isEmpty(galleries))
             return;
-        }
+
         galleries.forEach(g -> imageUploader.delete(g.getImage().getStoreFileName()));
         galleryRepository.deleteByGalleries(galleries);
     }
 
     @Transactional
-    public void save(List<MultipartFile> gallery, Invitation invitation) throws IOException {
+    public void create(List<MultipartFile> gallery, Invitation invitation) {
+
+        if (ObjectUtils.isEmpty(gallery))
+            return;
+
 
         Long sequence = 1L;
 
@@ -52,33 +53,24 @@ public class GalleryService {
         for (CompletableFuture<Map<ImageUploadKey, String>> future : futures) {
             Map<ImageUploadKey, String> map = future.join();
             if (map != null) {
-                Image image = imageService.fromMap(map);
-
-                imageService.save(image);
+                Image image = imageService.create(map);
                 Gallery newGallery = new Gallery(sequence++, image);
                 newGallery.setInvitation(invitation);
             }
         }
     }
 
-    /**
-     * 1. 기존 gallery o, new gallery o : 기존 gallery 삭제, new gallery 저장
-     * 2. 기존 gallery o, new gallery x : 기존 gallery 삭제
-     * 3. 기존 gallery x, new gallery o : new gallery 저장
-     * 4. 기존 gallery x, new gallery x : 아무 행동 x
-     */
-    public void update(List<Gallery> currentGalleries, Invitation invitation, List<MultipartFile> newGalleries) throws IOException {
-        // 1.
-        if (!ObjectUtils.isEmpty(currentGalleries) && !ObjectUtils.isEmpty(newGalleries)) {
+    @Transactional
+    public void update(Invitation invitation, List<MultipartFile> newGalleries) {
+        List<Gallery> currentGalleries = invitation.getGallery();
+
+        if (!ObjectUtils.isEmpty(currentGalleries)) {
             delete(currentGalleries);
             invitation.getGallery().clear();
-            save(newGalleries, invitation);
-        } else if (!ObjectUtils.isEmpty(currentGalleries) && ObjectUtils.isEmpty(newGalleries)){
-            // 2.
-            delete(currentGalleries);
-        } else if (ObjectUtils.isEmpty(currentGalleries) && !ObjectUtils.isEmpty(newGalleries)) {
-            // 3.
-            save(newGalleries, invitation);
+        }
+
+        if(!ObjectUtils.isEmpty(newGalleries)) {
+            create(newGalleries, invitation);
         }
     }
 }

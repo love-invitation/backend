@@ -52,4 +52,9 @@ public class TransportService {
             });
         }
     }
+
+    public void create(List<TransportDto> transport, Invitation invitation) {
+        if (!ObjectUtils.isEmpty(transport))
+            save(transport, invitation);
+    }
 }

@@ -1,23 +1,18 @@
 package jun.invitation.domain.shareThumbnail.service;
 
 import jun.invitation.TestDataInit;
-import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
-import jun.invitation.image.domain.Image;
+import jun.invitation.domain.image.domain.Image;
 import jun.invitation.mock.FakeImageUploader;
-import jun.invitation.mock.TestUuidHolder;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.Rollback;
 
 import java.io.IOException;
 

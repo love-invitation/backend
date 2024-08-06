@@ -1,15 +1,9 @@
 package jun.invitation.domain.invitation.service;
 
-import jun.invitation.aws.s3.ImageUploadKey;
-import jun.invitation.aws.s3.ImageUploader;
-import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.account.dto.AccountInfoDto;
-import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.account.dto.AccountResDto;
 import jun.invitation.domain.account.service.AccountService;
-import jun.invitation.domain.contact.domain.Contact;
 import jun.invitation.domain.contact.dto.ContactInfoDto;
-import jun.invitation.domain.contact.dto.ContactReqDto;
 import jun.invitation.domain.contact.dto.ContactResDto;
 import jun.invitation.domain.contact.service.ContactService;
 import jun.invitation.domain.gallery.Gallery;
@@ -17,17 +11,13 @@ import jun.invitation.domain.gallery.Service.GalleryService;
 import jun.invitation.domain.gallery.dto.GalleryInfoDto;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
 import jun.invitation.domain.reservation.domain.Reservation;
 import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.ProductNotFoundException;
-import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.service.OrderService;
 import jun.invitation.domain.priority.PriorityName;
 import jun.invitation.domain.priority.domain.Priority;
-import jun.invitation.domain.priority.dto.PriorityDto;
 import jun.invitation.domain.priority.service.PriorityService;
-import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
@@ -35,32 +25,26 @@ import jun.invitation.domain.reservation.dto.DateDto;
 import jun.invitation.domain.reservation.dto.PlaceDto;
 import jun.invitation.domain.reservation.service.ReservationService;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
-import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
 import jun.invitation.domain.shareThumbnail.service.ShareThumbnailService;
-import jun.invitation.domain.transport.domain.Transport;
-import jun.invitation.domain.transport.dto.TransportDto;
 import jun.invitation.domain.transport.dto.TransportInfoDto;
 import jun.invitation.domain.transport.service.TransportService;
 import jun.invitation.global.service.port.IdentifierGenerator;
-import jun.invitation.image.domain.Image;
-import jun.invitation.image.service.ImageService;
+import jun.invitation.domain.image.domain.Image;
+import jun.invitation.domain.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
+import static java.util.stream.Collectors.*;
+import static jun.invitation.domain.invitation.domain.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.WeddingSide.GROOM;
 import static jun.invitation.domain.priority.PriorityName.*;
 import static jun.invitation.global.utils.SecurityUtils.getCurrentUser;
 
@@ -69,7 +53,6 @@ import static jun.invitation.global.utils.SecurityUtils.getCurrentUser;
 @RequiredArgsConstructor
 public class InvitationService {
 
-    private final ImageUploader imageUploader;
     private final InvitationRepository invitationRepository;
     private final GalleryService galleryService;
     private final ProductInfoService productInfoService;
@@ -95,19 +78,15 @@ public class InvitationService {
 //    }
 
     @Transactional
-    public Long create(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage, MultipartFile shareThumbnailImage) throws IOException  {
+    public Long create(InvitationDto invitationdto, List<MultipartFile> gallery, MultipartFile mainImage, MultipartFile shareThumbnailImage) {
 
         Invitation invitation = invitationdto.toInvitation();
-
-        priorityService.create(invitationdto.getPriority(), invitation);
 
         Reservation createdReservation = reservationService.create(invitationdto.getBooking(), invitationdto.getPlace());
         ShareThumbnail createdThumbnail = shareThumbnailService.create(shareThumbnailImage, invitationdto.getThumbnail());
         ProductInfo productInfo = productInfoService.findById(invitationdto.getProductInfoId());
 
-        /* 갤러리 저장 */
-        if (!ObjectUtils.isEmpty(gallery))
-            galleryService.save(gallery, invitation);
+        saveMainImage(mainImage, invitation);
 
         invitation.register(
                 getCurrentUser(),
@@ -117,35 +96,11 @@ public class InvitationService {
                 createdReservation
         );
 
-        /* 교통수단 저장 */
-        List<TransportDto> transportDtos = invitationdto.getTransport();
-
-        if (!ObjectUtils.isEmpty(transportDtos))
-            transportService.save(transportDtos, invitation);
-
-
-        /* 연락처 저장 */
-        Optional.ofNullable(invitationdto.getContacts())
-                .ifPresent(c -> {
-                    contactService.save(c.getGroom(), invitation, GROOM);
-                    contactService.save(c.getBride(), invitation, BRIDE);
-                });
-
-        /* 계좌번호 저장 */
-        Optional.ofNullable(invitationdto.getAccounts())
-                .ifPresent(a -> {
-                    accountService.register(a.getGroom(), invitation, GROOM);
-                    accountService.register(a.getBride(), invitation, BRIDE);
-                });
-
-        /* 메인 이미지 저장 */
-        Optional.ofNullable(mainImage)
-                .ifPresent(m -> {
-                    Map<ImageUploadKey, String> map = imageUploader.upload(mainImage);
-                    Image image = imageService.create(map);
-                    invitation.registerMainImage(image);
-                });
-
+        priorityService.create(invitationdto.getPriority(), invitation);
+        galleryService.create(gallery, invitation);
+        transportService.create(invitationdto.getTransport(), invitation);
+        contactService.create(invitationdto.getContacts(), invitation);
+        accountService.create(invitationdto.getAccounts(), invitation);
 
         Long invitationTsid = invitationRepository.save(invitation).getTsid();
         orderService.create(invitation);
@@ -154,19 +109,25 @@ public class InvitationService {
 
     }
 
+    private void saveMainImage(MultipartFile mainImage, Invitation invitation) {
+        Optional.ofNullable(mainImage)
+                .ifPresent(m -> {
+                    Image image = imageService.saveWithImageUpload(m);
+                    invitation.registerMainImage(image);
+                });
+    }
+
     @Transactional
     @CacheEvict(value = "Products", key = "#tsid", cacheManager = "cacheManager")
     public void delete(Long tsid) {
 
         Invitation invitation = invitationRepository.findByTsid(tsid)
                 .orElseThrow(ProductNotFoundException::new);
+
         Long invitationId = invitation.getId();
+
 //        if (!isYours(getCurrentUser().getId(), invitation.getId())) {
 //            throw new InvitationAccessDeniedException();
-//        }
-
-//        if (invitation.getMainImage() != null && invitation.getMainImage().getStoreFileName() != null) {
-//            imageUploader.delete(invitation.getMainImage().getStoreFileName());
 //        }
 
         List<Image> images = getImageToDelete(invitation);
@@ -183,9 +144,10 @@ public class InvitationService {
     }
 
     private List<Image> getImageToDelete(Invitation invitation) {
+
         List<Image> images = invitation.getGallery()
                 .stream().map(Gallery::getImage)
-                .collect(Collectors.toCollection(ArrayList::new));
+                .collect(toCollection(ArrayList::new));
 
         /* share thumbnail -> List<Image> images 에 추가 */
         Optional.ofNullable(invitation.getShareThumbnail())
@@ -201,7 +163,7 @@ public class InvitationService {
 
     @Transactional
     @CacheEvict(value = "Products", key = "#tsid", cacheManager = "cacheManager")
-    public void update(Long tsid, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage, MultipartFile shareThumbnail) throws IOException {
+    public void update(Long tsid, InvitationDto invitationDto, List<MultipartFile> newGalleries, MultipartFile mainImage, MultipartFile shareThumbnail) {
 
         Invitation invitation = invitationRepository.findByTsid(tsid)
                 .orElseThrow(ProductNotFoundException::new);
@@ -211,37 +173,14 @@ public class InvitationService {
 //            throw new InvitationAccessDeniedException();
 //        }
 
-        List<Gallery> currentGalleries = invitation.getGallery();
-        galleryService.update(currentGalleries,invitation, newGalleries);
+        galleryService.update(invitation, newGalleries);
+        transportService.update(invitation, invitationDto.getTransport());
+        priorityService.update(invitationDto.getPriority(), invitation.getPriority());
+        contactService.update(invitationDto.getContacts(), invitation);
+        accountService.update(invitationDto.getAccounts(), invitation);
+        shareThumbnailService.update(invitationDto.getThumbnail(), invitation.getShareThumbnail(), shareThumbnail);
+        imageService.update(mainImage, invitation);
 
-        List<Transport> currentTransports = invitation.getTransport();
-        List<TransportDto> newTransportDtos = invitationDto.getTransport();
-        transportService.update(currentTransports, invitation, newTransportDtos);
-
-        List<PriorityDto> newPriority = invitationDto.getPriority();
-        List<Priority> currentPriority = invitation.getPriority();
-
-        priorityService.update(newPriority, currentPriority);
-
-        /* contact */
-        ContactReqDto newContacts = invitationDto.getContacts();
-        List<Contact> currentContacts = invitation.getContacts();
-        contactService.update(newContacts, currentContacts, invitation);
-
-        /* account */
-        AccountReqDto newAccounts = invitationDto.getAccounts();
-        List<Account> currentAccounts = invitation.getAccounts();
-        accountService.update(newAccounts, currentAccounts, invitation);
-
-        /* ShareThumbnail */
-        ShareThumbnailDto newShareThumbnail = invitationDto.getThumbnail();
-        ShareThumbnail currentShareThumbnail = invitation.getShareThumbnail();
-
-        shareThumbnailService.update(newShareThumbnail, currentShareThumbnail, shareThumbnail);
-
-        mainImageUpdate(mainImage, invitation);
-
-        /* reservation */
         reservationService.update(
                 invitationDto.getPlace(),
                 invitationDto.getBooking(),
@@ -259,34 +198,6 @@ public class InvitationService {
 
     }
 
-    /**
-     *  기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
-     *  기존 o, main Image x : 기존 삭제 , 메인 이미지 저장 x
-     *  기존 x, main Image O : 기존 삭제 x, 메인 이미지 저장 o
-     *  기존 x, main Image x : 아무 행동 x
-     */
-    private void mainImageUpdate(MultipartFile mainImage, Invitation invitation) throws RuntimeException {
-        String mainImageStoreFileName = invitation.getMainImage() == null ? null : invitation.getMainImage().getStoreFileName();
-        CompletableFuture<Map<ImageUploadKey, String>> future;
-        // 기존 o, main Image o : 기존 삭제 , 메인 이미지 저장 o
-        if (mainImageStoreFileName != null && mainImage != null) {
-            imageUploader.delete(mainImageStoreFileName);
-            future = imageUploader.uploadAsync(mainImage);
-            registerImage(invitation, future.join());
-        } else if (mainImageStoreFileName != null && mainImage == null) {
-            imageUploader.delete(mainImageStoreFileName);
-            invitation.registerMainImage(null);
-        } else if (mainImageStoreFileName == null && mainImage != null){
-            future = imageUploader.uploadAsync(mainImage);
-            registerImage(invitation, future.join());
-        }
-    }
-
-    private void registerImage(Invitation invitation, Map<ImageUploadKey, String> map) {
-        Image image = imageService.create(map);
-        invitation.registerMainImage(image);
-    }
-
     @Transactional(readOnly = true)
     @Cacheable(value = "Products", key = "#tsid", cacheManager = "cacheManager")
     public LinkedHashMap<String, Object> read(Long tsid) {
@@ -295,26 +206,22 @@ public class InvitationService {
                 .orElseThrow(ProductNotFoundException::new);
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
+
         result.put(TSID.getPriorityName(), invitation.getTsid());
         result.put(COVER.getPriorityName(), new CoverDto(invitation));
 
         sortByPriority(invitation, result);
 
-        Optional.ofNullable(invitation.getShareThumbnail())
-                .ifPresentOrElse(s -> result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(s)),
-                        ()->result.put(THUMBNAIL.getPriorityName(), null));
+        result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(invitation.getShareThumbnail()));
         return result;
     }
 
 
     private void sortByPriority(Invitation invitation, LinkedHashMap<String, Object> result) {
 
-        List<Priority> priorities = invitation.getPriority();
         Reservation reservation = invitation.getReservation();
-        FamilyInfo groomInfo = invitation.getGroomInfo();
-        FamilyInfo brideInfo = invitation.getBrideInfo();
 
-        for (Priority priority : priorities) {
+        for (Priority priority : invitation.getPriority()) {
             PriorityName name = fromPriorityName(priority.getName());
             Integer priorityValue = priority.getPriority();
 
@@ -322,7 +229,7 @@ public class InvitationService {
                 case ARTICLE:
                     result.put(ARTICLE.getPriorityName(),
                             new ArticleDto(invitation.getTitle(), invitation.getContents(),
-                                    groomInfo, brideInfo, priorityValue)
+                                    invitation.getGroomInfo(), invitation.getBrideInfo(), priorityValue)
                     );
                     break;
                 case BOOKING:
@@ -361,12 +268,6 @@ public class InvitationService {
                     break;
             }
         }
-    }
-
-    public boolean isYours (Long userId, Long productId) {
-        Product product = productService.findOne(productId);
-
-        return product.getUser().getId().equals(userId);
     }
 
     @Transactional(readOnly = true)

@@ -23,7 +23,7 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<ResponseDto> orderAllList() {
 
-        List<OrderDto> orders = orderService.requestOrderDtoList(SecurityUtils.getCurrentUser().getId());
+        List<OrderDto> orders = orderService.findOrderDtoList(SecurityUtils.getCurrentUser().getId());
 
         ResponseDto<Object> result = ResponseDto.builder()
                 .status(HttpStatus.OK.value())

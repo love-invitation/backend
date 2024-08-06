@@ -2,7 +2,6 @@ package jun.invitation.domain.invitation.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.invitation.domain.embedded.FamilyInfo;
-import jun.invitation.domain.invitation.dto.InvitationDto;
 import jun.invitation.domain.product.domain.Product;
 import lombok.AccessLevel;
 import lombok.Builder;

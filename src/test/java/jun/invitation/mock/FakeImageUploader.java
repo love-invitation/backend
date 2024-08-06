@@ -1,8 +1,7 @@
 package jun.invitation.mock;
 
-import jun.invitation.aws.s3.ImageUploadKey;
-import jun.invitation.aws.s3.ImageUploader;
-import jun.invitation.global.service.port.UuidHolder;
+import jun.invitation.global.aws.s3.ImageUploadKey;
+import jun.invitation.global.aws.s3.ImageUploader;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-import static jun.invitation.aws.s3.ImageUploadKey.*;
+import static jun.invitation.global.aws.s3.ImageUploadKey.*;
 
 @RequiredArgsConstructor
 @Builder
@@ -28,14 +27,10 @@ public class FakeImageUploader implements ImageUploader {
 
     @Override
     public Map<ImageUploadKey, String> upload(MultipartFile multipartFile) {
-
+        log.info(multipartFile.getOriginalFilename());
         String fileName = createFileName(multipartFile.getOriginalFilename());
 
         HashMap<ImageUploadKey, String> map = new HashMap<>();
-
-        log.info(fileName);
-        log.info(multipartFile.getOriginalFilename());
-        log.info("https://test.com/"+fileName);
 
         map.put(STORE_FILE_NAME, fileName);
         map.put(ORIGIN_FILE_NAME, multipartFile.getOriginalFilename());

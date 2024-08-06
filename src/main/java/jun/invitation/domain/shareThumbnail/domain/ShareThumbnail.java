@@ -1,14 +1,13 @@
 package jun.invitation.domain.shareThumbnail.domain;
 
 import jakarta.persistence.*;
-import jun.invitation.image.domain.Image;
+import jun.invitation.domain.image.domain.Image;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter

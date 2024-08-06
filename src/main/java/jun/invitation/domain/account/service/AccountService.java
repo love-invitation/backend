@@ -5,7 +5,7 @@ import jun.invitation.domain.account.domain.Account;
 import jun.invitation.domain.account.dto.AccountInfoDto;
 import jun.invitation.domain.account.dto.AccountReqDto;
 import jun.invitation.domain.invitation.domain.Invitation;
-import jun.invitation.domain.invitation.domain.embedded.WeddingSide;
+import jun.invitation.domain.invitation.domain.WeddingSide;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,8 +15,8 @@ import org.springframework.util.ObjectUtils;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.BRIDE;
-import static jun.invitation.domain.invitation.domain.embedded.WeddingSide.GROOM;
+import static jun.invitation.domain.invitation.domain.WeddingSide.BRIDE;
+import static jun.invitation.domain.invitation.domain.WeddingSide.GROOM;
 
 @Service
 @Transactional
@@ -64,6 +64,14 @@ public class AccountService {
                 .ifPresent(update -> {
                     register(update.getGroom(), invitation, GROOM);
                     register(update.getBride(), invitation, BRIDE);
+                });
+    }
+
+    public void create(AccountReqDto accounts, Invitation invitation) {
+        Optional.ofNullable(accounts)
+                .ifPresent(a -> {
+                    register(a.getGroom(), invitation, GROOM);
+                    register(a.getBride(), invitation, BRIDE);
                 });
     }
 }

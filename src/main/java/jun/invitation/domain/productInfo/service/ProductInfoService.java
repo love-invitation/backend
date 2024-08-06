@@ -6,6 +6,7 @@ import jun.invitation.domain.productInfo.dto.ProductInfoDto;
 import jun.invitation.domain.productInfo.exception.ProductInfoNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,17 +21,20 @@ public class ProductInfoService {
         productInfoRepository.save(productInfo);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductInfoDto> findAll() {
         return productInfoRepository.findAll()
                 .stream().map(ProductInfoDto::new)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ProductInfo findById(Long id) {
         return productInfoRepository.findById(id)
                 .orElseThrow(ProductInfoNotFoundException::new);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductInfoDto> findByBestList() {
         return productInfoRepository.findByBestTrue()
                 .stream().map(ProductInfoDto::new)

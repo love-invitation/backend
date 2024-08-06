@@ -1,8 +1,8 @@
 package jun.invitation.global.error;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
-import jun.invitation.auth.jwt.exception.InvalidTokenException;
-import jun.invitation.auth.jwt.exception.NoTokenException;
+import jun.invitation.global.auth.jwt.exception.InvalidTokenException;
+import jun.invitation.global.auth.jwt.exception.NoTokenException;
 import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
 import jun.invitation.domain.invitation.exception.InvitationAccessDeniedException;
 import jun.invitation.domain.invitation.exception.ProductNotFoundException;
