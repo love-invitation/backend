@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 import static lombok.AccessLevel.PROTECTED;
 
 @Data
@@ -16,8 +18,12 @@ public class ShareThumbnailResDto {
     private String imageUrl;
 
     public ShareThumbnailResDto(ShareThumbnail shareThumbnail) {
-        this.title = shareThumbnail.getTitle();
-        this.contents = shareThumbnail.getContents();
-        this.imageUrl = shareThumbnail.getImage().getUrl();
+        Optional.ofNullable(shareThumbnail)
+                .ifPresent(s -> {
+                            this.title = s.getTitle();
+                            this.contents = s.getContents();
+                            this.imageUrl = s.getImage().getUrl();
+                        }
+                );
     }
 }
