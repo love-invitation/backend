@@ -11,7 +11,6 @@ public enum PriorityName {
     BOOKING("booking"),
     ARTICLE("article"),
     TSID("tsid"),
-    ISPAID("isPaid"),
     COVER("cover"),
     PLACE("place");
 

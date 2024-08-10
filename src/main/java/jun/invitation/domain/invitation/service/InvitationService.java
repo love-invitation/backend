@@ -1,33 +1,23 @@
 package jun.invitation.domain.invitation.service;
 
-import jun.invitation.domain.account.dto.AccountInfoDto;
-import jun.invitation.domain.account.dto.AccountResDto;
 import jun.invitation.domain.account.service.AccountService;
-import jun.invitation.domain.contact.dto.ContactInfoDto;
-import jun.invitation.domain.contact.dto.ContactResDto;
 import jun.invitation.domain.contact.service.ContactService;
 import jun.invitation.domain.gallery.Gallery;
 import jun.invitation.domain.gallery.Service.GalleryService;
-import jun.invitation.domain.gallery.dto.GalleryInfoDto;
 import jun.invitation.domain.invitation.dao.InvitationRepository;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.reservation.domain.Reservation;
 import jun.invitation.domain.invitation.dto.*;
 import jun.invitation.domain.invitation.exception.ProductNotFoundException;
 import jun.invitation.domain.orders.service.OrderService;
-import jun.invitation.domain.priority.PriorityName;
-import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.service.PriorityService;
 import jun.invitation.domain.product.service.ProductService;
 import jun.invitation.domain.productInfo.domain.ProductInfo;
 import jun.invitation.domain.productInfo.service.ProductInfoService;
-import jun.invitation.domain.reservation.dto.DateDto;
-import jun.invitation.domain.reservation.dto.PlaceDto;
 import jun.invitation.domain.reservation.service.ReservationService;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
 import jun.invitation.domain.shareThumbnail.service.ShareThumbnailService;
-import jun.invitation.domain.transport.dto.TransportInfoDto;
 import jun.invitation.domain.transport.service.TransportService;
 import jun.invitation.global.service.port.IdentifierGenerator;
 import jun.invitation.domain.image.domain.Image;
@@ -43,8 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
-import static jun.invitation.domain.invitation.domain.WeddingSide.BRIDE;
-import static jun.invitation.domain.invitation.domain.WeddingSide.GROOM;
 import static jun.invitation.domain.priority.PriorityName.*;
 import static jun.invitation.global.utils.SecurityUtils.getCurrentUser;
 
@@ -184,8 +172,7 @@ public class InvitationService {
         reservationService.update(
                 invitationDto.getPlace(),
                 invitationDto.getBooking(),
-                invitation.getReservation()
-        );
+                invitation.getReservation());
 
         invitation.update(
                 invitationDto.getGuestbookCheck(),
@@ -193,8 +180,7 @@ public class InvitationService {
                 invitationDto.getContents(),
                 invitationDto.getBride(),
                 invitationDto.getGroom(),
-                invitationDto.getCoverContents()
-        );
+                invitationDto.getCoverContents());
 
     }
 
@@ -207,68 +193,11 @@ public class InvitationService {
 
         LinkedHashMap<String, Object> result = new LinkedHashMap<>();
 
-        result.put(TSID.getPriorityName(), invitation.getTsid());
-        result.put(COVER.getPriorityName(), new CoverDto(invitation));
+        priorityService.sortByPriority(invitation, result);
 
-        sortByPriority(invitation, result);
-
-        result.put(THUMBNAIL.getPriorityName(), new ShareThumbnailResDto(invitation.getShareThumbnail()));
         return result;
     }
 
-
-    private void sortByPriority(Invitation invitation, LinkedHashMap<String, Object> result) {
-
-        Reservation reservation = invitation.getReservation();
-
-        for (Priority priority : invitation.getPriority()) {
-            PriorityName name = fromPriorityName(priority.getName());
-            Integer priorityValue = priority.getPriority();
-
-            switch (name) {
-                case ARTICLE:
-                    result.put(ARTICLE.getPriorityName(),
-                            new ArticleDto(invitation.getTitle(), invitation.getContents(),
-                                    invitation.getGroomInfo(), invitation.getBrideInfo(), priorityValue)
-                    );
-                    break;
-                case BOOKING:
-                    result.put(BOOKING.getPriorityName(),
-                            new DateDto(reservation, priorityValue)
-                    );
-                    break;
-                case PLACE:
-                    result.put(PLACE.getPriorityName(),
-                            new PlaceDto(reservation, priorityValue)
-                    );
-                    break;
-                case TRANSPORT:
-                    result.put(TRANSPORT.getPriorityName(),
-                            new TransportInfoDto(invitation.getTransport(), priorityValue)
-                    );
-                    break;
-                case GALLERY:
-                    result.put(GALLERY.getPriorityName(),
-                            new GalleryInfoDto(invitation.getGallery(), priorityValue)
-                    );
-                    break;
-                case CONTACT:
-                    Map<String, List<ContactInfoDto>> classifiedContact = contactService.classifyByWeddingSide(invitation.getContacts());
-                    result.put(CONTACT.getPriorityName(),
-                            new ContactResDto(
-                                    classifiedContact.get(GROOM.getSide()),
-                                    classifiedContact.get(BRIDE.getSide()),
-                                    priorityValue
-                            )
-                    );
-                    break;
-                case ACCOUNT:
-                    Map<String, List<AccountInfoDto>> classifiedMap = accountService.classifyBySide(invitation.getAccounts());
-                    result.put(ACCOUNT.getPriorityName(), new AccountResDto(classifiedMap, priorityValue));
-                    break;
-            }
-        }
-    }
 
     @Transactional(readOnly = true)
     public Invitation findById(Long invitationId) {
