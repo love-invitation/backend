@@ -1,7 +1,6 @@
 package jun.invitation.domain.priority.domain;
 
 import jakarta.persistence.*;
-import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.product.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -42,7 +41,7 @@ public class Priority {
         product.getPriority().add(this);
     }
 
-    public void updatePriority(Integer priority){
+    public void update(Integer priority){
         this.priority = priority;
     }
 
