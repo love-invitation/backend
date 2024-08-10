@@ -39,8 +39,7 @@ public class GuestbookService {
         );
         guestbook.registerInvitation(invitation);
 
-        Guestbook savedGuestbook = guestbookRepository.save(guestbook);
-        return savedGuestbook.getId();
+        return guestbookRepository.save(guestbook).getId();
     }
 
     public Page<GuestbookResponseDto> getResponseDtoList(Long invitationId, Pageable pageable) {
@@ -48,7 +47,14 @@ public class GuestbookService {
                 .map(GuestbookResponseDto::new);
     }
 
-    public void delete(Product product, Long guestbookId, String password) {
+    public void delete(Long tsid) {
+        Invitation invitation = invitationService.findByTsid(tsid);
+        guestbookRepository.deleteByProductId(invitation.getId());
+    }
+
+    public void deleteGuestbook(Long productId, Long guestbookId, String password) {
+        Product product = invitationService.findById(productId);
+
         Guestbook guestbook = guestbookRepository.findById(guestbookId)
                 .orElseThrow(GuestbookNotFoundException::new);
 
@@ -67,15 +73,5 @@ public class GuestbookService {
                             }
                         })
                 );
-    }
-
-    public void delete(Long tsid) {
-        Invitation invitation = invitationService.findByTsid(tsid);
-        guestbookRepository.deleteByProductId(invitation.getId());
-    }
-
-    public void deleteGuestbook(Long productId, Long guestbookId, String password) {
-        Invitation invitation = invitationService.findById(productId);
-        delete(invitation,guestbookId, password);
     }
 }
