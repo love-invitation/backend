@@ -1,6 +1,7 @@
 package jun.invitation.domain.priority.domain;
 
 import jakarta.persistence.*;
+import jun.invitation.domain.priority.PriorityName;
 import jun.invitation.domain.product.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,14 +22,16 @@ public class Priority {
     @Column(name = "priority_id")
     private Long id;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private PriorityName name;
+
     private Integer priority;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public Priority(String name, Integer priority) {
+    public Priority(PriorityName name, Integer priority) {
         this.name = name;
         this.priority = priority;
     }

@@ -51,7 +51,7 @@ public class PriorityService {
             return;
 
         priorityDtos.forEach(
-                p -> new Priority(p.getName(), p.getPriority())
+                p -> new Priority(fromPriorityName(p.getName()), p.getPriority())
                         .register(invitation)
         );
     }
@@ -68,7 +68,7 @@ public class PriorityService {
         Map<String, Integer> map = newPriority.stream()
                 .collect(Collectors.toMap(PriorityDto::getName, PriorityDto::getPriority));
 
-        currentPriority.forEach( p -> p.update(map.get(p.getName())));
+        currentPriority.forEach( p -> p.update(map.get(p.getName().getPriorityName())));
     }
 
     public void sortByPriority(Invitation invitation, LinkedHashMap<String, Object> result) {
@@ -78,7 +78,7 @@ public class PriorityService {
         result.put(COVER.getPriorityName(), new CoverDto(invitation));
 
         for (Priority priority : invitation.getPriority()) {
-            PriorityName name = fromPriorityName(priority.getName());
+            PriorityName name = priority.getName();
             Integer priorityValue = priority.getPriority();
 
             switch (name) {
