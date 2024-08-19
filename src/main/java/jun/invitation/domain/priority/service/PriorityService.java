@@ -75,6 +75,7 @@ public class PriorityService {
 
         Reservation reservation = invitation.getReservation();
         result.put(TSID.getPriorityName(), invitation.getTsid());
+        result.put("guestbookCheck", invitation.getGuestbookCheck());
         result.put(COVER.getPriorityName(), new CoverDto(invitation));
 
         for (Priority priority : invitation.getPriority()) {
