@@ -92,7 +92,6 @@ asciidoctor {
 	configurations 'asciidoctorExt' // (7)
 	baseDirFollowsSourceFile() // (8)
 	inputs.dir snippetsDir // (9)
-	println("${asciidoctor.outputDir}")
 	dependsOn test // (10)
 }
 asciidoctor.doFirst {
