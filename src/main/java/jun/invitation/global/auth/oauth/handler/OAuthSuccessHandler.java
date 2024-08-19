@@ -49,7 +49,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
-        response.sendRedirect("https://dev.pinkcotton.shop:3000");
+        response.sendRedirect("https://pinkcotton.shop");
     }
 
     private static ResponseCookie createCookie(String name, String value, int days) {
