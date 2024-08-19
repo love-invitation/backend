@@ -6,6 +6,10 @@ import jun.invitation.domain.orders.dao.OrderRepository;
 import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.orders.dto.OrderDto;
 import jun.invitation.domain.orders.exception.OrderNotFoundException;
+import jun.invitation.domain.product.service.ProductService;
+import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
+import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
+import jun.invitation.domain.shareThumbnail.service.ShareThumbnailService;
 import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,8 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final ShareThumbnailService shareThumbnailService;
+
 
     public void create(Invitation invitation) {
         Orders orders = Orders.builder()
@@ -30,8 +36,14 @@ public class OrderService {
 
     public List<OrderDto> findOrderDtoList(Long userId) {
         return orderRepository.findByUserId(userId).stream()
-                .map(OrderDto::new)
+                .map(o -> createOrderDto(o,userId) )
                 .toList();
+    }
+
+    private OrderDto createOrderDto(Orders order, Long userId) {
+        ShareThumbnail thumbnail = shareThumbnailService.findThumbnail(userId);
+        ShareThumbnailResDto shareThumbnailResDto = new ShareThumbnailResDto(thumbnail);
+        return new OrderDto(order, shareThumbnailResDto);
     }
 
     public Orders findOrder(Long id) {

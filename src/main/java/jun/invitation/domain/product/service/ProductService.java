@@ -30,4 +30,9 @@ public class ProductService {
         em.flush();
         em.clear();
     }
+
+    @Transactional(readOnly = true)
+    public Product findByUserId(Long userId) {
+        return productRepository.findByUserId(userId);
+    }
 }

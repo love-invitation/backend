@@ -1,5 +1,7 @@
 package jun.invitation.domain.shareThumbnail.service;
 
+import jun.invitation.domain.product.service.ProductService;
+import jun.invitation.domain.shareThumbnail.dao.ShareThumbnailRepository;
 import jun.invitation.global.aws.s3.ImageUploader;
 import jun.invitation.domain.shareThumbnail.domain.ShareThumbnail;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailDto;
@@ -21,6 +23,7 @@ public class ShareThumbnailService {
 
     private final ImageUploader imageUploader;
     private final ImageService imageService;
+    private final ProductService productService;
 
     @Transactional
     public ShareThumbnail create(MultipartFile shareThumbImage, ShareThumbnailDto shareThumbnailDto) {
@@ -76,5 +79,11 @@ public class ShareThumbnailService {
     private void updateImage(MultipartFile multipartFile, ShareThumbnail shareThumbnail) {
         Image image = imageService.saveWithImageUpload(multipartFile);
         shareThumbnail.registerImage(image);
+    }
+
+    public ShareThumbnail findThumbnail(Long userId) {
+        return productService
+                .findByUserId(userId)
+                .getShareThumbnail();
     }
 }
