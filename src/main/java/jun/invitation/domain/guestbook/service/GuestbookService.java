@@ -4,10 +4,12 @@ import jun.invitation.domain.guestbook.dao.GuestbookRepository;
 import jun.invitation.domain.guestbook.domain.Guestbook;
 import jun.invitation.domain.guestbook.dto.GuestbookDto;
 import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
-import jun.invitation.domain.guestbook.execption.GuestbookNotFoundException;
+import jun.invitation.domain.guestbook.exception.GuestbookNotFoundException;
+import jun.invitation.domain.guestbook.exception.PasswordMismatchException;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.domain.product.domain.Product;
+import jun.invitation.domain.user.domain.User;
 import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +49,7 @@ public class GuestbookService {
                 .map(GuestbookResponseDto::new);
     }
 
-    public void delete(Long tsid) {
+    public void deleteAllByTsid(Long tsid) {
         Invitation invitation = invitationService.findByTsid(tsid);
         guestbookRepository.deleteByProductId(invitation.getId());
     }
@@ -61,17 +63,24 @@ public class GuestbookService {
         Optional<String> passwordOpt = Optional.ofNullable(password);
 
         Optional.ofNullable(SecurityUtils.getCurrentUser())
-                .ifPresentOrElse(u -> {
-                            if (Objects.equals(u.getId(), product.getUser().getId())) {
-                                guestbookRepository.delete(guestbook);
-                                product.getGuestbook().remove(guestbook);
-                            }
-                        }, () -> passwordOpt.ifPresent(p -> {
-                            if (p.equals(guestbook.getPassword())) {
-                                product.getGuestbook().remove(guestbook);
-                                guestbookRepository.delete(guestbook);
-                            }
-                        })
-                );
+                .ifPresentOrElse(u -> deleteByOwner(u, product, guestbook)
+                        , () -> passwordOpt.ifPresent(p -> deleteByGuest(p, guestbook, product)));
+    }
+
+    private void deleteByGuest(String password, Guestbook guestbook, Product product) {
+        if (!password.equals(guestbook.getPassword())) throw new PasswordMismatchException();
+
+        delete(product, guestbook);
+    }
+
+    private void deleteByOwner(User user, Product product, Guestbook guestbook) {
+        if (Objects.equals(user.getId(), product.getUser().getId())) {
+            delete(product, guestbook);
+        }
+    }
+
+    private void delete(Product product, Guestbook guestbook) {
+        guestbookRepository.delete(guestbook);
+        product.getGuestbook().remove(guestbook);
     }
 }
