@@ -1,4 +1,4 @@
-package jun.invitation.global.exception;
+package jun.invitation.domain.guestbook.exception;
 
 public class PasswordMismatchException extends RuntimeException{
     public PasswordMismatchException() {

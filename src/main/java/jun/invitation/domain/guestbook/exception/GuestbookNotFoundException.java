@@ -1,4 +1,4 @@
-package jun.invitation.domain.guestbook.execption;
+package jun.invitation.domain.guestbook.exception;
 
 public class GuestbookNotFoundException extends RuntimeException{
     public GuestbookNotFoundException() {
