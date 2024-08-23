@@ -45,16 +45,16 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtService.generateAccessToken(currentUser);
 
         ResponseCookie accessCookie = createCookie(HEADER_STRING,
-                URLEncoder.encode(TOKEN_PREFIX + accessToken, StandardCharsets.UTF_8).replaceAll("\\+", "%20"), 1);
+                URLEncoder.encode(TOKEN_PREFIX + accessToken, StandardCharsets.UTF_8).replaceAll("\\+", "%20"), 10);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
 
         response.sendRedirect("https://pinkcotton.shop");
     }
 
-    private static ResponseCookie createCookie(String name, String value, int days) {
+    private static ResponseCookie createCookie(String name, String value, int minutes) {
         return ResponseCookie.from(name, value)
-                .maxAge(Duration.ofDays(days))
+                .maxAge(Duration.ofMinutes(minutes))
                 .sameSite("None")
                 .domain(".pinkcotton.shop")
                 .path("/")
