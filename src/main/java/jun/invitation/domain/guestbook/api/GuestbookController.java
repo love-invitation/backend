@@ -3,7 +3,6 @@ package jun.invitation.domain.guestbook.api;
 import jun.invitation.domain.guestbook.dto.GuestbookDto;
 import jun.invitation.domain.guestbook.dto.GuestbookResponseDto;
 import jun.invitation.domain.guestbook.service.GuestbookService;
-import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;

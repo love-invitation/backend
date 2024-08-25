@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,14 +30,16 @@ public class GuestbookService {
 
     private final GuestbookRepository guestbookRepository;
     private final InvitationService invitationService;
+    private final PasswordEncoder passwordEncoder;
 
     public Long create(GuestbookDto guestbookDto, Long productTsid) {
 
         Invitation invitation = invitationService.findByTsid(productTsid);
+        String encodedPassword = passwordEncoder.encode(guestbookDto.getPassword());
 
         Guestbook guestbook = new Guestbook(
                 guestbookDto.getName(),
-                guestbookDto.getPassword(),
+                encodedPassword,
                 guestbookDto.getMessage()
         );
         guestbook.registerInvitation(invitation);
@@ -55,7 +58,6 @@ public class GuestbookService {
     }
 
     public void deleteGuestbook(Long productTsid, Long guestbookId, String password) {
-        log.info("=== deleteGuestbook ===");
         Product product = invitationService.findByTsid(productTsid);
 
         Guestbook guestbook = guestbookRepository.findById(guestbookId)
@@ -69,9 +71,14 @@ public class GuestbookService {
     }
 
     private void deleteByGuest(String password, Guestbook guestbook, Product product) {
-        if (!password.equals(guestbook.getPassword())) throw new PasswordMismatchException();
-
-        delete(product, guestbook);
+//        if (!password.equals(guestbook.getPassword()))
+//            throw new PasswordMismatchException();
+        if (passwordEncoder.matches(password, guestbook.getPassword())) {
+            log.info("Deleting guestbook with password {}", password);
+            delete(product, guestbook);
+        }
+        else
+            throw new PasswordMismatchException();
     }
 
     private void deleteByOwner(User user, Product product, Guestbook guestbook) {
