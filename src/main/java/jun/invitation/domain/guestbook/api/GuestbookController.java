@@ -7,12 +7,16 @@ import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.global.dto.ResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -23,16 +27,17 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/api/v1/products/invitations")
 public class GuestbookController {
 
+    private static final Logger log = LoggerFactory.getLogger(GuestbookController.class);
     private final InvitationService invitationService;
     private final GuestbookService guestbookService;
 
-    @GetMapping("/{productId}/guestbooks")
-    public ResponseEntity<ResponseDto> readGuestbook(@PathVariable(name = "productId") Long productId,
+    @GetMapping("/{productTsid}/guestbooks")
+    public ResponseEntity<ResponseDto> readGuestbook(@PathVariable(name = "productTsid") Long productTsid,
             @RequestParam(value = "page", defaultValue = "0") int page) {
 
         Pageable paging = PageRequest.of(page, 3);
 
-        Page<GuestbookResponseDto> responseDtoList = guestbookService.getResponseDtoList(productId, paging);
+        Page<GuestbookResponseDto> responseDtoList = guestbookService.getResponseDtoList(productTsid, paging);
 
         ResponseDto<Object> result = ResponseDto
                 .builder()
@@ -45,14 +50,13 @@ public class GuestbookController {
                 .body(result);
     }
 
-    // Create
-    @PostMapping("/{productId}/guestbooks")
+    @PostMapping("/{productTsid}/guestbooks")
     public ResponseEntity<ResponseDto> createGuestbook(
-            @PathVariable(name = "productId") Long productId,
+            @PathVariable(name = "productTsid") Long productTsid,
             @RequestBody GuestbookDto guestbookDto
             ) {
 
-        guestbookService.create(guestbookDto, productId);
+        guestbookService.create(guestbookDto, productTsid);
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(CREATED.value())
@@ -64,18 +68,18 @@ public class GuestbookController {
     }
 
     // Delete
-    @DeleteMapping("/{productId}/guestbooks/{guestbookId}")
+    @DeleteMapping("/{productTsid}/guestbooks/{guestbookId}")
     public ResponseEntity<ResponseDto> deleteGuestbook(
-            @PathVariable(name = "productId") Long productId,
+            @PathVariable(name = "productTsid") Long productTsid,
             @PathVariable(name = "guestbookId") Long guestbookId,
-            @RequestBody(required = false) String password
+            @RequestHeader(name = "Password", required = false) String password
     ) {
 
-        guestbookService.deleteGuestbook(productId, guestbookId, password);
+        guestbookService.deleteGuestbook(productTsid, guestbookId, password);
 
         ResponseDto<Object> responseDto = ResponseDto.builder()
                 .status(OK.value())
-                .message("[Guestbook Id: " + guestbookId + "] of [Invitation Id: " + productId + "] is deleted.")
+                .message("[Guestbook Id: " + guestbookId + "] of [Invitation Tsid: " + productTsid + "] is deleted.")
                 .build();
 
         return ResponseEntity

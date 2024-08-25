@@ -14,5 +14,5 @@ public interface GuestbookRepository extends JpaRepository<Guestbook, Long>{
     @Query(value = "delete from Guestbook g where g.product.id = :id")
     void deleteByProductId(@Param(value = "id") Long productId);
 
-    Page<Guestbook> findByProduct_idOrderByIdDesc(Long invitationId, Pageable pageable);
+    Page<Guestbook> findByProductTsidOrderByIdDesc(Long productTsid, Pageable pageable);
 }

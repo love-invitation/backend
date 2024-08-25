@@ -30,9 +30,9 @@ public class GuestbookService {
     private final GuestbookRepository guestbookRepository;
     private final InvitationService invitationService;
 
-    public Long create(GuestbookDto guestbookDto, Long productId) {
+    public Long create(GuestbookDto guestbookDto, Long productTsid) {
 
-        Invitation invitation = invitationService.findById(productId);
+        Invitation invitation = invitationService.findByTsid(productTsid);
 
         Guestbook guestbook = new Guestbook(
                 guestbookDto.getName(),
@@ -44,8 +44,8 @@ public class GuestbookService {
         return guestbookRepository.save(guestbook).getId();
     }
 
-    public Page<GuestbookResponseDto> getResponseDtoList(Long invitationId, Pageable pageable) {
-        return guestbookRepository.findByProduct_idOrderByIdDesc(invitationId, pageable)
+    public Page<GuestbookResponseDto> getResponseDtoList(Long productTsid, Pageable pageable) {
+        return guestbookRepository.findByProductTsidOrderByIdDesc(productTsid, pageable)
                 .map(GuestbookResponseDto::new);
     }
 
@@ -54,8 +54,9 @@ public class GuestbookService {
         guestbookRepository.deleteByProductId(invitation.getId());
     }
 
-    public void deleteGuestbook(Long productId, Long guestbookId, String password) {
-        Product product = invitationService.findById(productId);
+    public void deleteGuestbook(Long productTsid, Long guestbookId, String password) {
+        log.info("=== deleteGuestbook ===");
+        Product product = invitationService.findByTsid(productTsid);
 
         Guestbook guestbook = guestbookRepository.findById(guestbookId)
                 .orElseThrow(GuestbookNotFoundException::new);
