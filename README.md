@@ -10,5 +10,6 @@
 
 ### Invitatoin
 - [[JPA] Delete 성능 개선](https://alluring-timpani-4cb.notion.site/JPA-Delete-2-4d7e23435dbe4d9c8c2c7c00746743bb?pvs=4)
-- [[Spring] POST 성능 개선 : 이미지 비동기 처리](https://alluring-timpani-4cb.notion.site/JPA-Delete-2-4d7e23435dbe4d9c8c2c7c00746743bb?pvs=4)
+- [[Spring] POST 성능 개선 : 이미지 비동기 처리](https://alluring-timpani-4cb.notion.site/Spring-Invitation-Create-aa29cdeb8c8442f9bf0e0b4378db4df9?pvs=4)
 - [[Redis] Cache를 사용한 조회 성능 개선 ](https://alluring-timpani-4cb.notion.site/Redis-Cache-ef039a51091a4fa8838805316079b6e6?pvs=4)
+- [[QueryDsl] FetchJoin을 통한 조회 성능 개선](https://alluring-timpani-4cb.notion.site/JPA-Fetch-Join-e41da3c2f23948088e7c4a7240ac061d?pvs=4)
