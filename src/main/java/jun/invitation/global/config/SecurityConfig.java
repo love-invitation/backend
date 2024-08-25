@@ -30,12 +30,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        /*
-        세션을 사용하지 않고, JWT를 이용하여 인증하기 때문에 formLogin, session -> STATELESS
-         */
-        log.info("SecurityFilterChain EntryPoint :{}", entryPoint.getClass());
-
         return http.csrf(CsrfConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(STATELESS))
@@ -57,5 +51,4 @@ public class SecurityConfig {
                 )
                 .build();
     }
-
 }

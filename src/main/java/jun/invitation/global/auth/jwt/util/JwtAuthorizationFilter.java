@@ -41,7 +41,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         String cookie = jwtService.extractToken(request.getCookies());
 
         if (ObjectUtils.isEmpty(cookie)) {
-            request.setAttribute("exception", new NoTokenException());
             chain.doFilter(request, response);
             return;
         }

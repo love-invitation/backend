@@ -14,6 +14,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 
 import static jun.invitation.global.auth.jwt.JwtProperties.*;
 
@@ -39,10 +40,14 @@ public class JwtService {
             return null;
         }
 
-        Cookie cookie = findJWTCookie(cookies);
+        try {
+            Cookie cookie = findJWTCookie(cookies);
+            return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8)
+                    .replaceAll("%20", " ");
+        } catch (NoTokenException e) {
+            return null;
+        }
 
-        return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8)
-                .replaceAll("%20", " ");
     }
 
     private Cookie findJWTCookie(Cookie[] cookies) {
