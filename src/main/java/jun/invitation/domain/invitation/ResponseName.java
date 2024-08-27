@@ -1,8 +1,8 @@
-package jun.invitation.domain.priority;
+package jun.invitation.domain.invitation;
 
 import java.util.Arrays;
 
-public enum PriorityName {
+public enum ResponseName {
     THUMBNAIL("thumbnail"),
     GALLERY("gallery"),
     CONTACT("contact"),
@@ -12,11 +12,12 @@ public enum PriorityName {
     ARTICLE("article"),
     TSID("tsid"),
     COVER("cover"),
-    PLACE("place");
+    PLACE("place"),
+    GUESTBOOKCHECK("guestbookcheck"),;
 
     private final String priorityName;
 
-    PriorityName(String priorityName) {
+    ResponseName(String priorityName) {
         this.priorityName = priorityName;
     }
 
@@ -24,8 +25,8 @@ public enum PriorityName {
         return this.priorityName;
     }
 
-    public static PriorityName fromPriorityName(String priorityName) {
-        return Arrays.stream(PriorityName.values())
+    public static ResponseName fromPriorityName(String priorityName) {
+        return Arrays.stream(ResponseName.values())
                 .filter(p -> p.getPriorityName().equals(priorityName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No priorityName in Enum :" + priorityName));

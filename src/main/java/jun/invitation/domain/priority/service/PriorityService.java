@@ -10,7 +10,7 @@ import jun.invitation.domain.gallery.dto.GalleryInfoDto;
 import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.dto.ArticleDto;
 import jun.invitation.domain.invitation.dto.CoverDto;
-import jun.invitation.domain.priority.PriorityName;
+import jun.invitation.domain.invitation.ResponseName;
 import jun.invitation.domain.priority.dao.PriorityRepository;
 import jun.invitation.domain.priority.domain.Priority;
 import jun.invitation.domain.priority.dto.PriorityDto;
@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 
 import static jun.invitation.domain.invitation.domain.WeddingSide.BRIDE;
 import static jun.invitation.domain.invitation.domain.WeddingSide.GROOM;
-import static jun.invitation.domain.priority.PriorityName.*;
-import static jun.invitation.domain.priority.PriorityName.ACCOUNT;
+import static jun.invitation.domain.invitation.ResponseName.*;
+import static jun.invitation.domain.invitation.ResponseName.ACCOUNT;
 
 @Service
 @Transactional
@@ -75,11 +75,11 @@ public class PriorityService {
 
         Reservation reservation = invitation.getReservation();
         result.put(TSID.getPriorityName(), invitation.getTsid());
-        result.put("guestbookCheck", invitation.getGuestbookCheck());
+        result.put(GUESTBOOKCHECK.getPriorityName(), invitation.getGuestbookCheck());
         result.put(COVER.getPriorityName(), new CoverDto(invitation));
 
         for (Priority priority : invitation.getPriority()) {
-            PriorityName name = priority.getName();
+            ResponseName name = priority.getName();
             Integer priorityValue = priority.getPriority();
 
             switch (name) {

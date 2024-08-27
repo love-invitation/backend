@@ -1,7 +1,7 @@
 package jun.invitation.domain.priority.domain;
 
 import jakarta.persistence.*;
-import jun.invitation.domain.priority.PriorityName;
+import jun.invitation.domain.invitation.ResponseName;
 import jun.invitation.domain.product.domain.Product;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class Priority {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private PriorityName name;
+    private ResponseName name;
 
     private Integer priority;
 
@@ -31,7 +31,7 @@ public class Priority {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    public Priority(PriorityName name, Integer priority) {
+    public Priority(ResponseName name, Integer priority) {
         this.name = name;
         this.priority = priority;
     }
