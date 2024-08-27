@@ -56,15 +56,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         String username = null;
         try {
-            username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
-                    .getClaim("username").asString();
+            username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET))
+                    .build()
+                    .verify(token)
+                    .getClaim("username")
+                    .asString();
         } catch (Exception e) {
             log.info(e.getMessage());
             request.setAttribute("exception", e);
         }
 
         Optional.ofNullable(username)
-                        .ifPresent(this::login);
+                .ifPresent(this::login);
 
         chain.doFilter(request, response);
     }

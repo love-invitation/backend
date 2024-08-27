@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 import static jun.invitation.global.auth.jwt.JwtProperties.HEADER_STRING;
 import static jun.invitation.global.auth.jwt.JwtProperties.TOKEN_PREFIX;
@@ -44,7 +43,7 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
         String accessToken = jwtService.generateAccessToken(currentUser);
 
-        ResponseCookie accessCookie = createCookie(HEADER_STRING,
+        ResponseCookie accessCookie = jwtService.createCookie(HEADER_STRING,
                 URLEncoder.encode(TOKEN_PREFIX + accessToken, StandardCharsets.UTF_8).replaceAll("\\+", "%20"), 10);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
@@ -52,14 +51,4 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         response.sendRedirect("https://pinkcotton.shop");
     }
 
-    private static ResponseCookie createCookie(String name, String value, int minutes) {
-        return ResponseCookie.from(name, value)
-                .maxAge(Duration.ofMinutes(minutes))
-                .sameSite("None")
-                .domain(".pinkcotton.shop")
-                .path("/")
-                .httpOnly(true)
-                .secure(true)
-                .build();
-    }
 }

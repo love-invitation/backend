@@ -7,11 +7,13 @@ import jun.invitation.global.auth.jwt.exception.NoTokenException;
 import jun.invitation.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
@@ -57,11 +59,18 @@ public class JwtService {
                 .findFirst().orElseThrow(NoTokenException::new);
     }
 
-    public Cookie logout(Cookie[] cookies) {
+    public ResponseCookie logout() {
+        return createCookie(HEADER_STRING, null,0);
+    }
 
-        Cookie target = findJWTCookie(cookies);
-        target.setMaxAge(0);
-
-        return target;
+    public ResponseCookie createCookie(String name, String value, int minutes) {
+        return ResponseCookie.from(name, value)
+                .maxAge(Duration.ofMinutes(minutes))
+                .sameSite("None")
+                .domain(".pinkcotton.shop")
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .build();
     }
 }
