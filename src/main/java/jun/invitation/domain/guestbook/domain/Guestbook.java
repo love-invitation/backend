@@ -2,6 +2,7 @@ package jun.invitation.domain.guestbook.domain;
 
 import jakarta.persistence.*;
 import jun.invitation.domain.product.domain.Product;
+import jun.invitation.global.entity.BaseEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +11,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity @Getter
 @NoArgsConstructor
-public class Guestbook {
+public class Guestbook extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

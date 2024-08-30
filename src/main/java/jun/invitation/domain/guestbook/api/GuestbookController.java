@@ -22,12 +22,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping("/api/v1/products/invitations")
 public class GuestbookController {
 
-    private static final Logger log = LoggerFactory.getLogger(GuestbookController.class);
-    private final InvitationService invitationService;
     private final GuestbookService guestbookService;
 
     @GetMapping("/{productTsid}/guestbooks")
-    public ResponseEntity<ResponseDto> readGuestbook(@PathVariable(name = "productTsid") Long productTsid,
+    public ResponseEntity<ResponseDto<Object>> readGuestbook(@PathVariable(name = "productTsid") Long productTsid,
             @RequestParam(value = "page", defaultValue = "0") int page) {
 
         Pageable paging = PageRequest.of(page, 3);
@@ -62,7 +60,6 @@ public class GuestbookController {
                 .body(responseDto);
     }
 
-    // Delete
     @DeleteMapping("/{productTsid}/guestbooks/{guestbookId}")
     public ResponseEntity<ResponseDto> deleteGuestbook(
             @PathVariable(name = "productTsid") Long productTsid,
