@@ -33,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 import static java.util.stream.Collectors.*;
-import static jun.invitation.domain.priority.PriorityName.*;
 import static jun.invitation.global.utils.SecurityUtils.getCurrentUser;
 
 @Service
