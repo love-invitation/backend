@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     /* BAD REQUEST ERROR CODE*/
-    BAD_REQUEST (HttpStatus.BAD_REQUEST.value(), "E40001", "wrong input"),
+    BAD_REQUEST (HttpStatus.BAD_REQUEST.value(), "E40001", "check your header or body."),
 
     /* UNAUTHORIZED ERROR CODE*/
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED.value(), "E40101", "unauthorized access"),

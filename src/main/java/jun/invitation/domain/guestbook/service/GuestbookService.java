@@ -10,6 +10,7 @@ import jun.invitation.domain.invitation.domain.Invitation;
 import jun.invitation.domain.invitation.service.InvitationService;
 import jun.invitation.domain.product.domain.Product;
 import jun.invitation.domain.user.domain.User;
+import jun.invitation.global.exception.InvalidRequestException;
 import jun.invitation.global.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -57,6 +59,7 @@ public class GuestbookService {
         guestbookRepository.deleteByProductId(invitation.getId());
     }
 
+    // 헤더에 Password, accessToken 없는 경우 뚤린다.
     public void deleteGuestbook(Long productTsid, Long guestbookId, String password) {
         Product product = invitationService.findByTsid(productTsid);
 
@@ -66,24 +69,32 @@ public class GuestbookService {
         Optional<String> passwordOpt = Optional.ofNullable(password);
 
         Optional.ofNullable(SecurityUtils.getCurrentUser())
-                .ifPresentOrElse(u -> deleteByOwner(u, product, guestbook)
-                        , () -> passwordOpt.ifPresent(p -> deleteByGuest(p, guestbook, product)));
+                .ifPresentOrElse(u -> deleteByOwner(u, product, guestbook, password)
+                        , () -> passwordOpt.ifPresentOrElse(
+                                pw -> deleteByGuest(pw, guestbook, product),
+                                () -> { throw new InvalidRequestException();})
+                );
     }
 
     private void deleteByGuest(String password, Guestbook guestbook, Product product) {
-//        if (!password.equals(guestbook.getPassword()))
-//            throw new PasswordMismatchException();
+
+        if (ObjectUtils.isEmpty(password))
+            throw new InvalidRequestException();
+
         if (passwordEncoder.matches(password, guestbook.getPassword())) {
             log.info("Deleting guestbook with password {}", password);
             delete(product, guestbook);
         }
-        else
+        else {
             throw new PasswordMismatchException();
+        }
     }
 
-    private void deleteByOwner(User user, Product product, Guestbook guestbook) {
+    private void deleteByOwner(User user, Product product, Guestbook guestbook, String password) {
         if (Objects.equals(user.getId(), product.getUser().getId())) {
             delete(product, guestbook);
+        } else {
+            deleteByGuest(password, guestbook, product);
         }
     }
 
