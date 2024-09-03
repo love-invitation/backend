@@ -13,7 +13,7 @@ public enum ResponseName {
     TSID("tsid"),
     COVER("cover"),
     PLACE("place"),
-    GUESTBOOKCHECK("guestbookcheck"),;
+    GUESTBOOKCHECK("guestbookCheck"),;
 
     private final String priorityName;
 
