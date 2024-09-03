@@ -16,6 +16,7 @@ public class ProductInfoDto {
     private Long id;
     private String imageUrl;
     private String templateName;
+    private BigDecimal price = BigDecimal.ZERO;
 
     private Boolean best;
     private Boolean newest;
