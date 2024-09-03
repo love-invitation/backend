@@ -5,6 +5,7 @@ import jun.invitation.domain.orders.domain.Orders;
 import jun.invitation.domain.shareThumbnail.dto.ShareThumbnailResDto;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -23,7 +24,7 @@ public class OrderDto {
         this.productInfoName = orders.getProduct().getProductInfo().getTemplateName();
         this.productInfoImageUrl = orders.getProduct().getProductInfo().getImageUrl();
         this.thumbnail = thumbnail;
-        this.isPaid = orders.getIsPaid();
+        this.isPaid = true;
         this.lastModified = orders.getProduct().getUpdated_At();
         this.tsid = orders.getProduct().getTsid();
     }

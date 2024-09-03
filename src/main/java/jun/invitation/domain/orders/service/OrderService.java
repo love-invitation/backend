@@ -41,8 +41,7 @@ public class OrderService {
     }
 
     private OrderDto createOrderDto(Orders order, Long userId) {
-        ShareThumbnail thumbnail = shareThumbnailService.findThumbnail(userId);
-        ShareThumbnailResDto shareThumbnailResDto = new ShareThumbnailResDto(thumbnail);
+        ShareThumbnailResDto shareThumbnailResDto = new ShareThumbnailResDto(order.getProduct().getShareThumbnail());
         return new OrderDto(order, shareThumbnailResDto);
     }
 
