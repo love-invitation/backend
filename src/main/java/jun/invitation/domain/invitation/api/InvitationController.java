@@ -35,7 +35,7 @@ public class InvitationController {
         ResponseDto responseDto = ResponseDto.builder()
                 .status(CREATED.value())
                 .message("create success.")
-                .result(invitationTsid)
+                .result(invitationTsid.toString())
                 .build();
 
         return ResponseEntity
